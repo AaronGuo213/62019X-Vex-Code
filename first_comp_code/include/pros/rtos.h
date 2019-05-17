@@ -31,7 +31,7 @@ namespace pros {
 // The highest priority that can be assigned to a task. Beware of deadlock.
 #define TASK_PRIORITY_MAX 16
 
-// The lowest priority that can be assigned to a task.
+// The loleft priority that can be assigned to a task.
 // This may cause severe performance problems and is generally not recommended.
 #define TASK_PRIORITY_MIN 1
 

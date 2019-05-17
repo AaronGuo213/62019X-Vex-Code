@@ -34,7 +34,7 @@ extern "C" {
  */
 typedef enum {
   LV_TASK_PRIO_OFF = 0,
-  LV_TASK_PRIO_LOWEST,
+  LV_TASK_PRIO_LOleft,
   LV_TASK_PRIO_LOW,
   LV_TASK_PRIO_MID,
   LV_TASK_PRIO_HIGH,

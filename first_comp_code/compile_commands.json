@@ -15,7 +15,7 @@
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
             "-iquote./include",
-            "-iquote./include/subsystems/",
+            "-iquote./include/./",
             "-mcpu=cortex-a9",
             "-mfpu=neon-fp16",
             "-mfloat-abi=softfp",
@@ -28,11 +28,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/subsystems/base.cpp.o",
-            "src\\subsystems\\base.cpp"
+            "bin/initialize.cpp.o",
+            "src\\initialize.cpp"
         ],
         "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\subsystems\\base.cpp"
+        "file": "src\\initialize.cpp"
     },
     {
         "arguments": [
@@ -98,11 +98,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/initialize.cpp.o",
-            "src\\initialize.cpp"
+            "bin/autonomous.cpp.o",
+            "src\\autonomous.cpp"
         ],
         "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\initialize.cpp"
+        "file": "src\\autonomous.cpp"
     },
     {
         "arguments": [
@@ -133,81 +133,11 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/subsystems/lift.cpp.o",
-            "src\\subsystems\\lift.cpp"
+            "bin/subsystems/base.cpp.o",
+            "src\\subsystems\\base.cpp"
         ],
         "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\subsystems\\lift.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-fno-ms-extensions",
-            "-fno-ms-compatibility",
-            "-fno-delayed-template-parsing",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/subsystems/",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/subsystems/claw.cpp.o",
-            "src\\subsystems\\claw.cpp"
-        ],
-        "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\subsystems\\claw.cpp"
-    },
-    {
-        "arguments": [
-            "clang++",
-            "-c",
-            "-target",
-            "armv7ar-none-none-eabi",
-            "-fno-ms-extensions",
-            "-fno-ms-compatibility",
-            "-fno-delayed-template-parsing",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
-            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
-            "-iquote./include",
-            "-iquote./include/./",
-            "-mcpu=cortex-a9",
-            "-mfpu=neon-fp16",
-            "-mfloat-abi=softfp",
-            "-D_POSIX_THREADS",
-            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
-            "-Os",
-            "-funwind-tables",
-            "-ffunction-sections",
-            "-fdata-sections",
-            "-fdiagnostics-color",
-            "--std=gnu++17",
-            "-o",
-            "bin/opcontrol.cpp.o",
-            "src\\opcontrol.cpp"
-        ],
-        "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\opcontrol.cpp"
+        "file": "src\\subsystems\\base.cpp"
     },
     {
         "arguments": [
@@ -260,6 +190,76 @@
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
             "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
             "-iquote./include",
+            "-iquote./include/subsystems/",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/subsystems/claw.cpp.o",
+            "src\\subsystems\\claw.cpp"
+        ],
+        "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
+        "file": "src\\subsystems\\claw.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
+            "-iquote./include/subsystems/",
+            "-mcpu=cortex-a9",
+            "-mfpu=neon-fp16",
+            "-mfloat-abi=softfp",
+            "-D_POSIX_THREADS",
+            "-D_UNIX98_THREAD_MUTEX_ATTRIBUTES",
+            "-Os",
+            "-funwind-tables",
+            "-ffunction-sections",
+            "-fdata-sections",
+            "-fdiagnostics-color",
+            "--std=gnu++17",
+            "-o",
+            "bin/subsystems/lift.cpp.o",
+            "src\\subsystems\\lift.cpp"
+        ],
+        "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
+        "file": "src\\subsystems\\lift.cpp"
+    },
+    {
+        "arguments": [
+            "clang++",
+            "-c",
+            "-target",
+            "armv7ar-none-none-eabi",
+            "-fno-ms-extensions",
+            "-fno-ms-compatibility",
+            "-fno-delayed-template-parsing",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/arm-none-eabi/thumb/v7-ar/fpv3/softfp",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include/c++/7.2.1/backward",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/include-fixed",
+            "-isystemc:\\program files\\pros\\toolchain\\usr\\bin\\../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/include",
+            "-iquote./include",
             "-iquote./include/./",
             "-mcpu=cortex-a9",
             "-mfpu=neon-fp16",
@@ -273,10 +273,10 @@
             "-fdiagnostics-color",
             "--std=gnu++17",
             "-o",
-            "bin/autonomous.cpp.o",
-            "src\\autonomous.cpp"
+            "bin/opcontrol.cpp.o",
+            "src\\opcontrol.cpp"
         ],
         "directory": "C:\\Users\\DubleA\\Desktop\\Meaningful Stuff\\CodingVEX\\62019X-Vex-Code\\first_comp_code",
-        "file": "src\\autonomous.cpp"
+        "file": "src\\opcontrol.cpp"
     }
 ]

@@ -1,15 +1,19 @@
 #ifndef BASE_H
 #define BASE_H
 
-void runWestBase(float westBaseVal);
-void runEastBase(float eastBaseVal);
+void runLeftBase(float leftBaseVal);
+void runRightBase(float rightBaseVal);
 
-float westBaseRemap(float r, float theta);
-float eastBaseRemap(float r, float theta);
+float leftBaseRemap(float r, float theta);
+float rightBaseRemap(float r, float theta);
 
-float getLeftEnc();
-float getRightEnc();
+float getForwardEnc();
+float getYawEnc();
 void resetLeftEnc();
 void resetRightEnc();
+void resetYawEnc();
+void resetEnc();
+
+void moveStraight(float dist, float theta, int time);
 
 #endif
