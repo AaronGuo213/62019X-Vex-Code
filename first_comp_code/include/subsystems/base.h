@@ -1,8 +1,10 @@
 #ifndef BASE_H
 #define BASE_H
 
-void runLeftBase(float leftBaseVal);
-void runRightBase(float rightBaseVal);
+void runLeftBase1(float percentage);
+void runLeftBase2(float percentage);
+void runRightBase1(float percentage);
+void runRightBase2(float percentage);
 
 float leftBaseRemap(float r, float theta);
 float rightBaseRemap(float r, float theta);

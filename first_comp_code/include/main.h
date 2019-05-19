@@ -77,6 +77,7 @@ void opcontrol(void);
     #include "./subsystems/lift.h"
     #include "misc.h"
     #include "pragma.h"
+    #define _USE_MATH_DEFINES
     #include <cmath>
 #endif
 

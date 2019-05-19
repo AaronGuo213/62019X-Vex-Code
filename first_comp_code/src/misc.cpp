@@ -25,7 +25,7 @@ float findTheta(float x, float y) {
 
     float theta;
 
-    if(x >= 6 || y >= 6) {
+    if(abs(x) > 0 || abs(y) > 0) {
 
         if(x == 0) {
             
@@ -45,19 +45,24 @@ float findTheta(float x, float y) {
 
         }
 
-        else if(y > 0) {
+        else if(x > 0) {
             
-            theta = atan(y / x);
+            theta = atan(y / x) * 180 / M_PI;
 
         }
 
-        else if(y < 0) {
+        else if(x < 0) {
 
-            theta = atan(y / x) + 180;
+            theta = atan(y / x) * 180 / M_PI + 180;
 
         }
 
     }
+
+    else
+        theta = 0;
+
+    return theta;
 
 }
 

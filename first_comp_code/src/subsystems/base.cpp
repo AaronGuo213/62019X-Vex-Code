@@ -1,16 +1,26 @@
 #include "main.h"
 
-void runLeftBase(float leftBaseVal) {
+void runLeftBase1(float percentage) {
 
-    leftBase1.move_velocity(leftBaseVal);
-    leftBase2.move_velocity(leftBaseVal);
+    leftBase1.move_velocity(percentage * 2);
 
 }
 
-void runRightBase(float rightBaseVal) {
+void runLeftBase2(float percentage) {
 
-    rightBase1.move_velocity(rightBaseVal);
-    rightBase2.move_velocity(rightBaseVal);
+    leftBase2.move_velocity(percentage * 2);
+
+}
+
+void runRightBase1(float percentage) {
+
+    rightBase1.move_velocity(percentage * 2);
+
+}
+
+void runRightBase2(float percentage) {
+
+    rightBase2.move_velocity(percentage * 2);
 
 }
 
@@ -19,11 +29,16 @@ float leftBaseRemap(float r, float theta) {
     theta += 45;
     float leftBaseVal;
 
-    if(abs(tan(theta)) <= 1)
+    if(theta == 0 || theta == 180)
         leftBaseVal = r;
 
-    else if(abs(tan(theta)) > 1)
-        leftBaseVal = r * cos(theta) / abs(sin(theta));
+    else if(abs(cos(theta * M_PI / 180)) >= abs(sin(theta * M_PI / 180)))
+        leftBaseVal = r * sgn(cos(theta * M_PI / 180));
+
+    else if(abs(cos(theta * M_PI / 180)) < abs(sin(theta * M_PI / 180)))
+        leftBaseVal = r * cos(theta * M_PI / 180) / abs(sin(theta * M_PI / 180));
+
+    return leftBaseVal;
 
 }
 
@@ -32,11 +47,16 @@ float rightBaseRemap(float r, float theta) {
     theta += 45;
     float rightBaseVal;
 
-    if(abs(tan(theta)) >= 1)
+    if(theta == 0 || theta == 180)
         rightBaseVal = r;
 
-    else if(abs(tan(theta)) < 1)
-        rightBaseVal = r * sin(theta) / abs(cos(theta));
+    else if(abs(sin(theta * M_PI / 180)) >= abs(cos(theta * M_PI / 180)))
+        rightBaseVal = r * sgn(sin(theta * M_PI / 180));
+
+    else if(abs(sin(theta * M_PI / 180)) < abs(cos(theta * M_PI / 180)))
+        rightBaseVal = r * sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180));
+
+    return rightBaseVal;
 
 }
 
