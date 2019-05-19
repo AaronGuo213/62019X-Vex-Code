@@ -7,14 +7,21 @@ void runLift(float percentage) {
 
 }
 
+void runClaw(float percentage) {
+
+    claw1.move_voltage(percentage * 120);
+    claw2.move_voltage(percentage * 120);
+
+}
+
 bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
-int height = 0, setPoint;
+int height = 0, liftSetPoint;
+int aboveCube[5] = {0, 10, 20, 30, 40};
 
 void liftCtrl(void* param) {
 
     PID lift = initPID(0, 0, 0, 0, 0, 0);
-    int aboveCube[5] = {0, 10, 20, 30, 40};
-    setPoint = aboveCube[height];
+    liftSetPoint = aboveCube[height];
     int liftVal;
 
     while(!manual) {
@@ -22,7 +29,7 @@ void liftCtrl(void* param) {
         if(reset) {
             reset = false;
             height = 0;
-            setPoint = aboveCube[height];
+            liftSetPoint = aboveCube[height];
         }
 
         if(!manualUsed) {
@@ -31,14 +38,14 @@ void liftCtrl(void* param) {
                 shiftUp = false;
                 if(height < 4)
                     height++;
-                setPoint = aboveCube[height];
+                liftSetPoint = aboveCube[height];
             }
 
             else if(shiftDown) {
                 shiftDown = false;
                 if(height > 0)
                     height--;
-                setPoint = aboveCube[height];
+                liftSetPoint = aboveCube[height];
             }
 
         }
@@ -49,13 +56,13 @@ void liftCtrl(void* param) {
 
                 for(int i = 0; i < 5; i++) {
 
-                    if(setPoint < aboveCube[i])
+                    if(liftSetPoint < aboveCube[i])
                         height = i;
                     break;
 
                 }
 
-                setPoint = aboveCube[height];
+                liftSetPoint = aboveCube[height];
                 manualUsed = false;
 
             }
@@ -64,13 +71,13 @@ void liftCtrl(void* param) {
 
                 for(int i = 4; i >= 0; i--) {
 
-                    if(setPoint > aboveCube[i])
+                    if(liftSetPoint > aboveCube[i])
                         height = i;
                     break;
 
                 }
 
-                setPoint = aboveCube[height];
+                liftSetPoint = aboveCube[height];
                 manualUsed = false;
 
             }
@@ -82,7 +89,7 @@ void liftCtrl(void* param) {
 		else
 			lift2.set_voltage_limit(12000);
 
-        lift.error = setPoint - liftPot.get_value();
+        lift.error = liftSetPoint - liftPot.get_value();
         liftVal = runPID(&lift);
         runLift(liftVal);
 
@@ -92,7 +99,7 @@ void liftCtrl(void* param) {
 
     if(manual) {
 
-        setPoint = liftPot.get_value();
+        liftSetPoint = liftPot.get_value();
 
         if(lift2.is_over_temp() || lift2.is_over_current())
 			lift2.set_voltage_limit(0);
@@ -107,53 +114,35 @@ void liftCtrl(void* param) {
 
 }
 
-/*void shiftLift(int direction) {
+void autostack(int cubes) {
 
-    int level [5] = {0, 10, 20, 30, 40};
-    float error, liftVal, setPoint;
-    int threshhold = 5;
-    PID lift = initPID(0, 0, 0, 0, 0, 0);
-    lift.error = threshhold + 1;
+    if(!manualUsed) {
 
-    if(direction > 0) {
+        int heightF = height - cubes;
 
-        for(int i = 4; i > -1; i--) {
+        while(!cubeSensor.get_value() == 0) {
+            runLeftBase1((0 - cubeSensor.get_value()) * 0);
+            runLeftBase2((0 - cubeSensor.get_value()) * 0);
+            runRightBase1((0 - cubeSensor.get_value()) * 0);
+            runRightBase2((0 - cubeSensor.get_value()) * 0);
+        }
 
-            if(liftPot.get_value() + 5 < level[i]) {
-                setPoint = level[i - 1];
-                break;
+        runClaw(-100);
+        delay(300);
+        liftSetPoint = aboveCube[heightF >= 0 ? heightF : 0];
+
+        while(abs(liftPot.get_value() - liftSetPoint) > 10) {
+            if(!cubeSensor.get_value() == 0) {
+                runLeftBase1((0 - cubeSensor.get_value()) * 0);
+                runLeftBase2((0 - cubeSensor.get_value()) * 0);
+                runRightBase1((0 - cubeSensor.get_value()) * 0);
+                runRightBase2((0 - cubeSensor.get_value()) * 0);
             }
-
         }
 
-        while(lift.error > 5) {
-
-            lift.error
-
-        }
+        runClaw(100);
+        delay(300);
 
     }
 
-    else if(direction < 0) {
-
-        for(int i = 0; i < 5; i++) {
-
-            if(nowLevel > level[i]) {
-
-                while(liftPot.get_value() + 5 < level[i - 1]) {
-                    
-                    error = level[i - 1] - liftPot.get_value();
-                    liftVal = P * error;
-                    runLift(liftVal);
-
-                }
-
-                break;
-
-            }
-
-        }
-
-    }
-
-}*/
+}

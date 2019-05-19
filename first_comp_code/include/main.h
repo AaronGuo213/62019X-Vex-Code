@@ -73,8 +73,7 @@ void opcontrol(void);
 
 #ifdef __cplusplus
     #include "./subsystems/base.h"
-    #include "./subsystems/claw.h"
-    #include "./subsystems/lift.h"
+    #include "./subsystems/intake.h"
     #include "misc.h"
     #include "pragma.h"
     #define _USE_MATH_DEFINES

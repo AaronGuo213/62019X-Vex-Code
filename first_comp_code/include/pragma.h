@@ -11,10 +11,12 @@ extern Motor rightBase2;
 
 extern Motor lift1;
 extern Motor lift2;
-extern Motor claw;
+extern Motor claw1;
+extern Motor claw2;
 
 //Legacy Components
 extern ADIAnalogIn liftPot;
+extern ADIUltrasonic cubeSensor;
 extern ADIEncoder leftEnc;
 extern ADIEncoder rightEnc;
 extern ADIEncoder yawEnc;
