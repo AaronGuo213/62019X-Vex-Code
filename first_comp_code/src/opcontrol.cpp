@@ -10,9 +10,9 @@ void opcontrol() {
 		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5);
 		r = joyValRemap(r);
 		theta = findTheta(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y));
+		
 		leftTransVal = leftBaseRemap(r, theta);
 		rightTransVal = rightBaseRemap(r, theta);
-		
 		turnVal = joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X));
 		turnVal = r > 0 ? turnVal * 3 / 4 : turnVal;
 
@@ -21,8 +21,6 @@ void opcontrol() {
 		runRightBase1(rightTransVal + turnVal);
 		runRightBase2(rightTransVal - turnVal);
 
-		//std::cout << findTheta(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) << " : " << master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y) << "\n";
-		//std::cout << r << " : " << theta << " : " << tan(theta * M_PI / 180) << " : " << leftTransVal << "\n";
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1))
 			runLift(100);

@@ -60,6 +60,12 @@ float rightBaseRemap(float r, float theta) {
 
 }
 
+float getBaseMotorEnc() {
+
+    return (leftBase1.get_position() + leftBase2.get_position() + rightBase1.get_position() + rightBase2.get_position()) / 4;
+
+}
+
 float getForwardEnc() {
 
     return (leftEnc.get_value() + rightEnc.get_value()) / 2;
@@ -98,6 +104,15 @@ void resetEnc() {
 
 }
 
+void resetBaseMotorEnc() {
+
+    leftBase1.tare_position();
+    leftBase2.tare_position();
+    rightBase1.tare_position();
+    rightBase2.tare_position();
+
+}
+
 void moveStraight(float distance, float theta, int time) {
 
     float Theta = theta + 45;
@@ -112,27 +127,55 @@ void moveStraight(float distance, float theta, int time) {
     for(int i = 0; i < time; i ++) {
 
         dist.error = distance - pow(pow(getForwardEnc(), 2) + pow(getYawEnc(), 2), 0.5);
-        diff.error = tan(theta) - (getForwardEnc() / getYawEnc());
-
+        diff.error = !(theta == 90 || theta == -90 || theta == 270) ? (tan(theta) - (getForwardEnc() / getYawEnc())) : getYawEnc();
         distVal = runPID(&dist);
         diffVal = runPID(&diff);
 
-        if(cos(Theta) > sin(Theta)) {
+        if(abs(cos(Theta)) > abs(sin(Theta))) {
 
-            leftVal = distVal - diffVal;
-            rightVal = sin(Theta) / abs(cos(theta)) * (distVal + diffVal);
+            leftVal = (distVal - diffVal) * sgn(cos(Theta));
+            rightVal = sin(Theta) / abs(cos(Theta)) * (distVal + diffVal);
 
         }
 
-        else if(cos(Theta) < sin(Theta)) {
+        else if(abs(cos(Theta)) < abs(sin(Theta))) {
 
             leftVal = cos(Theta) / abs(sin(Theta)) * (distVal - diffVal);
-            rightVal = distVal + diffVal;
+            rightVal = (distVal + diffVal) * sgn(sin(Theta));
 
         }
 
-        runLeftBase(leftVal);
-        runRightBase(rightVal);
+        runLeftBase1(leftVal);
+        runLeftBase2(leftVal);
+        runRightBase1(rightVal);
+        runRightBase2(rightVal);
+
+        delay(1);
+
+    }
+
+}
+
+void turn(float theta, int time) {
+
+    float setpoint = theta * 0.2;
+    float turnVal;
+
+    PID turn = initPID(0, 0, 0, 0, 0, 0);
+
+    resetBaseMotorEnc();
+
+    for(int i = 0; i < time; i++) {
+
+        turn.error = setpoint - getBaseMotorEnc();
+        turnVal = runPID(&turn);
+
+        runLeftBase1(turnVal);
+        runLeftBase2(turnVal);
+        runRightBase1(turnVal);
+        runRightBase2(turnVal);
+
+        delay(1);
 
     }
 
