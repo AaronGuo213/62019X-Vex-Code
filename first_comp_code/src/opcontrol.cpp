@@ -5,9 +5,11 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 
 	float r, theta, leftTransVal, rightTransVal, turnVal;
-	bool shiftUpAtck = 1, shiftDownAtck = 1;
+	bool shiftUpAtck = true, shiftDownAtck = true;
 
 	while(true) {
+
+		std::cout << getBaseMotorEnc() << "\n";
 
 		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5);
 		r = joyValRemap(r);
@@ -24,33 +26,34 @@ void opcontrol() {
 		runRightBase2(rightTransVal - turnVal);
 
 
+
 		if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			manual = true;
-			runLift(100);
+			runLift(-100);
 		}
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
 			manual = true;
-			runLift(-100);
+			runLift(100);
 		}
 		else {
 			manual = false;
 			runLift(0);
 		}
 
-
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP))
-			shiftUpAtck = 0;
+			shiftUpAtck = false;
 		else if(!shiftUpAtck) {
 			shiftUp = true;
-			shiftUpAtck = 1;
+			shiftUpAtck = true;
 		}
 
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
-			shiftDownAtck = 0;
+			shiftDownAtck = false;
 		else if(!shiftDownAtck) {
 			shiftDown = true;
-			shiftDownAtck = 1;
+			shiftDownAtck = true;
 		}
+
 
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
@@ -60,7 +63,6 @@ void opcontrol() {
 		else
 			runClaw(0);
 
-		
 
 
 		if(leftBase1.is_over_temp() || leftBase1.is_over_current())
@@ -71,7 +73,7 @@ void opcontrol() {
 		if(leftBase2.is_over_temp() || leftBase2.is_over_current())
 			leftBase2.set_voltage_limit(0);
 		else
-			leftBase1.set_voltage_limit(12000);
+			leftBase2.set_voltage_limit(12000);
 
 		if(rightBase1.is_over_temp() || rightBase1.is_over_current())
 			rightBase1.set_voltage_limit(0);
@@ -82,11 +84,6 @@ void opcontrol() {
 			rightBase2.set_voltage_limit(0);
 		else
 			rightBase2.set_voltage_limit(12000);
-
-		if(lift1.is_over_temp() || lift1.is_over_current())
-			lift1.set_voltage_limit(0);
-		else
-			lift1.set_voltage_limit(12000);
 
 		if(claw1.is_over_temp() || claw1.is_over_current())
 			claw1.set_voltage_limit(0);

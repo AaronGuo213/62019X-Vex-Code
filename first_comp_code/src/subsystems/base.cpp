@@ -62,7 +62,7 @@ float rightBaseRemap(float r, float theta) {
 
 float getBaseMotorEnc() {
 
-    return (leftBase1.get_position() + leftBase2.get_position() + rightBase1.get_position() + rightBase2.get_position()) / 4;
+    return (leftBase1.get_position() - leftBase2.get_position() + rightBase1.get_position() - rightBase2.get_position()) / 4;
 
 }
 
@@ -125,7 +125,7 @@ void resetEnc() {
 
 }
 
-void moveStraightEnc(float distance, float theta, int time) {
+/*void moveStraightEnc(float distance, float theta, int time) {
 
     float Theta = theta + 45;
     float distVal, diffVal;
@@ -165,23 +165,30 @@ void moveStraightEnc(float distance, float theta, int time) {
 
     }
 
-}
+}*/
 
 void moveStraight(float distance, float theta, int time) {
 
     theta += 45;
     float distVal, diffVal;
     float leftVal, rightVal;
-    PID dist = initPID(0, 0, 0, 0, 0, 0);
-    PID diff = initPID(0, 0, 0, 0, 0, 0);
+    PID dist = initPID(1, 0, 1, 0.4, 0, 2);
+    PID diff = initPID(1, 0, 0, 0.2, 0, 1);
 
-    resetEnc();
+    resetBaseMotorEnc();
 
     for(int i = 0; i < time; i ++) {
 
         dist.error = distance - pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5);
-        diff.error = !(theta == 90 || theta == -90 || theta == 270) ? log(tan(theta * M_PI / 180) / (getRightBaseEnc() / getLeftBaseEnc())) : getRightBaseEnc();
-        distVal = runPID(&dist);
+        distVal = runPID(&dist) > 190 ? 190 : runPID(&dist);
+        /*if(theta == 90 || theta == -90 || theta == 270)
+            diff.error = getRightBaseEnc();
+        else if(getRightBaseEnc() == 0)
+            diff.error = 0;
+        else
+            diff.error = log(tan(theta * M_PI / 180) / (getRightBaseEnc() / getLeftBaseEnc()));
+        diffVal = runPID(&diff);*/
+        diff.error = -getRightBaseEnc() / sin(theta * M_PI / 180) + getLeftBaseEnc() / cos(theta * M_PI / 180);
         diffVal = runPID(&diff);
 
         if(abs(cos(theta * M_PI / 180)) > abs(sin(theta * M_PI / 180))) {
@@ -198,7 +205,13 @@ void moveStraight(float distance, float theta, int time) {
 
         }
 
-        std::cout << "distance: " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << " | dist error: " << dist.error << " | diff error: " << diff.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | time: " << time << "\n";
+        //std::cout << getLeftBaseEnc() << " | " << getRightBaseEnc() << " | " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << "\n";
+        std::cout << "distance: " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << " | dist error: " << dist.error << " | diff error: " << diff.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | time: " << i << "\n";
+
+        if(i < 50) {
+            leftVal *= i / 50;
+            rightVal *= i / 50;
+        }
 
         runLeftBase1(leftVal);
         runLeftBase2(leftVal);
@@ -209,25 +222,33 @@ void moveStraight(float distance, float theta, int time) {
 
     }
 
+    runLeftBase1(0);
+    runLeftBase2(0);
+    runRightBase1(0);
+    runRightBase2(0);
+
 }
 
 void turn(float theta, int time) {
 
-    float setpoint = theta * 0.2;
+    float setPoint = -theta * 5.4;
     float turnVal;
-    PID turn = initPID(0, 0, 0, 0, 0, 0);
+    PID turn = initPID(1, 0, 0, 0.45, 0, 0);
 
     resetBaseMotorEnc();
 
     for(int i = 0; i < time; i++) {
 
-        turn.error = setpoint - getBaseMotorEnc();
+        turn.error = setPoint - getBaseMotorEnc();
         turnVal = runPID(&turn);
 
         runLeftBase1(turnVal);
-        runLeftBase2(turnVal);
+        runLeftBase2(-turnVal);
         runRightBase1(turnVal);
-        runRightBase2(turnVal);
+        runRightBase2(-turnVal);
+
+        //std::cout << leftBase1.get_position() << " | " << leftBase2.get_position() << " | " << rightBase1.get_position() << " | " << rightBase2.get_position() << " | " << turnVal << "\n";
+        std::cout << getBaseMotorEnc() << " | " << setPoint << " | " << turnVal << "\n";
 
         delay(1);
 

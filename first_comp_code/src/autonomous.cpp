@@ -2,6 +2,6 @@
 
 void autonomous() {
 
-    moveStraight(1, 90, 10000);
+    moveStraight(1000, 90, 1000);
 
 }
