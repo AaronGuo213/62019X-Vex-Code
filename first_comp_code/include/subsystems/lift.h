@@ -3,6 +3,7 @@
 
 void runLift(float percentage);
 extern bool manual, manualUsed, shiftUp, shiftDown, reset;
+extern int height, setPoint;
 void liftCtrl(void* param);
 //void shiftLift(int direction);
 

@@ -8,36 +8,37 @@ void runLift(float percentage) {
 }
 
 bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
+int height = 0, setPoint;
 
 void liftCtrl(void* param) {
 
     PID lift = initPID(0, 0, 0, 0, 0, 0);
     int aboveCube[5] = {0, 10, 20, 30, 40};
-    int n = 0, setPoint = aboveCube[n];
+    setPoint = aboveCube[height];
     int liftVal;
 
     while(!manual) {
         
         if(reset) {
             reset = false;
-            n = 0;
-            setPoint = aboveCube[n];
+            height = 0;
+            setPoint = aboveCube[height];
         }
 
         if(!manualUsed) {
 
             if(shiftUp) {
                 shiftUp = false;
-                if(n < 4)
-                    n++;
-                setPoint = aboveCube[n];
+                if(height < 4)
+                    height++;
+                setPoint = aboveCube[height];
             }
 
             else if(shiftDown) {
                 shiftDown = false;
-                if(n > 0)
-                    n--;
-                setPoint = aboveCube[n];
+                if(height > 0)
+                    height--;
+                setPoint = aboveCube[height];
             }
 
         }
@@ -49,12 +50,12 @@ void liftCtrl(void* param) {
                 for(int i = 0; i < 5; i++) {
 
                     if(setPoint < aboveCube[i])
-                        n = i;
+                        height = i;
                     break;
 
                 }
 
-                setPoint = aboveCube[n];
+                setPoint = aboveCube[height];
                 manualUsed = false;
 
             }
@@ -64,12 +65,12 @@ void liftCtrl(void* param) {
                 for(int i = 4; i >= 0; i--) {
 
                     if(setPoint > aboveCube[i])
-                        n = i;
+                        height = i;
                     break;
 
                 }
 
-                setPoint = aboveCube[n];
+                setPoint = aboveCube[height];
                 manualUsed = false;
 
             }
