@@ -1,3 +1,7 @@
 #include "main.h"
 
-void autonomous() {}
+void autonomous() {
+
+    moveStraight(1, 90, 10000);
+
+}

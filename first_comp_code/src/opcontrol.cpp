@@ -2,6 +2,8 @@
 
 void opcontrol() {
 
+	std::uint_least32_t now = millis();
+
 	float r, theta, leftTransVal, rightTransVal, turnVal;
 	bool shiftUpAtck = 1, shiftDownAtck = 1;
 
@@ -22,25 +24,31 @@ void opcontrol() {
 		runRightBase2(rightTransVal - turnVal);
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1))
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+			manual = true;
 			runLift(100);
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
+		}
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+			manual = true;
 			runLift(-100);
-		else
+		}
+		else {
+			manual = false;
 			runLift(0);
+		}
 
 
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP))
 			shiftUpAtck = 0;
 		else if(!shiftUpAtck) {
-			shiftLift(1);
+			shiftUp = true;
 			shiftUpAtck = 1;
 		}
 
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
 			shiftDownAtck = 0;
 		else if(!shiftDownAtck) {
-			shiftLift(-1);
+			shiftDown = true;
 			shiftDownAtck = 1;
 		}
 
@@ -80,15 +88,12 @@ void opcontrol() {
 		else
 			lift1.set_voltage_limit(12000);
 
-		if(lift2.is_over_temp() || lift2.is_over_current())
-			lift2.set_voltage_limit(0);
-		else
-			lift2.set_voltage_limit(12000);
-
 		if(claw.is_over_temp() || claw.is_over_current())
 			claw.set_voltage_limit(0);
 		else
 			claw.set_voltage_limit(12000);
+
+		Task::delay_until(&now, 10);		
 
 	}
 

@@ -2,6 +2,8 @@
 #define LIFT_H
 
 void runLift(float percentage);
-void shiftLift(int direction);
+extern bool manual, manualUsed, shiftUp, shiftDown, reset;
+void liftCtrl(void* param);
+//void shiftLift(int direction);
 
 #endif
