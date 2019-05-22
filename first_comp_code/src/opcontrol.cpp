@@ -90,11 +90,6 @@ void opcontrol() {
 		else
 			claw1.set_voltage_limit(12000);
 
-		if(claw2.is_over_temp() || claw2.is_over_current())
-			claw2.set_voltage_limit(0);
-		else
-			claw2.set_voltage_limit(12000);
-
 		Task::delay_until(&now, 10);		
 
 	}

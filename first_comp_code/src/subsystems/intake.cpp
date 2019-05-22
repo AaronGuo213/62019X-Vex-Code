@@ -10,7 +10,6 @@ void runLift(float percentage) {
 void runClaw(float percentage) {
 
     claw1.move_voltage(percentage * 120);
-    claw2.move_voltage(percentage * 120);
 
 }
 
@@ -116,15 +115,17 @@ void liftCtrl(void* param) {
 
 void autostack(int cubes) {
 
+    int sonarDist = 0;
+
     if(!manualUsed) {
 
         int heightF = height - cubes;
 
         while(!cubeSensor.get_value() == 0) {
-            runLeftBase1((0 - cubeSensor.get_value()) * 0);
-            runLeftBase2((0 - cubeSensor.get_value()) * 0);
-            runRightBase1((0 - cubeSensor.get_value()) * 0);
-            runRightBase2((0 - cubeSensor.get_value()) * 0);
+            runLeftBase1((sonarDist - cubeSensor.get_value()) * 0);
+            runLeftBase2((sonarDist - cubeSensor.get_value()) * 0);
+            runRightBase1((sonarDist - cubeSensor.get_value()) * 0);
+            runRightBase2((sonarDist - cubeSensor.get_value()) * 0);
         }
 
         runClaw(-100);
@@ -133,10 +134,10 @@ void autostack(int cubes) {
 
         while(abs(liftPot.get_value() - liftSetPoint) > 10) {
             if(!cubeSensor.get_value() == 0) {
-                runLeftBase1((0 - cubeSensor.get_value()) * 0);
-                runLeftBase2((0 - cubeSensor.get_value()) * 0);
-                runRightBase1((0 - cubeSensor.get_value()) * 0);
-                runRightBase2((0 - cubeSensor.get_value()) * 0);
+                runLeftBase1((sonarDist - cubeSensor.get_value()) * 0);
+                runLeftBase2((sonarDist - cubeSensor.get_value()) * 0);
+                runRightBase1((sonarDist - cubeSensor.get_value()) * 0);
+                runRightBase2((sonarDist - cubeSensor.get_value()) * 0);
             }
         }
 

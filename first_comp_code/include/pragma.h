@@ -12,7 +12,6 @@ extern Motor rightBase2;
 extern Motor lift1;
 extern Motor lift2;
 extern Motor claw1;
-extern Motor claw2;
 
 //Legacy Components
 extern ADIAnalogIn liftPot;

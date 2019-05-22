@@ -170,7 +170,7 @@ void resetEnc() {
 void moveStraight(float distance, float theta, int time) {
 
     theta += 45;
-    float distVal, diffVal;
+    float distVal, diffVal, highVal, lowVal;
     float leftVal, rightVal;
     PID dist = initPID(1, 0, 1, 0.4, 0, 2);
     PID diff = initPID(1, 0, 0, 0.2, 0, 1);
@@ -181,37 +181,35 @@ void moveStraight(float distance, float theta, int time) {
 
         dist.error = distance - pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5);
         distVal = runPID(&dist) > 190 ? 190 : runPID(&dist);
-        /*if(theta == 90 || theta == -90 || theta == 270)
-            diff.error = getRightBaseEnc();
-        else if(getRightBaseEnc() == 0)
-            diff.error = 0;
-        else
-            diff.error = log(tan(theta * M_PI / 180) / (getRightBaseEnc() / getLeftBaseEnc()));
-        diffVal = runPID(&diff);*/
-        diff.error = -getRightBaseEnc() / sin(theta * M_PI / 180) + getLeftBaseEnc() / cos(theta * M_PI / 180);
+        diff.error = -getRightBaseEnc() * cos(theta * M_PI / 180) + getLeftBaseEnc() * sin(theta * M_PI / 180);
+        //diff.error = -(rightBase1.get_actual_velocity() + rightBase2.get_actual_velocity()) / 2 * cos(theta * M_PI / 180) + (leftBase1.get_actual_velocity() + leftBase2.get_actual_velocity()) / 2 * sin(theta * M_PI / 180);
         diffVal = runPID(&diff);
+
+        highVal = distVal + diffVal > 200 ? 200 : distVal + diffVal;
+        lowVal = distVal - diffVal > 200 ? 200 : distVal - diffVal;
 
         if(abs(cos(theta * M_PI / 180)) > abs(sin(theta * M_PI / 180))) {
 
-            leftVal = (distVal - diffVal) * sgn(cos(theta * M_PI / 180));
-            rightVal = sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180)) * (distVal + diffVal);
+            leftVal = lowVal * sgn(cos(theta * M_PI / 180));
+            rightVal = sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180)) * highVal;
 
         }
 
         else if(abs(cos(theta * M_PI / 180)) < abs(sin(theta * M_PI / 180))) {
 
-            leftVal = cos(theta * M_PI / 180) / abs(sin(theta * M_PI / 180)) * (distVal - diffVal);
-            rightVal = (distVal + diffVal) * sgn(sin(theta * M_PI / 180));
+            leftVal = cos(theta * M_PI / 180) / abs(sin(theta * M_PI / 180)) * lowVal;
+            rightVal = highVal * sgn(sin(theta * M_PI / 180));
 
         }
 
         //std::cout << getLeftBaseEnc() << " | " << getRightBaseEnc() << " | " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << "\n";
-        std::cout << "distance: " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << " | dist error: " << dist.error << " | diff error: " << diff.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | time: " << i << "\n";
+        //std::cout << "distance: " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << " | dist error: " << dist.error << " | diff error: " << diff.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | time: " << i << "\n";
+        std::cout << leftBase1.get_actual_velocity() << " | " << leftBase2.get_actual_velocity() << " | " << rightBase1.get_actual_velocity() << " | " << rightBase2.get_actual_velocity() << "\n";
 
-        if(i < 50) {
+        /*if(i < 50) {
             leftVal *= i / 50;
             rightVal *= i / 50;
-        }
+        }*/
 
         runLeftBase1(leftVal);
         runLeftBase2(leftVal);
