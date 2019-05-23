@@ -9,7 +9,7 @@ void opcontrol() {
 
 	while(true) {
 
-		std::cout << getBaseMotorEnc() << "\n";
+		//std::cout << getBaseMotorEnc() << "\n";
 
 		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5);
 		r = joyValRemap(r);
@@ -89,6 +89,8 @@ void opcontrol() {
 			claw1.set_voltage_limit(0);
 		else
 			claw1.set_voltage_limit(12000);
+
+		std::cout << hi.get_value() << "\n";
 
 		Task::delay_until(&now, 10);		
 
