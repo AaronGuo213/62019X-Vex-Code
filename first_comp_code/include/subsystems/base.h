@@ -14,10 +14,9 @@ float getLeftBaseEnc();
 float getRightBaseEnc();
 void resetBaseMotorEnc();
 
-float getForwardEnc();
+float getAftEnc();
 float getYawEnc();
-void resetLeftEnc();
-void resetRightEnc();
+void resetAftEnc();
 void resetYawEnc();
 void resetEnc();
 

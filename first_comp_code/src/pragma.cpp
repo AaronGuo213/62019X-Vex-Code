@@ -14,7 +14,6 @@ Motor claw1(9, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); //normal motor plu
 
 //Legacy Components
 ADIAnalogIn liftPot(2); //potentiometer for lift in port 2
-ADIUltrasonic hi(3, 4);
-ADIEncoder leftEnc(5, 6, 0); //left wheel encoder in ports 3 and 4
-ADIEncoder rightEnc(5, 6, 0); //right wheel encoder in ports 5 and 6
-ADIEncoder yawEnc(5, 6, 0); //perpendicular wheel encoder in ports 7 and 8
+ADIUltrasonic cubeSensor(3, 4); //sonar sensor with ping in port 3 and echo in port 4
+ADIEncoder aftEnc(5, 6, 0); //left wheel encoder in ports 5 and 6
+ADIEncoder yawEnc(7, 8, 0); //perpendicular wheel encoder in ports 7 and 8

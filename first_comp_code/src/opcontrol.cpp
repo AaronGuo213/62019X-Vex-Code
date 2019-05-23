@@ -90,7 +90,7 @@ void opcontrol() {
 		else
 			claw1.set_voltage_limit(12000);
 
-		std::cout << hi.get_value() << "\n";
+		std::cout << cubeSensor.get_value() << "\n";
 
 		Task::delay_until(&now, 10);		
 

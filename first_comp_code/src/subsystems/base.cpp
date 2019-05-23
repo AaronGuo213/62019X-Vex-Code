@@ -89,7 +89,7 @@ void resetBaseMotorEnc() {
 
 float getForwardEnc() {
 
-    return (leftEnc.get_value() + rightEnc.get_value()) / 2;
+    return aftEnc.get_value();
 
 }
 
@@ -99,15 +99,9 @@ float getYawEnc() {
 
 }
 
-void resetLeftEnc() {
+void resetAftEnc() {
 
-    leftEnc.reset();
-
-}
-
-void resetRightEnc() {
-
-    rightEnc.reset();
+    aftEnc.reset();
 
 }
 
@@ -119,8 +113,7 @@ void resetYawEnc() {
 
 void resetEnc() {
 
-    resetLeftEnc();
-    resetRightEnc();
+    resetAftEnc();
     resetYawEnc();
 
 }
