@@ -1,42 +1,89 @@
 #include "main.h"
 
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
-
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
 
-	pros::lcd::register_btn1_cb(on_center_button);
+	Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
+    Task clawGo (clawCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "claw control task");
+    claw1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
-void disabled() {}
+int autonCount = 0;
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
-void competition_initialize() {}
+void lcdScroll() {
+
+    if(autonCount > 3) {
+
+        autonCount = 0;
+
+    }
+
+    else if(autonCount < 0) {
+
+        autonCount = 3;
+
+    }
+
+    switch(autonCount) {
+
+        case 0:
+            lcd::set_text(1, "RED1");
+            break;
+
+        case 1:
+            lcd::set_text(1, "RED2");
+            break;
+
+        case 2:
+            lcd::set_text(1, "BLUE1");
+            break;
+
+        case 3:
+            lcd::set_text(1, "BLUE2");
+            break;
+
+        default:
+            lcd::set_text(1, "GOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGO");
+            break;
+
+    }
+
+}
+
+void on_left_pressed() {
+
+    autonCount--;
+    lcdScroll();
+
+}
+
+void on_center_pressed() {
+
+    autonCount = autonCount;
+    lcd::shutdown();
+
+}
+
+void on_right_pressed() {
+
+    autonCount++;
+    lcdScroll();
+
+}
+
+void competition_initialize() {
+
+    lcd::initialize();
+    lcd::set_text(0, "choose auton");
+    lcdScroll();
+    lcd::register_btn0_cb(on_left_pressed);
+    lcd::register_btn1_cb(on_center_pressed);
+    lcd::register_btn2_cb(on_right_pressed);
+
+}
+
+void disabled() {
+
+
+
+}
