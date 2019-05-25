@@ -27,11 +27,11 @@ void opcontrol() {
 
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+		if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && !master.get_digital(E_CONTROLLER_DIGITAL_UP)) {
 			manual = true;
 			runLift(-100);
 		}
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
 			manual = true;
 			runLift(100);
 		}
@@ -40,14 +40,14 @@ void opcontrol() {
 			runLift(0);
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP))
+		if(!master.get_digital(E_CONTROLLER_DIGITAL_L1))
 			shiftUpAtck = false;
 		else if(!shiftUpAtck) {
 			shiftUp = true;
 			shiftUpAtck = true;
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+		if(!master.get_digital(E_CONTROLLER_DIGITAL_R1))
 			shiftDownAtck = false;
 		else if(!shiftDownAtck) {
 			shiftDown = true;
@@ -56,9 +56,9 @@ void opcontrol() {
 
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
+		if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
 			runClaw(100);
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_R1))
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
 			runClaw(-100);
 		else
 			runClaw(0);

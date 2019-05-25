@@ -15,15 +15,17 @@ void runClaw(float percentage) {
 
 bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
 int height = 0, liftSetPoint;
-int aboveCube[5] = {0, 10, 20, 30, 40};
+int aboveCube[5] = {1110, 1560, 1910, 2320, 2930};
 
 void liftCtrl(void* param) {
 
-    PID lift = initPID(0, 0, 0, 0, 0, 0);
+    PID lift = initPID(1, 1, 0, 0.2, 0.0001, 0);
     liftSetPoint = aboveCube[height];
     int liftVal;
 
-    while(!manual) {
+    while(true) {
+
+    if(!manual) {
         
         if(reset) {
             reset = false;
@@ -51,7 +53,7 @@ void liftCtrl(void* param) {
 
         else if(manualUsed) {
 
-            if(shiftUp) {
+            if(shiftDown) {
 
                 for(int i = 0; i < 5; i++) {
 
@@ -66,7 +68,7 @@ void liftCtrl(void* param) {
 
             }
 
-            else if(shiftDown) {
+            else if(shiftUp) {
 
                 for(int i = 4; i >= 0; i--) {
 
@@ -90,13 +92,13 @@ void liftCtrl(void* param) {
 
         lift.error = liftSetPoint - liftPot.get_value();
         liftVal = runPID(&lift);
-        runLift(liftVal);
+        runLift(-liftVal);
 
-        delay(1);
+        std::cout << liftSetPoint << " | " << liftPot.get_value() << " | " << lift.error << "\n";
 
     }
 
-    if(manual) {
+    else if(manual) {
 
         liftSetPoint = liftPot.get_value();
 
@@ -108,6 +110,10 @@ void liftCtrl(void* param) {
         shiftUp = false;
         shiftDown = false;
         manualUsed = true;
+
+    }
+
+    delay(1);
 
     }
 
