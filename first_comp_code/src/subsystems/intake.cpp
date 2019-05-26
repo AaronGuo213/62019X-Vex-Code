@@ -15,11 +15,11 @@ void runClaw(float percentage) {
 
 bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
 int height = 0, liftSetPoint;
-int aboveCube[5] = {0, 10, 20, 30, 40};
+int aboveCube[5] = {1060, 1485, 1820, 2245, 2760};
 
 void liftCtrl(void* param) {
 
-    PID lift = initPID(0, 0, 0, 0, 0, 0);
+    PID lift = initPID(1, 0, 0, 0.1, 0, 0);
     liftSetPoint = aboveCube[height];
     int liftVal;
 
@@ -90,7 +90,7 @@ void liftCtrl(void* param) {
 
         lift.error = liftSetPoint - liftPot.get_value();
         liftVal = runPID(&lift);
-        runLift(liftVal);
+        runLift(-liftVal);
 
         delay(1);
 
