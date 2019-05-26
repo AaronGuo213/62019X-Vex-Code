@@ -3,7 +3,7 @@
 void initialize() {
 
 	Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
-    claw1.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+    claw1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 
 }
 
