@@ -9,7 +9,6 @@ struct PID { //a holder for multiple values used in PID
 PID initPID(bool useP, bool useI, bool useD, float kP, float kI, float kD); //gives a created PID struct its values
 float runPID(PID *pid); //inputs a PID struct, does the actual PID math, then outputs a double
 
-float findTheta(float x, float y);
 float joyValRemap(float joyVal);
 
 #endif

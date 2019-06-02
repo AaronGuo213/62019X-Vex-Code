@@ -2,8 +2,11 @@
 
 void runLift(float percentage) {
 
-    lift1.move_voltage(percentage * 120);
-    lift2.move_voltage(percentage * 120);
+    /*lift1.move_voltage(percentage * 120);
+    lift2.move_voltage(percentage * 120);*/
+
+    lift1.move_velocity(percentage * 2);
+    lift2.move_velocity(percentage * 2);
 
 }
 

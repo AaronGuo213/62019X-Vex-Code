@@ -3,48 +3,113 @@
 void opcontrol() {
 
 	std::uint_least32_t now = millis();
-	bool shiftUpAtck = true, shiftDownAtck = true;
+	bool shiftUpAtck = false, shiftDownAtck = false, allignAtck = false;
+	int resetCount = 250, int stackCount = 500;
 
 	while(true) {
 
-		runLeftBase(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
-		runRightBase(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
-
-		if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && !master.get_digital(E_CONTROLLER_DIGITAL_UP)) {
-			manual = true;
-			runLift(-100);
-		}
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
-			manual = true;
-			runLift(100);
-		}
-		else {
-			manual = false;
-			runLift(0);
+		if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) < 20) {
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
+			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_L1))
-			shiftUpAtck = false;
-		else if(!shiftUpAtck) {
-			shiftUp = true;
-			shiftUpAtck = true;
+		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) < 20) {
+			runLeftBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_R1))
-			shiftDownAtck = false;
-		else if(!shiftDownAtck) {
-			shiftDown = true;
-			shiftDownAtck = true;
+		if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) < 20) {
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+		}
+
+		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) < 20) {
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 		}
 
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
-			runClaw(100, 1);
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
-			runClaw(-100, 1);
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+			if(resetCount !== 0)
+				resetCount --;
+			else {
+				reset = true;
+				resetCount = 250;
+			}
+		}
+		else
+			resetCount = 250;
+
+
+
+		if(!master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+
+			if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+				runLeftLift(100);
+				runRightLift(100);
+			}
+
+			else if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+				runLeftLift(-100);
+				runRightLift(-100);
+			}
+
+			else {
+				runLeftLift(0);
+				rinRightLift(0);
+			}
+
+			if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
+				runClaw(100, 10);
+
+			else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
+				runClaw(-100, 10);
+
+		}
+
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+
+			if(!master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R2))
+				shiftUpAtck = false;
+
+			else if(!shiftUpAtck) {
+				shiftUp = true;
+				shiftUpAtck = true;
+			}
+
+			if(!master.get_digital(E_CONTROLLER_DIGITAL_R1 && master.get_digital(E_CONTROLLER_DIGITAL_R2)))
+				shiftDownAtck = false;
+
+			else if(!shiftDownAtck) {
+				shiftDown = true;
+				shiftDownAtck = true;
+			}
+
+			if(!master.get_digital(E_CONTROLLER_DIGITAL_L2))
+				allignAtck = false;
+
+			else if(!clawAtck) {
+				allignAtck = true;
+				autoAllign();
+			}
+
+		}
+
+
+
+		if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+			if(stackCount !== 0)
+				stackCount --;
+			else {
+				stackCount = 500;
+				autoStack();
+			}
+		}
+		else
+			stackCount = 500;
+
 			
-
 
 		if(leftBase1.is_over_temp() || leftBase1.is_over_current())
 			leftBase1.set_voltage_limit(0);

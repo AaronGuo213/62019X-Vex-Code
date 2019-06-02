@@ -1,17 +1,18 @@
 #ifndef BASE_H
 #define BASE_H
 
-void runLeftBase(float percentage);
-void runRightBase(float percentage);
+void runLeftBase1(float percentage);
+void runLeftBase2(float percentage);
+void runRightBase1(float percentage);
+void runRightBase2(float percentage);
 
 float getBaseEnc();
 float getLeftBaseEnc();
 float getRightBaseEnc();
 void resetBaseEnc();
 
-float getForeEnc();
 float getYawEnc();
-void resetEnc();
+void resetYawEnc();
 
 void moveStraight(float dist, int time);
 void turn(float theta, int time);

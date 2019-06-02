@@ -1,39 +1,54 @@
 #include "main.h"
 
-void runLift(float percentage) {
+int potOffset = 0;
 
-    lift1.move_voltage(percentage * 120);
-    lift2.move_voltage(percentage * 120);
+void runLeftLift(float percentage) {
+
+    leftLift.move_voltage(percentage * 120);
+
+}
+
+void runRightLift(float percentage) {
+
+    rightLift.move_voltage(percentage * 120);
+
+}
+
+int getLiftHeight() {
+
+    return (liftPotLeft.get_value() - liftPotRight.get_value()) / 2 - potOffset;
 
 }
 
 bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
 int height = 0, liftSetPoint;
-int aboveCube[5] = {1110, 1560, 1910, 2320, 2930};
+int aboveCube[5] = {0, 0, 0, 0, 0};
 
 void liftCtrl(void* param) {
 
-    PID lift = initPID(1, 1, 0, 0.2, 0.0001, 0);
+    PID lift = initPID(0, 0, 0, 0, 0, 0);
+    PID lean = initPID(0, 0, 0, 0, 0, 0);
     liftSetPoint = aboveCube[height];
-    int liftVal;
+    float liftVal, leanVal;
 
     while(true) {
 
-    if(!manual) {
+        if(!manual) {
         
-        if(reset) {
-            reset = false;
-            height = 0;
-            liftSetPoint = aboveCube[height];
-        }
+            if(reset) {
+                reset = false;
+                height = 0;
+                liftSetPoint = aboveCube[height];
+            }
 
-        if(!manualUsed) {
+            if(!manualUsed) {
 
-            if(shiftUp) {
-                shiftUp = false;
+                if(shiftUp) {
+                    shiftUp = false;
                 if(height < 4)
                     height++;
                 liftSetPoint = aboveCube[height];
+                
             }
 
             else if(shiftDown) {
@@ -79,27 +94,40 @@ void liftCtrl(void* param) {
 
         }
 
-        if(lift2.is_over_temp() || lift2.is_over_current())
-			lift2.set_voltage_limit(0);
+        if(leftLift.is_over_temp() || leftLift.is_over_current())
+			leftLift.set_voltage_limit(0);
 		else
-			lift2.set_voltage_limit(12000);
+			leftLift.set_voltage_limit(12000);
 
-        lift.error = liftSetPoint - liftPot.get_value();
+        if(rightLift.is_over_temp() || rightLift.is_over_current())
+			rightLift.set_voltage_limit(0);
+		else
+			rightLift.set_voltage_limit(12000);
+
+        lift.error = liftSetPoint - getLiftHeight();
+        lean.error = liftPotLeft.get_value() + liftPotRight.get_value() - potOffset;
         liftVal = runPID(&lift);
-        runLift(-liftVal);
+        leanVal = runPID(&lean);
+        runLeftLift(liftVal + leanVal);
+        runRightLift(liftVal - leanVal);
 
-        std::cout << liftSetPoint << " | " << liftPot.get_value() << " | " << lift.error << "\n";
+        std::cout << liftSetPoint << " | " << getLiftHeight() << " | " << lift.error << "\n";
 
     }
 
     else if(manual) {
 
-        liftSetPoint = liftPot.get_value();
+        liftSetPoint = getLiftHeight();
 
-        if(lift2.is_over_temp() || lift2.is_over_current())
-			lift2.set_voltage_limit(0);
+        if(leftLift.is_over_temp() || leftLift.is_over_current())
+			leftLift.set_voltage_limit(0);
 		else
-			lift2.set_voltage_limit(12000);
+			leftLift.set_voltage_limit(12000);
+
+        if(rightLift.is_over_temp() || rightLift.is_over_current())
+			rightLift.set_voltage_limit(0);
+		else
+			rightLift.set_voltage_limit(12000);
 
         shiftUp = false;
         shiftDown = false;
@@ -113,9 +141,9 @@ void liftCtrl(void* param) {
 
 }
 
-void autostack() {
+void autoAllign() {
 
-    int sonarDist = 0, cubeDisp;
+    int sonarDist = 0;
     float allignVal;
     PID allign = initPID(1, 0, 0, 0, 0, 0);
 
@@ -125,38 +153,33 @@ void autostack() {
     if(height = 0)
         height = 1;
 
-    cubeDisp = height;
-
     while(abs(sonarDist - cubeSensor.get_value()) > 50) {
 
         allign.error = sonarDist - cubeSensor.get_value();
         allignVal = runPID(&allign);
 
-        runLeftBase(allignVal);
-        runRightBase(allignVal);
+        runLeftBase1(allignVal);
+        runLeftBase2(allignVal);
+        runRightBase1(allignVal);
+        runRightBase2(allignVal);
 
         delay(1);
     
     }
 
-    runLeftBase(0);
-    runRightBase(0);
+    runLeftBase1(0);
+    runLeftBase2(0);
+    runRightBase1(0);
+    runRightBase2(0);
+
+}
+
+void autoStack() {
 
     runClaw(-100, 150);
     height = 0;
-
-    for(int i = 0; i < (cubeDisp * 500); i++) {
-
-        allign.error = sonarDist - cubeSensor.get_value();
-        allignVal = runPID(&allign);
-
-        runLeftBase(allignVal);
-        runRightBase(allignVal);
-
+    while(getLiftHeight !== 0)
         delay(1);
-
-    }
-
     runClaw(100, 150);
 
 }

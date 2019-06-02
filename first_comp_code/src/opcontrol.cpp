@@ -5,7 +5,7 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 
 	float r, theta, leftTransVal, rightTransVal, turnVal;
-	bool shiftUpAtck = true, shiftDownAtck = true;
+	bool shiftUpAtck = true, shiftDownAtck = true, resetAtck = true, resetLift = false;
 
 	while(true) {
 
@@ -15,10 +15,10 @@ void opcontrol() {
 		r = joyValRemap(r);
 		theta = findTheta(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y));
 		
-		leftTransVal = leftBaseRemap(r, theta);
-		rightTransVal = rightBaseRemap(r, theta);
+		leftTransVal = 0.75 * leftBaseRemap(r, theta);
+		rightTransVal = 0.75 * rightBaseRemap(r, theta);
 		turnVal = joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X));
-		turnVal = r > 0 ? turnVal * 3 / 4 : turnVal;
+		turnVal = r > 0 ? turnVal * 3 / 4 : turnVal * 3 / 4;
 
 		runLeftBase1(leftTransVal + turnVal);
 		runLeftBase2(leftTransVal - turnVal);
@@ -27,20 +27,34 @@ void opcontrol() {
 
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN) && !master.get_digital(E_CONTROLLER_DIGITAL_UP)) {
-			manual = true;
-			runLift(-100);
-		}
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
-			manual = true;
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+			//manual = true;
 			runLift(100);
 		}
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_L1) && !liftLimit.get_value()) {
+			//manual = true;
+			runLift(-100);
+		}
 		else {
-			manual = false;
+			//manual = false;
 			runLift(0);
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_L1))
+		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP))
+			resetAtck = false;
+		else if(!resetAtck) {
+			reset = true;
+			resetAtck = true;
+		}
+
+		if(reset && !liftLimit.get_value())
+			runLift(-100);
+		else if(reset && liftLimit.get_value()) {
+			runLift(0);
+			reset = false;
+		}
+
+		/*if(!master.get_digital(E_CONTROLLER_DIGITAL_L1))
 			shiftUpAtck = false;
 		else if(!shiftUpAtck) {
 			shiftUp = true;
@@ -52,7 +66,7 @@ void opcontrol() {
 		else if(!shiftDownAtck) {
 			shiftDown = true;
 			shiftDownAtck = true;
-		}
+		}*/
 
 
 
@@ -90,7 +104,7 @@ void opcontrol() {
 		else
 			claw1.set_voltage_limit(12000);
 
-		std::cout << cubeSensor.get_value() << "\n";
+		std::cout << liftLimit.get_value() << "\n";
 
 		Task::delay_until(&now, 10);		
 
