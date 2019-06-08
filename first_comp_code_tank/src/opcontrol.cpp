@@ -4,7 +4,7 @@ void opcontrol() {
 
 	std::uint_least32_t now = millis();
 	bool shiftUpAtck = false, shiftDownAtck = false, allignAtck = false;
-	int resetCount = 250, int stackCount = 500;
+	int resetCount = 250, stackCount = 500;
 
 	while(true) {
 
@@ -14,33 +14,19 @@ void opcontrol() {
 		}
 
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) < 20) {
-			runLeftBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
-			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 		}
 
 		if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) < 20) {
-			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
-			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+			runRightBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
 		}
 
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) < 20) {
-			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
-			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 		}
-
-
-
-		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-			if(resetCount !== 0)
-				resetCount --;
-			else {
-				reset = true;
-				resetCount = 250;
-			}
-		}
-		else
-			resetCount = 250;
-
 
 
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
@@ -57,58 +43,69 @@ void opcontrol() {
 
 			else {
 				runLeftLift(0);
-				rinRightLift(0);
+				runRightLift(0);
 			}
 
 			if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
-				runClaw(100, 10);
+				runClaw(100, 2);
 
 			else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
-				runClaw(-100, 10);
+				runClaw(-100, 2);
 
 		}
 
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
 
-			if(!master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R2))
-				shiftUpAtck = false;
+		if(!(master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R2)))
+			shiftUpAtck = false;
 
-			else if(!shiftUpAtck) {
-				shiftUp = true;
-				shiftUpAtck = true;
-			}
-
-			if(!master.get_digital(E_CONTROLLER_DIGITAL_R1 && master.get_digital(E_CONTROLLER_DIGITAL_R2)))
-				shiftDownAtck = false;
-
-			else if(!shiftDownAtck) {
-				shiftDown = true;
-				shiftDownAtck = true;
-			}
-
-			if(!master.get_digital(E_CONTROLLER_DIGITAL_L2))
-				allignAtck = false;
-
-			else if(!clawAtck) {
-				allignAtck = true;
-				autoAllign();
-			}
-
+		else if(!shiftUpAtck) {
+			shiftUp = true;
+			shiftUpAtck = true;
 		}
 
+
+		if(!(master.get_digital(E_CONTROLLER_DIGITAL_R1) && master.get_digital(E_CONTROLLER_DIGITAL_R2)))
+			shiftDownAtck = false;
+
+		else if(!shiftDownAtck) {
+			shiftDown = true;
+			shiftDownAtck = true;
+		}
+
+
+		if(!(master.get_digital(E_CONTROLLER_DIGITAL_L2) && master.get_digital(E_CONTROLLER_DIGITAL_R2)))
+			allignAtck = false;
+
+		else if(!allignAtck) {
+			allignAtck = true;
+			autoAllign();
+			std::cout<< "align\n";
+		}
 
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-			if(stackCount !== 0)
+			if(!stackCount == 0)
 				stackCount --;
 			else {
 				stackCount = 500;
 				autoStack();
+				std::cout << "stack\n";
 			}
 		}
 		else
 			stackCount = 500;
 
+
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+			if(!resetCount == 0)
+				resetCount --;
+			else {
+				reset = true;
+				resetCount = 250;
+			}
+		}
+		else
+			resetCount = 250;
 			
 
 		if(leftBase1.is_over_temp() || leftBase1.is_over_current())
@@ -136,9 +133,9 @@ void opcontrol() {
 		else
 			claw1.set_voltage_limit(12000);
 
-		std::cout << cubeSensor.get_value() << "\n";
+		//std::cout << cubeSensor.get_value() << "\n";
 
-		Task::delay_until(&now, 10);		
+		Task::delay_until(&now, 1);		
 
 	}
 

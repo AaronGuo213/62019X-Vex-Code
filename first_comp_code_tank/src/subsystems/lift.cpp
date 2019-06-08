@@ -111,7 +111,7 @@ void liftCtrl(void* param) {
         runLeftLift(liftVal + leanVal);
         runRightLift(liftVal - leanVal);
 
-        std::cout << liftSetPoint << " | " << getLiftHeight() << " | " << lift.error << "\n";
+        //std::cout << liftSetPoint << " | " << getLiftHeight() << " | " << lift.error << "\n";
 
     }
 
@@ -178,7 +178,7 @@ void autoStack() {
 
     runClaw(-100, 150);
     height = 0;
-    while(getLiftHeight !== 0)
+    while(!getLiftHeight == 0)
         delay(1);
     runClaw(100, 150);
 
