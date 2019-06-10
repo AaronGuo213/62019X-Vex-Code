@@ -8,22 +8,23 @@ void opcontrol() {
 
 	while(true) {
 
-		if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) < 20) {
+		if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) < 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) < 20) {
 			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
 			runLeftBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)));
+			runRightBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
 		}
 
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) < 20) {
 			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
-		}
-
-		if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) < 20) {
-			runRightBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
-			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
+			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 		}
 
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) < 20) {
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 		}
