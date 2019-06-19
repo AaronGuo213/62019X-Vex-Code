@@ -96,7 +96,7 @@ void moveStraight(float distance, int time) {
 
 void turn(float theta, int time) {
 
-    float setPoint = theta * 0;
+    float setPoint = theta * 1;
     float turnVal, dispVal;
     PID turn = initPID(0, 0, 0, 0, 0, 0);
     PID disp = initPID(0, 0, 0, 0, 0, 0);

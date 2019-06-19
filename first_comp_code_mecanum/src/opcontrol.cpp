@@ -18,13 +18,13 @@ void opcontrol() {
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y)) < 20) {
 			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
-			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
-			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
 		}
 
 		else if(abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)) >= 20 && abs(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)) < 20) {
-			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
-			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X)));
+			runLeftBase1(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
+			runLeftBase2(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 			runRightBase1(-joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 			runRightBase2(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)));
 		}
@@ -33,13 +33,13 @@ void opcontrol() {
 		if(!master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
 
 			if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-				runLeftLift(100);
-				runRightLift(100);
+				runLeftLift(80);
+				runRightLift(80);
 			}
 
 			else if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-				runLeftLift(-100);
-				runRightLift(-100);
+				runLeftLift(-80);
+				runRightLift(-80);
 			}
 
 			else {
@@ -134,6 +134,7 @@ void opcontrol() {
 			rightBase2.set_voltage_limit(12000);
 
 		//std::cout << cubeSensor.get_value() << "\n";
+		std::cout << yawEnc.get_value() << "\n";
 
 		Task::delay_until(&now, 1);		
 
