@@ -46,3 +46,39 @@ float joyValRemap(float joyVal) {
     return percentVal;
 
 }
+
+
+
+//buttons and joysticks
+
+float lY() {
+    return master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);
+}
+
+float lX() {
+    return master.get_analog(E_CONTROLLER_ANALOG_LEFT_X);
+}
+
+float rY() {
+    return master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y);
+}
+
+float rX() {
+    return master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
+}
+
+bool l2() {
+    return master.get_digital(E_CONTROLLER_DIGITAL_L1);
+}
+
+bool r1() {
+    return master.get_digital(E_CONTROLLER_DIGITAL_L2);
+}
+
+bool r2() {
+    return master.get_digital(E_CONTROLLER_DIGITAL_R1);
+}
+
+bool l1() {
+    return master.get_digital(E_CONTROLLER_DIGITAL_R2);
+}

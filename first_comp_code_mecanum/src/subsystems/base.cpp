@@ -24,12 +24,6 @@ void runRightBase2(float percentage) {
 
 }
 
-float getBaseEnc() {
-
-    return (leftBase1.get_position() + leftBase2.get_position() + rightBase1.get_position() + rightBase2.get_position()) / 4;
-
-}
-
 float getLeftBaseEnc() {
 
     return (leftBase1.get_position() + leftBase2.get_position()) / 2;
@@ -66,14 +60,14 @@ void resetYawEnc() {
 void moveStraight(float distance, int time) {
 
     float distVal, diffVal;
-    PID dist = initPID(0, 0, 0, 0, 0, 0);
+    PID dist = initPID(1, 0, 0, 1, 0, 0);
     PID diff = initPID(0, 0, 0, 0, 0, 0);
 
     resetBaseEnc();
 
-    for(int i = 0; i < time; i ++) {
+    for(int i = 0; i < time; i++) {
 
-        dist.error = distance - getBaseEnc();
+        dist.error = distance - (getLeftBaseEnc() + getRightBaseEnc()) / 2;
         diff.error = getLeftBaseEnc() - getRightBaseEnc();
         distVal = runPID(&dist);
         diffVal = runPID(&diff);
@@ -82,6 +76,8 @@ void moveStraight(float distance, int time) {
         runLeftBase2(distVal - diffVal);
         runRightBase1(distVal + diffVal);
         runRightBase2(distVal + diffVal);
+
+        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftBaseEnc() + getRightBaseEnc()) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(1);
 
@@ -105,7 +101,7 @@ void turn(float theta, int time) {
 
     for(int i = 0; i < time; i++) {
 
-        turn.error = setPoint - getBaseEnc();
+        turn.error = setPoint - (getLeftBaseEnc() - getRightBaseEnc()) / 2;
         disp.error = getLeftBaseEnc() - getRightBaseEnc();
         turnVal = runPID(&turn);
         dispVal = runPID(&disp);
@@ -114,6 +110,8 @@ void turn(float theta, int time) {
         runLeftBase2(turnVal - dispVal);
         runRightBase1(turnVal - dispVal);
         runRightBase2(-turnVal - dispVal);
+
+        std::cout << "setPoint: " << setPoint << " | currentPos: " << (getLeftBaseEnc() - getRightBaseEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
 
         delay(1);
 

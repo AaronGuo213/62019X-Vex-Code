@@ -11,4 +11,14 @@ float runPID(PID *pid); //inputs a PID struct, does the actual PID math, then ou
 
 float joyValRemap(float joyVal);
 
+//buttons and joysticks
+float lY();
+float lX();
+float rY();
+float rX();
+bool l1();
+bool l2();
+bool r1();
+bool r2();
+
 #endif

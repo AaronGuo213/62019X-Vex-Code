@@ -6,7 +6,6 @@ void runLeftBase2(float percentage);
 void runRightBase1(float percentage);
 void runRightBase2(float percentage);
 
-float getBaseEnc();
 float getLeftBaseEnc();
 float getRightBaseEnc();
 void resetBaseEnc();
