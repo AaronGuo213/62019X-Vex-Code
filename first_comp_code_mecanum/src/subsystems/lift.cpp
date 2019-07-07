@@ -1,5 +1,17 @@
 #include "main.h"
 
+void runClaw1(float percentage) {
+
+    claw1.move_voltage(percentage * 120);
+
+}
+
+void runClaw2(float percentage) {
+
+    claw2.move_voltage(percentage * 120);
+
+}
+
 int potOffset = 0;
 
 void runLeftLift(float percentage) {
@@ -239,7 +251,7 @@ void autoAllign() {
 
 }
 
-void autoStack() {
+/*void autoStack() {
 
     claw.set_value(0);
     height = 0;
@@ -247,4 +259,4 @@ void autoStack() {
         delay(1);
     claw.set_value(1);
 
-}
+}*/

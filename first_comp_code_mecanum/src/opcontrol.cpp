@@ -3,8 +3,10 @@
 void opcontrol() {
 
 	std::uint_least32_t now = millis();
-	bool shiftUpAtck = false, shiftDownAtck = false, allignAtck = false, clawAtck = false, clawPos = true;
+	bool shiftUpAtck = false, shiftDownAtck = false, allignAtck = false, clawAtck = false;
+	int clawPos = 1;
 	int stackCount = 500;
+	resetBaseEnc();
 
 	while(true) {
 
@@ -15,29 +17,29 @@ void opcontrol() {
 			runRightBase2(joyValRemap(rY()));
 		}
 
-		else if(abs(lX())) >= 20 && abs(lY()) < 20) {
-			runLeftBase1(joyValRemap(lX()));
-			runLeftBase2(-joyValRemap(lX()));
-			runRightBase1(-joyValRemap(lX()));
-			runRightBase2(joyValRemap(lX()));
+		else if(abs(lX()) >= 20 && abs(lY()) < 20) {
+			leftBase1.move_velocity(joyValRemap(lX()) * 2);
+			leftBase2.move_velocity(-joyValRemap(lX()) * 2);
+			rightBase1.move_velocity(-joyValRemap(lX()) * 2);
+			rightBase2.move_velocity(joyValRemap(lX()) * 2);
 		}
 
-		else if(abs(rX()) >= 20 && abs(rY() < 20) {
-			runLeftBase1(joyValRemap(rX()));
-			runLeftBase2(-joyValRemap(rX()));
-			runRightBase1(-joyValRemap(rX()));
-			runRightBase2(joyValRemap(rX()));
+		else if(abs(rX()) >= 20 && abs(rY() < 20)) {
+			leftBase1.move_velocity(joyValRemap(rX()) * 2);
+			leftBase2.move_velocity(-joyValRemap(rX()) * 2);
+			rightBase1.move_velocity(-joyValRemap(rX()) * 2);
+			rightBase2.move_velocity(joyValRemap(rX()) * 2);
 		}
 
 
 		if(l1() && !r1() && !r2()) {
-			runLeftLift(80);
-			runRightLift(80);
+			runLeftLift(100);
+			runRightLift(100);
 		}
 
 		else if(r1() && !l1() && !r2()) {
-			runLeftLift(-80);
-			runRightLift(-80);
+			runLeftLift(-100);
+			runRightLift(-100);
 		}
 
 		else {
@@ -46,13 +48,19 @@ void opcontrol() {
 		}
 
 
-		if(!(l2() && !r2()))
-			clawAtck = false;
-		
-		else if(!clawAtck) {
-			clawPos = !clawPos;
-			claw.set_value(clawPos);
-			clawAtck = true;
+		if(l2() && !r2()) {
+			runClaw1(70);
+			runClaw2(70);
+		}
+
+		else if(!l2() && r2()) {
+			runClaw1(-70);
+			runClaw2(-70);
+		}
+
+		else {
+			runClaw1(0);
+			runClaw2(0);
 		}
 
 
@@ -88,7 +96,7 @@ void opcontrol() {
 				stackCount --;
 			else {
 				stackCount = 500;
-				autoStack();
+				//autoStack();
 			}
 		}
 		else
@@ -115,7 +123,7 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
-		//std::cout << cubeSensor.get_value() << "\n";
+		std::cout << leftBase1.get_position() << " | " << leftBase2.get_position() << " || " << rightBase1.get_position() << " | " << rightBase2.get_position() << std::endl;
 
 		Task::delay_until(&now, 1);		
 

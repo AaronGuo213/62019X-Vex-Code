@@ -67,18 +67,18 @@ float rX() {
     return master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X);
 }
 
-bool l2() {
+bool l1() {
     return master.get_digital(E_CONTROLLER_DIGITAL_L1);
 }
 
-bool r1() {
+bool l2() {
     return master.get_digital(E_CONTROLLER_DIGITAL_L2);
 }
 
-bool r2() {
+bool r1() {
     return master.get_digital(E_CONTROLLER_DIGITAL_R1);
 }
 
-bool l1() {
+bool r2() {
     return master.get_digital(E_CONTROLLER_DIGITAL_R2);
 }
