@@ -12,7 +12,7 @@ void runClaw2(float percentage) {
 
 }
 
-int potOffset = 0;
+int potDiff = 0, potOffset = 0;
 
 void runLeftLift(float percentage) {
 
@@ -28,7 +28,34 @@ void runRightLift(float percentage) {
 
 int getLiftHeight() {
 
-    return (liftPotLeft.get_value() - liftPotRight.get_value() - potOffset) / 2;
+    return (liftPotLeft.get_value() + liftPotRight.get_value() - potDiff) / 2 - 0;
+
+}
+
+int liftSetPoint = 0;
+
+void liftCtrl(void* param) {
+
+    PID lift = initPID(0, 0, 0, 0, 0, 0);
+    PID lean = initPID(0, 0, 0, 0, 0, 0);
+    float liftVal, leanVal;
+
+    while(true) {
+
+        liftSetPoint = liftSetPoint > 0 ? 0 : liftSetPoint;
+        liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint;
+        
+        lift.error = liftSetPoint - getLiftHeight();
+        lean.error = (liftPotLeft.get_value() - liftPotRight.get_value() - potDiff) / 2;
+        liftVal = runPID(&lift);
+        leanVal = runPID(&lean);
+
+        runLeftLift(liftVal + leanVal);
+        runRightLift(liftVal - leanVal);
+
+        delay(1);
+
+    }
 
 }
 

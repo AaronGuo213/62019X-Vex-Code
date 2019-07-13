@@ -14,10 +14,12 @@ void opcontrol() {
 		if(l1() && !r1() && !r2()) {
 			runLeftLift(100);
 			runRightLift(100);
+			//liftSetPoint += 5;
 		}
 		else if(r1() && !l1() && !r2()) {
 			runLeftLift(-100);
 			runRightLift(-100);
+			//liftSetPoint -= 5;
 		}
 		else {
 			runLeftLift(0);

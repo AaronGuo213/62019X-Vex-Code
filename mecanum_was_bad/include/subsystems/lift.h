@@ -3,7 +3,7 @@
 
 void runClaw1(float percentage);
 void runClaw2(float percentage);
-extern int potOffset;
+extern int potDiff, potOffset;
 void runLeftLift(float percentage);
 void runRightLift(float percentage);
 int getLiftHeight();

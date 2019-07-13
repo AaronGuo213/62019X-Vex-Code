@@ -3,6 +3,8 @@
 void initialize() {
 
     std::cout << "hi!\n";
+    Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
+    
 }
 
 int autonCount = 0;
