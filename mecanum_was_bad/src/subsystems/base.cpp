@@ -1,16 +1,16 @@
 #include "main.h"
 
-void runLeftBase(float percentage) {
+void runLeftBase(float percent) {
 
-    leftBase1.move_voltage(percentage * 120);
-    leftBase2.move_voltage(percentage * 120);
+    leftBase1.move_voltage(percent * 120);
+    leftBase2.move_voltage(percent * 120);
 
 }
 
-void runRightBase(float percentage) {
+void runRightBase(float percent) {
 
-    rightBase1.move_voltage(percentage * 120);
-    rightBase2.move_voltage(percentage * 120);
+    rightBase1.move_voltage(percent * 120);
+    rightBase2.move_voltage(percent * 120);
 
 }
 
@@ -49,29 +49,29 @@ void resetYawEnc() {
 
 void moveStraight(float distance, int time) {
 
-    distance *= 7.2;
-    time /= 5;
+    distance *= 7;
     float distVal, diffVal;
-    PID dist = initPID(1, 0, 1, 0.8, 0, 1);
-    PID diff = initPID(0, 0, 0, 0, 0, 0);
+    PID dist = initPID(1, 1, 1, 1.1, 0.00006, 1);
+    PID diff = initPID(1, 0, 0, 0.5, 0, 0);
 
     resetBaseEnc();
     resetYawEnc();
 
-    for(int i = 0; i < time; i++) {
+    for(int i = 0; i < time; i+=10) {
 
         dist.error = distance - ((getLeftEnc() + getRightEnc()) / 4);
-        diff.error = (getLeftEnc() - getRightEnc()) / 4;
+        diff.error = -getYawEnc();
         distVal = runPID(&dist);
+        distVal = distVal > 90 ? 90 : distVal;
         diffVal = runPID(&diff);
+        diffVal = distVal < 10 ? 0 : diffVal;
 
         runLeftBase(distVal - diffVal);
         runRightBase(distVal + diffVal);
 
-        if(!(i % 10));
-            std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 4 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 4 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
-        delay(5);
+        delay(10);
 
     }
 
@@ -82,27 +82,27 @@ void moveStraight(float distance, int time) {
 
 void turn(float theta, int time) {
 
-    float setPoint = theta * 1;
+    float setPoint = theta * 4;
     float turnVal, dispVal;
-    PID turn = initPID(0, 0, 0, 0, 0, 0);
+    PID turn = initPID(1, 1, 1, 0.4, 0.00005, 1);
     PID disp = initPID(0, 0, 0, 0, 0, 0);
 
     resetBaseEnc();
     resetYawEnc();
 
-    for(int i = 0; i < time; i++) {
+    for(int i = 0; i < time; i+=10) {
 
-        turn.error = setPoint - (-getLeftEnc() + getRightEnc()) / 2;
-        disp.error = getLeftEnc() + getRightEnc();
+        turn.error = setPoint - getYawEnc();
+        disp.error = (getLeftEnc() + getRightEnc()) / 4;
         turnVal = runPID(&turn);
         dispVal = runPID(&disp);
 
-        runLeftBase(turnVal - dispVal);
-        runRightBase(-turnVal - dispVal);
+        runLeftBase(-turnVal - dispVal);
+        runRightBase(turnVal - dispVal);
 
-        std::cout << "setPoint: " << setPoint << " | currentPos: " << (-getLeftEnc() + getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << setPoint << " | currentPos: " <<getYawEnc() << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
 
-        delay(1);
+        delay(10);
 
     }
 

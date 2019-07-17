@@ -1,8 +1,8 @@
 #ifndef BASE_H
 #define BASE_H
 
-void runLeftBase(float percentage);
-void runRightBase(float percentage);
+void runLeftBase(float percent);
+void runRightBase(float percent);
 
 float getLeftEnc();
 float getRightEnc();

@@ -4,6 +4,7 @@ void opcontrol() {
 
 	std::uint_least32_t now = millis();
 	resetBaseEnc();
+	bool outtake = false, lever = false;
 
 	while(true) {
 
@@ -12,32 +13,36 @@ void opcontrol() {
 
 
 		if(l1() && !r1() && !r2()) {
+			ctrlLift = false;
 			runLeftLift(100);
 			runRightLift(100);
-			//liftSetPoint += 5;
+			lever = true;
 		}
 		else if(r1() && !l1() && !r2()) {
-			runLeftLift(-100);
-			runRightLift(-100);
-			//liftSetPoint -= 5;
+			ctrlLift = false;
+			runLeftLift(-80);
+			runRightLift(-80);
+			lever = true;
 		}
-		else {
-			runLeftLift(0);
-			runRightLift(0);
+		else if(lever){
+			slowHold = true;
+			lever = false;
 		}
 
 
 		if(l2() && !r2()) {
-			runClaw1(70);
-			runClaw2(70);
+			runClaw(100, 2);
 		}
-		else if(!l2() && r2()) {
-			runClaw1(-70);
-			runClaw2(-70);
+
+		if(!l2() && r2()) {
+			runClaw(-100, 2);
+			ctrlLift = false;
+			outtake = true;
 		}
-		else {
-			runClaw1(0);
-			runClaw2(0);
+		else if(outtake) {
+			liftSetPoint = getLiftHeight();
+			ctrlLift = true;
+			outtake = false;
 		}
 			
 
@@ -61,8 +66,9 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
-		//std::cout << leftBase1.get_position() << " | " << leftBase2.get_position() << " || " << rightBase1.get_position() << " | " << rightBase2.get_position() << std::endl;
-
+		//std::cout << getLeftEnc() << " | " << getRightEnc() << " | " << getYawEnc() << std::endl;
+		//std::cout << getLeftLiftHeight() << " | " << getRightLiftHeight() << " | " << getLiftHeight() << std::endl;
+		std::cout << liftSetPoint << std::endl;
 		Task::delay_until(&now, 1);		
 
 	}

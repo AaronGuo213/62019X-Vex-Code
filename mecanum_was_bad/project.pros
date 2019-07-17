@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "first_comp_code_tank",
+        "project_name": "Big Ceasar Coming Soon to Theaters Near You",
         "target": "v5",
         "templates": {
             "kernel": {

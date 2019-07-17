@@ -2,6 +2,6 @@
 
 void autonomous() {
 
-    moveStraight(48, 1000);
+    turn(180, 3000);
     
 }

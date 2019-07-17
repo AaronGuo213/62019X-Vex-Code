@@ -1,168 +1,111 @@
 #include "main.h"
 
-void runClaw1(float percentage) {
+int clawCount = 0, clawPercent;
 
-    claw1.move_voltage(percentage * 120);
+void runClaw(float percent, int time) {
 
-}
-
-void runClaw2(float percentage) {
-
-    claw2.move_voltage(percentage * 120);
+    clawCount = time;
+    clawPercent = percent;
 
 }
 
-int potDiff = 0, potOffset = 0;
+void clawCtrl(void* param) {
 
-void runLeftLift(float percentage) {
+    while(true) {
 
-    leftLift.move_voltage(percentage * 120);
+        if(clawCount != 0) {
+
+            clawCount --;
+            claw1.move_voltage(clawPercent * 120);
+            claw2.move_voltage(clawPercent * 120);
+
+        }
+
+        else {
+
+            claw1.move_voltage(0);
+            claw2.move_voltage(0);
+
+        }
+
+        delay(1);
+
+    }
 
 }
 
-void runRightLift(float percentage) {
+void runLeftLift(float percent) {
 
-    rightLift.move_voltage(percentage * 120);
+    leftLift.move_voltage(percent * 120);
+
+}
+
+void runRightLift(float percent) {
+
+    rightLift.move_voltage(percent * 120);
 
 }
 
 int getLiftHeight() {
 
-    return (liftPotLeft.get_value() + liftPotRight.get_value() - potDiff) / 2 - 0;
+    return rightLiftPot.get_value() - 1030;
 
 }
 
-int liftSetPoint = 0;
+int liftSetPoint;
+bool ctrlLift = true, slowHold = false;
 
 void liftCtrl(void* param) {
 
-    PID lift = initPID(0, 0, 0, 0, 0, 0);
-    PID lean = initPID(0, 0, 0, 0, 0, 0);
-    float liftVal, leanVal;
+    PID lift = initPID(1, 0, 1, 0.2, 0, 2);
+    float liftVal = 0;
 
     while(true) {
 
-        liftSetPoint = liftSetPoint > 0 ? 0 : liftSetPoint;
-        liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint;
+        if(ctrlLift) {
+
+            liftSetPoint = liftSetPoint > 1910 ? 1910 : liftSetPoint;
+            liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint;
         
-        lift.error = liftSetPoint - getLiftHeight();
-        lean.error = (liftPotLeft.get_value() - liftPotRight.get_value() - potDiff) / 2;
-        liftVal = runPID(&lift);
-        leanVal = runPID(&lean);
+            lift.error = liftSetPoint - getLiftHeight();
+            liftVal = runPID(&lift);
 
-        runLeftLift(liftVal + leanVal);
-        runRightLift(liftVal - leanVal);
+            runLeftLift(liftVal);
+            runRightLift(liftVal);
 
-        delay(1);
+            //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | lift.error: " << lift.error << " | lean.error: " << lean.error << " | liftVal: " << liftVal << " | leanVal: " << leanVal << std::endl;
+        
+            if(leftLift.is_over_temp() || leftLift.is_over_current())
+                leftLift.set_voltage_limit(0);
+            else
+                leftLift.set_voltage_limit(12000);
+            if(rightLift.is_over_temp() || rightLift.is_over_current())
+            rightLift.set_voltage_limit(0);
+            else
+                rightLift.set_voltage_limit(12000);
 
-    }
-
-}
-
-/*bool manual = false, manualUsed = false, shiftUp = false, shiftDown = false, reset = false;
-int height = 0, liftSetPoint;
-int aboveCube[5] = {0, 0, 0, 0, 0};
-
-void liftCtrl(void* param) {
-
-    PID lift = initPID(0, 0, 0, 0, 0, 0);
-    PID lean = initPID(0, 0, 0, 0, 0, 0);
-    liftSetPoint = aboveCube[height];
-    float liftVal, leanVal;
-
-    while(true) {
-
-        if(!manual) {
-
-            if(shiftUp) {
-                shiftUp = false;
-                if(height < 4)
-                    height++;
-                liftSetPoint = aboveCube[height];
-            }
-
-            else if(shiftDown) {
-                shiftDown = false;
-                if(height > 0)
-                    height--;
-                liftSetPoint = aboveCube[height];
-            }
+            delay(5);
 
         }
 
-        else if(manual) {
+        else if(slowHold) {
 
-            if(shiftDown) {
-
-                for(int i = 0; i < 5; i++) {
-
-                    if(liftSetPoint < aboveCube[i])
-                        height = i;
-                    break;
-
-                }
-
-                liftSetPoint = aboveCube[height];
-                manual = false;
-
+            if(leftLift.get_actual_velocity() > 0) {
+                runLeftLift(0);
+                runRightLift(0);
+                delay(5 * abs(leftLift.get_actual_velocity()));
             }
-
-            else if(shiftUp) {
-
-                for(int i = 4; i >= 0; i--) {
-
-                    if(liftSetPoint > aboveCube[i])
-                        height = i;
-                    break;
-
-                }
-
-                liftSetPoint = aboveCube[height];
-                manual = false;
-
+            else {
+                leftLift.move_velocity(0);
+                rightLift.move_velocity(0);
+                delay(5 * abs(leftLift.get_actual_velocity()));
             }
+            liftSetPoint = getLiftHeight();
+            slowHold = false;
+            ctrlLift = true;
 
         }
 
     }
 
 }
-
-void autoAllign() {
-
-    int sonarDist = 0;
-    float allignVal;
-    PID allign = initPID(1, 0, 0, 0, 0, 0);
-
-    if(manual)
-        shiftDown = true;
-
-    if(height == 0)
-        height = 1;
-
-    while(abs(sonarDist - cubeSensor.get_value()) > 50) {
-
-        allign.error = sonarDist - cubeSensor.get_value();
-        allignVal = runPID(&allign);
-
-        runLeftBase(allignVal);
-        runRightBase(allignVal);
-
-        delay(1);
-    
-    }
-
-    runLeftBase(0);
-    runRightBase(0);
-
-}
-
-void autoStack() {
-
-    claw.set_value(0);
-    height = 0;
-    while(!getLiftHeight == 0)
-        delay(1);
-    claw.set_value(1);
-
-}*/
