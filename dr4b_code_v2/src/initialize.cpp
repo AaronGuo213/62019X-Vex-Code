@@ -3,7 +3,6 @@
 void initialize() {
 
     //Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
-    Task clawGo (clawCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "claw control task");
     delay(100);
     liftSetPoint = getLiftHeight();
 

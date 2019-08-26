@@ -4,7 +4,7 @@ void opcontrol() {
 
 	std::uint_least32_t now = millis();
 	resetBaseEnc();
-	bool outtake = false, lever = false;
+	bool intkPos = false, intkAtck = false;
 
 	while(true) {
 
@@ -12,39 +12,35 @@ void opcontrol() {
 		runRightBase(joyValRemap(rY()));
 
 
-		if(l1() && !r1() && !r2()) {
-			ctrlLift = false;
+		if(l1() && !r1()) {
+			holdLift = false;
+			slowLift = false;
 			runLeftLift(100);
 			runRightLift(100);
-			lever = true;
 		}
-		else if(r1() && !l1() && !r2()) {
-			ctrlLift = false;
-			runLeftLift(-80);
-			runRightLift(-80);
-			lever = true;
+
+		else if(r1() && !l1()) {
+			holdLift = false;
+			slowLift = false;
+			runLeftLift(-100);
+			runRightLift(-100);
 		}
-		else if(lever){
+
+		//else if(!slowLift && !holdLift)
+			//slowLift = true;
+		else {
 			runLeftLift(0);
 			runRightLift(0);
-			slowHold = true;
-			lever = false;
 		}
 
 
-		if(l2() && !r2()) {
-			runClaw(100, 2);
-		}
+		if(l2())
+			intkAtck = false;
 
-		if(!l2() && r2()) {
-			runClaw(-100, 2);
-			ctrlLift = false;
-			outtake = true;
-		}
-		else if(outtake) {
-			liftSetPoint = getLiftHeight();
-			ctrlLift = true;
-			outtake = false;
+		else if(!intkAtck) {
+			intkAtck = true;
+			setIntk(intkPos);
+			intkPos = !intkPos;
 		}
 			
 
@@ -68,9 +64,7 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
-		//std::cout << getLeftEnc() << " | " << getRightEnc() << " | " << getYawEnc() << std::endl;
-		//std::cout << getLeftLiftHeight() << " | " << getRightLiftHeight() << " | " << getLiftHeight() << std::endl;
-		std::cout << liftSetPoint << std::endl;
+
 		Task::delay_until(&now, 1);		
 
 	}

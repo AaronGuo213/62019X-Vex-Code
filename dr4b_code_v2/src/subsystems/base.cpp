@@ -47,10 +47,10 @@ void resetYawEnc() {
 
 }
 
-void moveStraight(float distance, int time) {
+void moveStraight(float distance, int time, float maxVal) {
 
-    distance *= 7;
-    float distVal, diffVal;
+    distance *= 7.00;
+    float distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 1, 1, 1.1, 0.00006, 1);
     PID diff = initPID(1, 0, 0, 0.5, 0, 0);
 
@@ -64,10 +64,15 @@ void moveStraight(float distance, int time) {
         distVal = runPID(&dist);
         distVal = distVal > 90 ? 90 : distVal;
         diffVal = runPID(&diff);
-        diffVal = distVal < 10 ? 0 : diffVal;
+        //diffVal = distVal < 10 ? 0 : diffVal;
+        
+        leftVal = distVal - diffVal;
+        leftVal > maxVal ? maxVal : leftVal;
+        rightVal = distVal + diffVal;
+        rightVal > maxVal ? maxVal : rightVal;
 
-        runLeftBase(distVal - diffVal);
-        runRightBase(distVal + diffVal);
+        runLeftBase(leftVal);
+        runRightBase(rightVal);
 
         std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 4 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 

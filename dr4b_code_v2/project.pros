@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "Big Ceasar Coming Soon to Theaters Near You",
+        "project_name": "DR4B Piston Intake",
         "target": "v5",
         "templates": {
             "kernel": {

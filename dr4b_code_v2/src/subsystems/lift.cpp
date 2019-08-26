@@ -2,35 +2,10 @@
 
 int clawCount = 0, clawPercent;
 
-void runClaw(float percent, int time) {
+void setIntk(bool status) {
 
-    clawCount = time;
-    clawPercent = percent;
-
-}
-
-void clawCtrl(void* param) {
-
-    while(true) {
-
-        if(clawCount != 0) {
-
-            clawCount --;
-            claw1.move_voltage(clawPercent * 120);
-            claw2.move_voltage(clawPercent * 120);
-
-        }
-
-        else {
-
-            claw1.move_voltage(0);
-            claw2.move_voltage(0);
-
-        }
-
-        delay(1);
-
-    }
+    intk1.set_value(status);
+    intk2.set_value(status);
 
 }
 
@@ -48,61 +23,83 @@ void runRightLift(float percent) {
 
 int getLiftHeight() {
 
-    return rightLiftPot.get_value() - 1030;
+    return liftPot.get_value() - 0;
+
+}
+
+int getLiftSpeed() {
+
+    return (leftLift.get_actual_velocity() + rightLift.get_actual_velocity()) / 2;
 
 }
 
 int liftSetPoint;
-bool ctrlLift = true, slowHold = false;
+bool holdLift = true, slowLift = false;
 
 void liftCtrl(void* param) {
 
-    PID lift = initPID(1, 0, 1, 0.2, 0, 2);
-    float liftVal = 0;
+    PID hold = initPID(1, 0, 1, 0.2, 0, 2);
+    PID slow = initPID(0, 1, 0, 0, 1, 0);
+    float holdVal = 0, slowVal = 0;
 
     while(true) {
 
-        if(ctrlLift) {
+        if(holdLift) {
 
             liftSetPoint = liftSetPoint > 1910 ? 1910 : liftSetPoint;
             liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint;
         
-            lift.error = liftSetPoint - getLiftHeight();
-            liftVal = runPID(&lift);
+            hold.error = liftSetPoint - getLiftHeight();
+            holdVal = runPID(&hold);
 
-            runLeftLift(liftVal);
-            runRightLift(liftVal);
+            runLeftLift(holdVal);
+            runRightLift(holdVal);
 
-            //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | lift.error: " << lift.error << " | lean.error: " << lean.error << " | liftVal: " << liftVal << " | leanVal: " << leanVal << std::endl;
+            //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
+
+            if(leftLift.is_over_temp() || leftLift.is_over_current())
+                leftLift.set_voltage_limit(0);
+            else
+                leftLift.set_voltage_limit(12000);
+
+            if(rightLift.is_over_temp() || rightLift.is_over_current())
+                rightLift.set_voltage_limit(0);
+            else
+                rightLift.set_voltage_limit(12000);
+
+            delay(10);
+
+        }
+
+        else if(slowLift) {
+
+            if(getLiftSpeed() < 20) {
+                holdLift = true;
+                slowLift = false;
+            }
+
+            liftSetPoint = liftSetPoint > 1910 ? 1910 : liftSetPoint;
+            liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint;
+        
+            slow.error = liftSetPoint - getLiftHeight();
+            slowVal = runPID(&slow);
+
+            runLeftLift(slowVal);
+            runRightLift(slowVal);
+
+            //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | slow.error: " << slow.error << " | slowVal: " << slowVal << std::endl;
         
             if(leftLift.is_over_temp() || leftLift.is_over_current())
                 leftLift.set_voltage_limit(0);
             else
                 leftLift.set_voltage_limit(12000);
+
             if(rightLift.is_over_temp() || rightLift.is_over_current())
-            rightLift.set_voltage_limit(0);
+                rightLift.set_voltage_limit(0);
             else
                 rightLift.set_voltage_limit(12000);
 
-            delay(5);
-
-        }
-
-        else if(slowHold) {
-
-            if(leftLift.get_actual_velocity() > 0) {
-                runLeftLift(0);
-                runRightLift(0);
-                delay(5 * abs(leftLift.get_actual_velocity()));
-            }
-            else {
-                leftLift.move_velocity(0);
-                rightLift.move_velocity(0);
-                delay(5 * abs(leftLift.get_actual_velocity()));
-            }
-            liftSetPoint = getLiftHeight();
-            slowHold = false;
-            ctrlLift = true;
+            delay(10);
 
         }
 
