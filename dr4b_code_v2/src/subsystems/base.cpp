@@ -2,27 +2,27 @@
 
 void runLeftBase(float percent) {
 
-    leftBase1.move_voltage(percent * 120);
+    leftBase1.move_voltage(percent * 120); //runs the left base motors out of 12000mV
     leftBase2.move_voltage(percent * 120);
 
 }
 
 void runRightBase(float percent) {
 
-    rightBase1.move_voltage(percent * 120);
+    rightBase1.move_voltage(percent * 120); //runs the right base motors out of 12000mV
     rightBase2.move_voltage(percent * 120);
 
 }
 
 float getLeftEnc() {
 
-    return (leftBase1.get_position() + leftBase2.get_position()) / 2;
+    return (leftBase1.get_position() + leftBase2.get_position()) / 2; //averages the left base motor encoder values
 
 }
 
 float getRightEnc() {
 
-    return (rightBase1.get_position() + rightBase2.get_position()) / 2;
+    return (rightBase1.get_position() + rightBase2.get_position()) / 2; //averages the right base motor encoder values
 
 }
 
@@ -47,25 +47,26 @@ void resetYawEnc() {
 
 }
 
-void moveStraight(float distance, int time, float maxVal) {
+void moveStraight(float distance, int time, float maxVal) { //PID control loop to move the base to a certain relative 
+                                                            //postition with minimal forwards and sideways error
 
-    distance *= 7.00;
+    distance *= 7.00; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
     float distVal, diffVal, leftVal, rightVal;
-    PID dist = initPID(1, 1, 1, 1.1, 0.00006, 1);
-    PID diff = initPID(1, 0, 0, 0.5, 0, 0);
+    PID dist = initPID(1, 1, 1, 1.1, 0.00006, 1); //kP = 1.1, kI = 0.00006, kD = 1
+    PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
 
     resetBaseEnc();
     resetYawEnc();
 
-    for(int i = 0; i < time; i+=10) {
+    for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 4);
-        diff.error = -getYawEnc();
-        distVal = runPID(&dist);
-        distVal = distVal > 90 ? 90 : distVal;
-        diffVal = runPID(&diff);
-        //diffVal = distVal < 10 ? 0 : diffVal;
+        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 4); //updates error for distance PID
+        diff.error = -getYawEnc(); //updates error for difference PID
+        distVal = runPID(&dist); //updates distVal, reference misc.cpp
+        distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to make and impact
+        diffVal = runPID(&diff); //updates diffVal, reference misc.cpp
         
+        //limiting the base values one final time
         leftVal = distVal - diffVal;
         leftVal > maxVal ? maxVal : leftVal;
         rightVal = distVal + diffVal;
@@ -85,11 +86,11 @@ void moveStraight(float distance, int time, float maxVal) {
 
 }
 
-void turn(float theta, int time) {
+void turn(float theta, int time) { //PID control loop to turn a desired angle with minimal angle error
 
     float setPoint = theta * 4;
     float turnVal, dispVal;
-    PID turn = initPID(1, 1, 1, 0.4, 0.00005, 1);
+    PID turn = initPID(1, 1, 1, 0.4, 0.00005, 1); //kP = 0.4, kI = 0.00005, kD = 1;
     PID disp = initPID(0, 0, 0, 0, 0, 0);
 
     resetBaseEnc();
@@ -97,10 +98,10 @@ void turn(float theta, int time) {
 
     for(int i = 0; i < time; i+=10) {
 
-        turn.error = setPoint - getYawEnc();
-        disp.error = (getLeftEnc() + getRightEnc()) / 4;
-        turnVal = runPID(&turn);
-        dispVal = runPID(&disp);
+        turn.error = setPoint - getYawEnc(); //updates error for turn PID
+        disp.error = (getLeftEnc() + getRightEnc()) / 4; //updates error for displacement PID
+        turnVal = runPID(&turn); //updates turnVal, reference misc.cpp
+        dispVal = runPID(&disp); //updates dispVal, reference misc.cpp
 
         runLeftBase(-turnVal - dispVal);
         runRightBase(turnVal - dispVal);

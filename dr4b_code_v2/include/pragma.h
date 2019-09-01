@@ -4,21 +4,19 @@
 extern Controller master;
 
 //V5 Components
-extern Motor leftBase1;
+extern Motor leftBase1; //two left base motors
 extern Motor leftBase2;
-extern Motor rightBase1;
+extern Motor rightBase1; //two right base motors
 extern Motor rightBase2;
 
-extern Motor leftLift;
+extern Motor leftLift; //left and right lift motors
 extern Motor rightLift;
-extern Motor claw1;
-extern Motor claw2;
 
 //Legacy Components
-extern ADIAnalogIn liftPot;
-extern ADIUltrasonic cubeSensor;
-extern ADIEncoder yawEnc;
-extern ADIDigitalOut intk1;
+extern ADIAnalogIn liftPot; //potentiameter for lift control
+extern ADIUltrasonic cubeSensor; //sonar sensor for cube depth input
+extern ADIEncoder yawEnc; //encoder for horizontal movement
+extern ADIDigitalOut intk1; //two solonoids controlling four pistons
 extern ADIDigitalOut intk2;
 
 #endif

@@ -1,6 +1,6 @@
 #include "main.h"
 
-int sgn(float x) { //inputs a double and outputs its sign (+ or -) as an int
+int sgn(float x) { //inputs a float and outputs its sign (+, -, or 0) as an int
 
     return (x > 0) - (x < 0);
 
@@ -23,17 +23,17 @@ float runPID(PID *pid) {
 
 float joyValRemap(float joyVal) {
 
-    float percentVal = 0.0;
+    float percentVal;
 
-    if((float)joyVal <= -3.0) {
+    if((float)joyVal <= -3.0) { //threshold at 3/100 to prevent unwanted movement at low values
 
-        percentVal = pow(-pow((float)joyVal, 2) - 6 * (float)joyVal + 18327.7, 0.5) - 154.414;
+        percentVal = pow(-pow((float)joyVal, 2) - 6 * (float)joyVal + 18327.7, 0.5) - 154.414; //uses the equation of a circle to optimize slow and fast movements
 
     }
 
-    else if((float)joyVal >= 3.0) {
+    else if((float)joyVal >= 3.0) { //threshold at 3/100 to prevent unwanted movement at low values
 
-        percentVal = -pow(-pow((float)joyVal, 2) + 6 * (float)joyVal + 18327.7, 0.5) + 154.414;
+        percentVal = -pow(-pow((float)joyVal, 2) + 6 * (float)joyVal + 18327.7, 0.5) + 154.414; //uses the reflected equation to optimize slow and fast backwards movements
 
     }
 
@@ -46,8 +46,6 @@ float joyValRemap(float joyVal) {
     return percentVal;
 
 }
-
-
 
 //buttons and joysticks
 

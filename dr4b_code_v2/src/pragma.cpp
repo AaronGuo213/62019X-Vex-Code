@@ -8,8 +8,8 @@ Motor leftBase2(5, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); //normal motor
 Motor rightBase1(16, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 3
 Motor rightBase2(7, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 4
 
-Motor leftLift(11, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 6
-Motor rightLift(12, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 7
+Motor leftLift(11, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 6
+Motor rightLift(12, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); //normal motor plugged into port 7
 
 //Legacy Components
 ADIAnalogIn liftPot(3); //potentiometer for right side of lift in port 3

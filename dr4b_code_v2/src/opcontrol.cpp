@@ -3,8 +3,9 @@
 void opcontrol() {
 
 	std::uint_least32_t now = millis();
-	resetBaseEnc();
-	bool intkPos = false, intkAtck = false;
+	liftSetPoint = liftPot.get_value();
+	bool intkPos = false, //determines the position of the intake pistons, flips when intake is toggled
+		intkAtck = false; //used to limit the holding of a button to a single toggle
 
 	while(true) {
 
@@ -13,22 +14,23 @@ void opcontrol() {
 
 
 		if(l1() && !r1()) {
-			holdLift = false;
-			slowLift = false;
+			//holdLift = false;
+			//slowLift = false;
 			runLeftLift(100);
 			runRightLift(100);
 		}
 
 		else if(r1() && !l1()) {
-			holdLift = false;
-			slowLift = false;
+			//holdLift = false;
+			//slowLift = false;
 			runLeftLift(-100);
 			runRightLift(-100);
 		}
 
 		//else if(!slowLift && !holdLift)
 			//slowLift = true;
-		else {
+
+		else { //stop all lift movement when both l1 and r1 are pressed or released
 			runLeftLift(0);
 			runRightLift(0);
 		}
@@ -37,7 +39,7 @@ void opcontrol() {
 		if(l2())
 			intkAtck = false;
 
-		else if(!intkAtck) {
+		else if(!intkAtck) { //allows the button to be held down and intake toggles once
 			intkAtck = true;
 			setIntk(intkPos);
 			intkPos = !intkPos;
@@ -64,6 +66,7 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
+		//std::cout << liftPot.get_value() << std::endl;
 
 		Task::delay_until(&now, 1);		
 

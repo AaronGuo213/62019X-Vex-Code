@@ -2,7 +2,7 @@
 
 void initialize() {
 
-    //Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
+    //Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
     delay(100);
     liftSetPoint = getLiftHeight();
 
@@ -12,13 +12,13 @@ int autonCount = 0;
 
 void lcdScroll() {
 
-    if(autonCount > 3) {
+    if(autonCount > 3) { //loops the options
 
         autonCount = 0;
 
     }
 
-    else if(autonCount < 0) {
+    else if(autonCount < 0) { //loops the options
 
         autonCount = 3;
 
@@ -43,7 +43,7 @@ void lcdScroll() {
             break;
 
         default:
-            lcd::set_text(1, "GOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGOGO");
+            lcd::set_text(1, "ERROR");
             break;
 
     }
@@ -59,7 +59,6 @@ void on_left_pressed() {
 
 void on_center_pressed() {
 
-    autonCount = autonCount;
     lcd::shutdown();
 
 }
