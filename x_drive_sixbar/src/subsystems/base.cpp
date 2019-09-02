@@ -24,37 +24,37 @@ void runRightBase2(float percentage) {
 
 }
 
-float leftBaseRemap(float r, float theta) {
+float leftBaseRemap(float r, float theta) { //remaps the joystick value to send the correct voltage to the left base motors
 
-    theta += 45;
+    theta += 45; //shifts the angle by 45 degrees to accomodate for the angled motors on the x-drive
     float leftBaseVal;
 
-    if(theta == 0 || theta == 180)
+    if(theta == 0 || theta == 180) //if the value is purely for the left base
         leftBaseVal = r;
 
     else if(abs(cos(theta * M_PI / 180)) >= abs(sin(theta * M_PI / 180)))
-        leftBaseVal = r * sgn(cos(theta * M_PI / 180));
+        leftBaseVal = r * sgn(cos(theta * M_PI / 180)); //makes the value equal to the x portion of the joystick vector
 
     else if(abs(cos(theta * M_PI / 180)) < abs(sin(theta * M_PI / 180)))
-        leftBaseVal = r * cos(theta * M_PI / 180) / abs(sin(theta * M_PI / 180));
+        leftBaseVal = r * cos(theta * M_PI / 180) / abs(sin(theta * M_PI / 180)); //makes the value equal to a fraction of the joystick vector
 
     return leftBaseVal;
 
 }
 
-float rightBaseRemap(float r, float theta) {
+float rightBaseRemap(float r, float theta) {//remaps the joystick value to send the correct voltage to the right base motors
 
-    theta += 45;
+    theta += 45; //shifts the angle by 45 degrees to accomodate for the angled motors on the x-drive
     float rightBaseVal;
 
-    if(theta == 0 || theta == 180)
+    if(theta == 0 || theta == 180) //if the value is purely for the left base
         rightBaseVal = r;
 
-    else if(abs(sin(theta * M_PI / 180)) >= abs(cos(theta * M_PI / 180)))
-        rightBaseVal = r * sgn(sin(theta * M_PI / 180));
+    else if(abs(sin(theta * M_PI / 180)) >= abs(cos(theta * M_PI / 180))) 
+        rightBaseVal = r * sgn(sin(theta * M_PI / 180)); //makes the value equal to the y portion of the joystick vector
 
     else if(abs(sin(theta * M_PI / 180)) < abs(cos(theta * M_PI / 180)))
-        rightBaseVal = r * sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180));
+        rightBaseVal = r * sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180)); //makes the value equal to a fraction of the joystick vector
 
     return rightBaseVal;
 
@@ -160,28 +160,27 @@ void resetEnc() {
 
 }*/
 
-void moveStraight(float distance, float theta, int time) {
+void moveStraight(float distance, float theta, int time) { //PID for moving the base in any direction in a straight line
 
     theta += 45;
     float distVal, diffVal, highVal, lowVal;
     float leftVal, rightVal;
-    PID dist = initPID(1, 0, 1, 0.4, 0, 1);
-    PID diff = initPID(1, 0, 0, 0.1, 0, 1);
+    PID dist = initPID(1, 0, 1, 0.4, 0, 1); //kP = 0.4, kD = 1
+    PID diff = initPID(1, 0, 0, 0.1, 0, 1); //kP = 0.1
 
     resetBaseMotorEnc();
 
     for(int i = 0; i < time; i ++) {
 
-        dist.error = distance - pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5);
-        distVal = runPID(&dist) > 190 ? 190 : runPID(&dist);
-        //diff.error = -getRightBaseEnc() * cos(theta * M_PI / 180) + getLeftBaseEnc() * sin(theta * M_PI / 180);
-        diff.error = (rightBase1.get_actual_velocity() + rightBase2.get_actual_velocity()) / 2 * cos(theta * M_PI / 180) - (leftBase1.get_actual_velocity() + leftBase2.get_actual_velocity()) / 2 * sin(theta * M_PI / 180) + -getRightBaseEnc() * cos(theta * M_PI / 180) + getLeftBaseEnc() * sin(theta * M_PI / 180);
-        diffVal = runPID(&diff);
+        dist.error = distance - pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5); //uses the hypotenuse of the right triangle to find absolute distance traveled
+        distVal = runPID(&dist) > 190 ? 190 : runPID(&dist); //limits the distVal
+        diff.error = -getRightBaseEnc() * cos(theta * M_PI / 180) + getLeftBaseEnc() * sin(theta * M_PI / 180); //uses the ideal distances vs the actual distances of the motors to fix the angle of movement
+        diffVal = runPID(&diff); //updates the diffVal
 
-        highVal = distVal + diffVal > 200 ? 200 : distVal + diffVal;
+        highVal = distVal + diffVal > 200 ? 200 : distVal + diffVal; //finds the high and low values
         lowVal = distVal - diffVal > 200 ? 200 : distVal - diffVal;
 
-        if(abs(cos(theta * M_PI / 180)) > abs(sin(theta * M_PI / 180))) {
+        if(abs(cos(theta * M_PI / 180)) > abs(sin(theta * M_PI / 180))) { //makes one side run at full speed and the other side run at a fraction of that speed
 
             leftVal = lowVal * sgn(cos(theta * M_PI / 180));
             rightVal = sin(theta * M_PI / 180) / abs(cos(theta * M_PI / 180)) * highVal;
@@ -195,14 +194,7 @@ void moveStraight(float distance, float theta, int time) {
 
         }
 
-        //std::cout << getLeftBaseEnc() << " | " << getRightBaseEnc() << " | " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << "\n";
         std::cout << "distance: " << pow(pow(getLeftBaseEnc(), 2) + pow(getRightBaseEnc(), 2), 0.5) << " | dist error: " << dist.error << " | diff error: " << diff.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | time: " << i << "\n";
-        //std::cout << leftBase1.get_actual_velocity() << " | " << leftBase2.get_actual_velocity() << " | " << rightBase1.get_actual_velocity() << " | " << rightBase2.get_actual_velocity() << "\n";
-
-        /*if(i < 50) {
-            leftVal *= i / 50;
-            rightVal *= i / 50;
-        }*/
 
         runLeftBase1(leftVal);
         runLeftBase2(leftVal);
@@ -220,18 +212,18 @@ void moveStraight(float distance, float theta, int time) {
 
 }
 
-void turn(float theta, int time) {
+void turn(float theta, int time) { //uses a PID control loop to turn to a desired relative angle
 
-    float setPoint = -theta * 5.4;
+    float setPoint = -theta * 5.4; //modifies angle to fit the motor encoder values
     float turnVal;
-    PID turn = initPID(1, 0, 0, 0.45, 0, 0);
+    PID turn = initPID(1, 0, 0, 0.45, 0, 0); //kP = 0.45
 
     resetBaseMotorEnc();
 
-    for(int i = 0; i < time; i++) {
+    for(int i = 0; i < time; i++) { //time limit for the PID to run
 
-        turn.error = setPoint - getBaseMotorEnc();
-        turnVal = runPID(&turn);
+        turn.error = setPoint - getBaseMotorEnc(); //updates the error for the turn PID
+        turnVal = runPID(&turn); //updates the value for the motors, reference misc.cpp
 
         runLeftBase1(turnVal);
         runLeftBase2(-turnVal);

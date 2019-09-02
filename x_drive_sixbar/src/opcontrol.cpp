@@ -11,14 +11,14 @@ void opcontrol() {
 
 		//std::cout << getBaseMotorEnc() << "\n";
 
-		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5);
-		r = joyValRemap(r);
+		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5); //finds the absolute value of the joystick regardless of angle
+		r = joyValRemap(r); //remaps the joystick value to a more optimized array of values
 		theta = findTheta(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y));
 		
-		leftTransVal = 0.75 * leftBaseRemap(r, theta);
-		rightTransVal = 0.75 * rightBaseRemap(r, theta);
-		turnVal = joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X));
-		turnVal = r > 0 ? turnVal * 3 / 4 : turnVal * 3 / 4;
+		leftTransVal = 0.75 * leftBaseRemap(r, theta); //uses trigonometry to find the value the left motors should run at
+		rightTransVal = 0.75 * rightBaseRemap(r, theta); //uses trigonometry to find the value the right motors should run at
+		turnVal = joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_X)); //uses the right joystick's value to turn
+		turnVal *= 3 / 4; //limits the voltage for turning to 75% of max voltage
 
 		runLeftBase1(leftTransVal + turnVal);
 		runLeftBase2(leftTransVal - turnVal);
@@ -28,26 +28,26 @@ void opcontrol() {
 
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-			//manual = true;
+			manual = true;
 			runLift(100);
 		}
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_L1) && !liftLimit.get_value()) {
-			//manual = true;
+			manual = true;
 			runLift(-100);
 		}
-		else {
-			//manual = false;
+		else { //if R1 and L1 are both pressed or not pressed
+			manual = false;
 			runLift(0);
 		}
 
-		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP))
+		if(!master.get_digital(E_CONTROLLER_DIGITAL_UP)) //switch to allow holding the button to toggle once
 			resetAtck = false;
 		else if(!resetAtck) {
 			reset = true;
 			resetAtck = true;
 		}
 
-		if(reset && !liftLimit.get_value())
+		if(reset && !liftLimit.get_value()) //if reset is desired, the lift will move down until the button is triggered
 			runLift(-100);
 		else if(reset && liftLimit.get_value()) {
 			runLift(0);

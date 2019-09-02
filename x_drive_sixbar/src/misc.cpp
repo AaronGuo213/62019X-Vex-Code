@@ -23,46 +23,7 @@ float runPID(PID *pid) {
 
 float findTheta(float x, float y) {
 
-    float theta;
-
-    if(abs(x) > 0 || abs(y) > 0) {
-
-        if(x == 0) {
-            
-            if(y >= 6)
-                theta = 90;
-            else if(y <= -6)
-                theta = 270;
-
-        }
-
-        else if(y == 0) {
-
-            if(x >= 6)
-                theta = 0;
-            if(x <= -6)
-                theta = 180;
-
-        }
-
-        else if(x > 0) {
-            
-            theta = atan(y / x) * 180 / M_PI;
-
-        }
-
-        else if(x < 0) {
-
-            theta = atan(y / x) * 180 / M_PI + 180;
-
-        }
-
-    }
-
-    else
-        theta = 0;
-
-    return theta;
+    return atan2(y, x) * 180 / 3.1415926535; //returns the angle of the joystick in degrees
 
 }
 
@@ -71,15 +32,15 @@ float joyValRemap(float joyVal) {
 
     float percentVal = 0.0;
 
-    if((float)joyVal <= -3.0) {
+    if((float)joyVal <= -3.0) { //threshold prevents accidental movement at low values
 
-        percentVal = pow(-pow((float)joyVal, 2) - 6 * (float)joyVal + 18327.7, 0.5) - 154.414;
+        percentVal = pow(-pow((float)joyVal, 2) - 6 * (float)joyVal + 18327.7, 0.5) - 154.414; //uses a circle to maximize the versatility of slow movement and still allow for fast movement
 
     }
 
     else if((float)joyVal >= 3.0) {
 
-        percentVal = -pow(-pow((float)joyVal, 2) + 6 * (float)joyVal + 18327.7, 0.5) + 154.414;
+        percentVal = -pow(-pow((float)joyVal, 2) + 6 * (float)joyVal + 18327.7, 0.5) + 154.414; //uses the same circle but negated
 
     }
 
