@@ -2,36 +2,32 @@
 
 void runLeftBase(float percent) {
 
-    leftBase1.move_voltage(percent * 120); //runs the left base motors out of 12000mV
-    leftBase2.move_voltage(percent * 120);
+    leftBase1.move_voltage(percent * 120); //runs the left base motor out of 12000mV
 
 }
 
 void runRightBase(float percent) {
 
-    rightBase1.move_voltage(percent * 120); //runs the right base motors out of 12000mV
-    rightBase2.move_voltage(percent * 120);
+    rightBase1.move_voltage(percent * 120); //runs the right base motor out of 12000mV
 
 }
 
 float getLeftEnc() {
 
-    return (leftBase1.get_position() + leftBase2.get_position()) / 2; //averages the left base motor encoder values
+    return leftBase1.get_position();
 
 }
 
 float getRightEnc() {
 
-    return (rightBase1.get_position() + rightBase2.get_position()) / 2; //averages the right base motor encoder values
+    return rightBase1.get_position();
 
 }
 
 void resetBaseEnc() {
 
     leftBase1.tare_position();
-    leftBase2.tare_position();
     rightBase1.tare_position();
-    rightBase2.tare_position();
 
 }
 

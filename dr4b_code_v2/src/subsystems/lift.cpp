@@ -1,12 +1,5 @@
 #include "main.h"
 
-void setIntk(bool status) {
-
-    intk1.set_value(status);
-    intk2.set_value(status);
-
-}
-
 void runLeftLift(float percent) {
 
     leftLift.move_voltage(percent * 120); //runs the leftLift motor out of 12000mV
@@ -100,6 +93,7 @@ void liftCtrl(void* param) {
         }
 
         delay(10);
+        
     }
 
 }

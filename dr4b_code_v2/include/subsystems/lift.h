@@ -1,8 +1,6 @@
 #ifndef LIFT_H
 #define LIFT_H
 
-void setIntk(bool status);
-
 void runLeftLift(float percent);
 void runRightLift(float percent);
 int getLiftHeight();

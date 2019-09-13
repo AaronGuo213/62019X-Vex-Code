@@ -50,21 +50,21 @@ void opcontrol() {
 			leftBase1.set_voltage_limit(0);
 		else
 			leftBase1.set_voltage_limit(12000);
-		
-		if(leftBase2.is_over_temp() || leftBase2.is_over_current())
-			leftBase2.set_voltage_limit(0);
-		else
-			leftBase2.set_voltage_limit(12000);
 
 		if(rightBase1.is_over_temp() || rightBase1.is_over_current())
 			rightBase1.set_voltage_limit(0);
 		else
 			rightBase1.set_voltage_limit(12000);
 
-		if(rightBase2.is_over_temp() || rightBase2.is_over_current())
-			rightBase2.set_voltage_limit(0);
+		if(leftRoller.is_over_temp() || leftRoller.is_over_current())
+			leftRoller.set_voltage_limit(0);
 		else
-			rightBase2.set_voltage_limit(12000);
+			leftRoller.set_voltage_limit(12000);
+
+		if(rightRoller.is_over_temp() || rightRoller.is_over_current())
+			rightRoller.set_voltage_limit(0);
+		else
+			rightRoller.set_voltage_limit(12000);
 
 		//std::cout << liftPot.get_value() << std::endl;
 

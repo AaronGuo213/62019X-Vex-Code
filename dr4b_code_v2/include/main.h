@@ -73,6 +73,7 @@ void opcontrol(void);
 
 #ifdef __cplusplus
     #include "./subsystems/base.h"
+    #include "./subsystems/intake.h"
     #include "./subsystems/lift.h"
     #include "autonomi.h"
     #include "misc.h"
