@@ -2,6 +2,6 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    slowLift = true;
+    turn(180, 1500);
     
 }

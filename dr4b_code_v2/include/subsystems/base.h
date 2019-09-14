@@ -9,7 +9,7 @@ void resetBaseEnc();
 float getYawEnc();
 void resetYawEnc();
 
-void moveStraight(float dist, int time, float maxVal); //PID control loop for straight movement
+void moveStraight(float dist, int time, float maxVal = 100); //PID control loop for straight movement
 void turn(float theta, int time); //PID control loop for turning
 
 #endif
