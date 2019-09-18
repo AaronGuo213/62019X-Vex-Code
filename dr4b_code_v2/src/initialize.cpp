@@ -3,7 +3,6 @@
 void initialize() {
 
     //Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
-    //Task runRollers (rollerCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "rollers control task") //starts the cube roller task
     delay(100);
     liftSetPoint = getLiftHeight();
 

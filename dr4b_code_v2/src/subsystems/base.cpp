@@ -2,32 +2,38 @@
 
 void runLeftBase(float percent) {
 
-    leftBase1.move_voltage(percent * 120); //runs the left base motor out of 12000mV
+    leftBase1.move_voltage(percent * 120); //runs the left base motors out of 12000mV
+    leftBase2.move_voltage(percent * 120);
 
 }
 
 void runRightBase(float percent) {
 
-    rightBase1.move_voltage(percent * 120); //runs the right base motor out of 12000mV
+    rightBase1.move_voltage(percent * 120); //runs the right base motors out of 12000mV
+    rightBase2.move_voltage(percent * 120);
 
 }
 
 float getLeftEnc() {
 
-    return leftBase1.get_position();
+    return (leftBase1.get_position() + leftBase2.get_position()) / 2; 
+    //averages the left base motor encoder values
 
 }
 
 float getRightEnc() {
 
-    return rightBase1.get_position();
+    return (rightBase1.get_position() + rightBase2.get_position()) / 2; 
+    //averages the right base motor encoder values
 
 }
 
 void resetBaseEnc() {
 
     leftBase1.tare_position();
+    leftBase2.tare_position();
     rightBase1.tare_position();
+    rightBase2.tare_position();
 
 }
 
@@ -46,7 +52,7 @@ void resetYawEnc() {
 void moveStraight(float distance, int time, float maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
-    distance *= 13.60; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
+    distance *= 27.20; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
     float distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 0, 1, 0.7, 0.00006, 0.7); //kP = 1.1, kI = 0.00006, kD = 1
     PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
@@ -56,7 +62,7 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 4); //updates error for distance PID
+        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 2); //updates error for distance PID
         diff.error = (getLeftEnc() - getRightEnc()) / 2; //updates error for difference PID
         distVal = runPID(&dist); //updates distVal, reference misc.cpp
         distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to make and impact
