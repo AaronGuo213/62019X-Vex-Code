@@ -2,6 +2,6 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    turn(180, 1500);
+    turn(180, 3000, 70);
     
 }

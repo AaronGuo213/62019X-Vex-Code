@@ -10,6 +10,6 @@ float getYawEnc();
 void resetYawEnc();
 
 void moveStraight(float dist, int time, float maxVal = 100); //PID control loop for straight movement
-void turn(float theta, int time); //PID control loop for turning
+void turn(float theta, int time, float maxVal = 100); //PID control loop for turning
 
 #endif

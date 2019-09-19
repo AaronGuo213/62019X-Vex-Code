@@ -52,9 +52,9 @@ void resetYawEnc() {
 void moveStraight(float distance, int time, float maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
-    distance *= 27.20; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
+    distance *= 27.30; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
     float distVal, diffVal, leftVal, rightVal;
-    PID dist = initPID(1, 0, 1, 0.7, 0.00006, 0.7); //kP = 1.1, kI = 0.00006, kD = 1
+    PID dist = initPID(1, 0, 1, 0.75, 0.00006, 0.6); //kP = 1.1, kI = 0.00006, kD = 1
     PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
 
     resetBaseEnc();
@@ -78,7 +78,7 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
         runLeftBase(leftVal);
         runRightBase(rightVal);
 
-        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 4 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -89,11 +89,12 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
 
 }
 
-void turn(float theta, int time) { //PID control loop to turn a desired angle with minimal angle error
+void turn(float theta, int time, float maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    float setPoint = theta * 4.75;
+    float setPoint = theta * 2.75;
     float turnVal, dispVal;
-    PID turn = initPID(1, 0, 1, 0.5, 0.00005, 1.35); //kP = 0.4, kI = 0.00005, kD = 1;
+    float leftVal, rightVal;
+    PID turn = initPID(1, 0, 1, 0.9, 0.00005, 0.8); //kP = 0.4, kI = 0.00005, kD = 1;
     PID disp = initPID(0, 0, 0, 0, 0, 0);
 
     resetBaseEnc();
@@ -106,8 +107,10 @@ void turn(float theta, int time) { //PID control loop to turn a desired angle wi
         turnVal = runPID(&turn); //updates turnVal, reference misc.cpp
         dispVal = runPID(&disp); //updates dispVal, reference misc.cpp
 
-        runLeftBase(-turnVal - dispVal);
-        runRightBase(turnVal - dispVal);
+        leftVal = -turnVal - dispVal > maxVal ? maxVal : -turnVal - dispVal;
+        rightVal = turnVal - dispVal > maxVal ? maxVal : turnVal - dispVal;
+        runLeftBase(leftVal);
+        runRightBase(rightVal);
 
         std::cout << "setPoint: " << setPoint << " | currentPos: " << (getRightEnc() - getLeftEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
 

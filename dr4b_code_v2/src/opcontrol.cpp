@@ -14,26 +14,29 @@ void opcontrol() {
 
 
 		if(l1() && !r1()) {
-			//holdLift = false;
-			//slowLift = false;
+			holdLift = false;
+			slowLift = false;
 			runLeftLift(100);
 			runRightLift(100);
+			//liftSetPoint += 5;
 		}
 
 		else if(r1() && !l1()) {
-			//holdLift = false;
-			//slowLift = false;
+			holdLift = false;
+			slowLift = false;
 			runLeftLift(-100);
 			runRightLift(-100);
+			//liftSetPoint -= 5;
 		}
 
-		//else if(!slowLift && !holdLift)
-			//slowLift = true;
+		else if(!slowLift && !holdLift)
+			slowLift = true;
 
-		else { //stop all lift movement when both l1 and r1 are pressed or released
-			runLeftLift(0);
-			runRightLift(0);
-		}
+		/*else { //stop all lift movement when both l1 and r1 are pressed or released
+			slowLift = true;
+			//runLeftLift(0);
+			//runRightLift(0);
+		}*/
 
 
 		if(l2())
@@ -68,7 +71,7 @@ void opcontrol() {
 
 		//std::cout << liftPot.get_value() << std::endl;
 
-		Task::delay_until(&now, 1);		
+		Task::delay_until(&now, 10);		
 
 	}
 

@@ -15,9 +15,7 @@ extern Motor rightLift;
 
 //Legacy Components
 extern ADIAnalogIn liftPot; //potentiameter for lift control
-extern ADIUltrasonic cubeSensor; //sonar sensor for cube depth input
 extern ADIEncoder yawEnc; //encoder for horizontal movement
 extern ADIDigitalOut intk; //a solonoid for four pistons
-extern ADIDigitalOut rollers; //a solonoid for two pistons
 
 #endif
