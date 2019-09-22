@@ -5,7 +5,8 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 	liftSetPoint = liftPot.get_value();
 	bool intkPos = true, //determines the position of the intake pistons, flips when intake is toggled
-		intkAtck = false; //used to limit the holding of a button to a single toggle
+		intkAtck = false, //used to limit the holding of a button to a single toggle
+		lockAtck = true; //used to limit the holding of a button to a single toggle
 
 	while(true) {
 
@@ -45,6 +46,15 @@ void opcontrol() {
 		else if(!intkAtck) { //allows the button to be held down and intake toggles once
 			intkAtck = true;
 			setIntk(intkPos);
+			intkPos = !intkPos;
+		}
+
+		if(master.get_digital(E_CONTROLLER_DIGITAL_A))
+			lockAtck = false;
+
+		else if(!intkAtck) { //allows the button to be held down and intake toggles once
+			lockAtck = true;
+			setLock(intkPos);
 			intkPos = !intkPos;
 		}
 			

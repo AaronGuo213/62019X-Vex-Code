@@ -2,6 +2,6 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    red2();
+    red3();
     
 }

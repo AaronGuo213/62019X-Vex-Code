@@ -16,6 +16,7 @@ extern Motor rightLift;
 //Legacy Components
 extern ADIAnalogIn liftPot; //potentiameter for lift control
 extern ADIEncoder yawEnc; //encoder for horizontal movement
-extern ADIDigitalOut intk; //a solonoid for four pistons
+extern ADIDigitalOut intk; //a solonoid for two pistons
+extern ADIDigitalOut lock; //a solonoid for two
 
 #endif
