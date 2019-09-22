@@ -4,7 +4,7 @@ void opcontrol() {
 
 	std::uint_least32_t now = millis();
 	liftSetPoint = liftPot.get_value();
-	bool intkPos = false, //determines the position of the intake pistons, flips when intake is toggled
+	bool intkPos = true, //determines the position of the intake pistons, flips when intake is toggled
 		intkAtck = false; //used to limit the holding of a button to a single toggle
 
 	while(true) {
@@ -69,8 +69,8 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
-		//std::cout << liftPot.get_value() << std::endl;
-
+		std::cout << liftPot.get_value() << std::endl;
+		
 		Task::delay_until(&now, 10);		
 
 	}

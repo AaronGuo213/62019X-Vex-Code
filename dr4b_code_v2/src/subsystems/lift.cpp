@@ -39,7 +39,7 @@ void liftCtrl(void* param) {
         if(holdLift) {
 
             liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
-            liftSetPoint = liftSetPoint < 290 ? 290 : liftSetPoint; //lift cannot be lower than 275
+            liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
         
             hold.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
             holdVal = runPID(&hold); //updates the holdVal, referecne misc.cpp
@@ -71,7 +71,7 @@ void liftCtrl(void* param) {
             }
 
             liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
-            liftSetPoint = liftSetPoint < 290 ? 290 : liftSetPoint; //lift cannot be lower than 275
+            liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
         
             slow.error = liftSetPoint - getLiftHeight(); //updates error for slowPID
             slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp

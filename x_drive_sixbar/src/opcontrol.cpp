@@ -11,7 +11,8 @@ void opcontrol() {
 
 		//std::cout << getBaseMotorEnc() << "\n";
 
-		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5) > 127 ? 127 : pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5); //finds the absolute value of the joystick regardless of angle
+		r = pow(pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), 2) + pow(master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y), 2), 0.5); //finds the absolute value of the joystick regardless of angle
+		r = r > 127 ? 127 : r;
 		r = joyValRemap(r); //remaps the joystick value to a more optimized array of values
 		theta = findTheta(master.get_analog(E_CONTROLLER_ANALOG_LEFT_X), master.get_analog(E_CONTROLLER_ANALOG_LEFT_Y));
 		

@@ -52,7 +52,7 @@ void resetYawEnc() {
 void moveStraight(float distance, int time, float maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
-    distance *= 27.30; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
+    distance *= 13.65; //makes the input distance = 48 exactly one tile length, distance = 11 exactly one cube length
     float distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 0, 1, 0.75, 0.00006, 0.6); //kP = 1.1, kI = 0.00006, kD = 1
     PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
@@ -71,9 +71,9 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
         
         //limiting the base values one final time
         leftVal = distVal - diffVal;
-        leftVal > maxVal ? maxVal : leftVal;
+        leftVal = leftVal > maxVal ? maxVal : leftVal;
         rightVal = distVal + diffVal;
-        rightVal > maxVal ? maxVal : rightVal;
+        rightVal = rightVal > maxVal ? maxVal : rightVal;
 
         runLeftBase(leftVal);
         runRightBase(rightVal);
@@ -91,10 +91,10 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
 
 void turn(float theta, int time, float maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    float setPoint = theta * 2.75;
+    float setPoint = theta * 2.4;
     float turnVal, dispVal;
     float leftVal, rightVal;
-    PID turn = initPID(1, 0, 1, 0.9, 0.00005, 0.8); //kP = 0.4, kI = 0.00005, kD = 1;
+    PID turn = initPID(1, 0, 1, 0.9, 0, 0.6); //kP = 0.4, kI = 0.00005, kD = 1;
     PID disp = initPID(0, 0, 0, 0, 0, 0);
 
     resetBaseEnc();
