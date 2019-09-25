@@ -5,8 +5,9 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 	liftSetPoint = liftPot.get_value();
 	bool intkPos = true, //determines the position of the intake pistons, flips when intake is toggled
-		intkAtck = false, //used to limit the holding of a button to a single toggle
-		lockAtck = true; //used to limit the holding of a button to a single toggle
+		intkAtck = true, //used to limit the holding of a button to a single toggle
+		lockAtck = false, //used to limit the holding of a button to a single toggle
+		stackAtck = false;
 
 	while(true) {
 
@@ -19,7 +20,6 @@ void opcontrol() {
 			slowLift = false;
 			runLeftLift(100);
 			runRightLift(100);
-			//liftSetPoint += 5;
 		}
 
 		else if(r1() && !l1()) {
@@ -27,33 +27,40 @@ void opcontrol() {
 			slowLift = false;
 			runLeftLift(-100);
 			runRightLift(-100);
-			//liftSetPoint -= 5;
 		}
 
 		else if(!slowLift && !holdLift)
 			slowLift = true;
 
-		/*else { //stop all lift movement when both l1 and r1 are pressed or released
-			slowLift = true;
-			//runLeftLift(0);
-			//runRightLift(0);
-		}*/
+
+		if(r2())
+			stackAtck = true;
+		
+		else if(stackAtck) {
+			stackAtck = false;
+			if(holdLift || slowLift) {
+				if(liftSetPoint > 400)
+					liftSetPoint = 300;
+				else
+					liftSetPoint = 700;
+			}
+		}
 
 
 		if(l2())
-			intkAtck = false;
-
-		else if(!intkAtck) { //allows the button to be held down and intake toggles once
 			intkAtck = true;
+
+		else if(intkAtck) { //allows the button to be held down and intake toggles once
+			intkAtck = false;
 			setIntk(intkPos);
 			intkPos = !intkPos;
 		}
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_A))
-			lockAtck = false;
-
-		else if(!intkAtck) { //allows the button to be held down and intake toggles once
 			lockAtck = true;
+
+		else if(lockAtck) { //allows the button to be held down and intake toggles once
+			lockAtck = false;
 			setLock(intkPos);
 			intkPos = !intkPos;
 		}
@@ -79,7 +86,7 @@ void opcontrol() {
 		else
 			rightBase2.set_voltage_limit(12000);
 
-		std::cout << liftPot.get_value() << std::endl;
+		//std::cout << liftPot.get_value() << std::endl;
 		
 		Task::delay_until(&now, 10);		
 
