@@ -25,7 +25,7 @@ int getLiftSpeed() {
 }
 
 int liftSetPoint; //setPoint that lift PID moves to and holds at
-bool holdLift = true, slowLift = false;
+bool holdLift = true, slowLift = false, stack = false;
 
 void liftCtrl(void* param) {
 
@@ -35,6 +35,18 @@ void liftCtrl(void* param) {
     int timer = 20;
 
     while(true) {
+
+        if(stack) {
+
+            if(getLiftHeight() > 370)
+                liftSetPoint = 300;
+
+            else {
+                stack = false;
+                liftSetPoint = 700;
+            }
+
+        }
 
         if(holdLift) {
 

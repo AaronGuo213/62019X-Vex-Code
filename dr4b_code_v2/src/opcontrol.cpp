@@ -6,7 +6,7 @@ void opcontrol() {
 	liftSetPoint = liftPot.get_value();
 	bool intkPos = true, //determines the position of the intake pistons, flips when intake is toggled
 		intkAtck = true, //used to limit the holding of a button to a single toggle
-		lockAtck = false, //used to limit the holding of a button to a single toggle
+		lockAtck = false,
 		stackAtck = false;
 
 	while(true) {
@@ -38,12 +38,13 @@ void opcontrol() {
 		
 		else if(stackAtck) {
 			stackAtck = false;
-			if(holdLift || slowLift) {
+			stack = true;
+			/*if(holdLift || slowLift) {
 				if(liftSetPoint > 400)
 					liftSetPoint = 300;
 				else
 					liftSetPoint = 700;
-			}
+			}*/
 		}
 
 
