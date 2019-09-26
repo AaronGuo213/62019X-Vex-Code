@@ -72,9 +72,9 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
         
         //limiting the base values one final time
         leftVal = distVal - diffVal;
-        leftVal = leftVal > maxVal ? maxVal : leftVal;
+        leftVal = abs(leftVal) > abs(maxVal) ? maxVal * sgn(leftVal) : leftVal;
         rightVal = distVal + diffVal;
-        rightVal = rightVal > maxVal ? maxVal : rightVal;
+        rightVal = abs(rightVal) > abs(maxVal) ? maxVal * sgn(rightVal) : rightVal;
 
         runLeftBase(leftVal);
         runRightBase(rightVal);
@@ -108,12 +108,15 @@ void turn(float theta, int time, float maxVal) { //PID control loop to turn a de
         turnVal = runPID(&turn); //updates turnVal, reference misc.cpp
         dispVal = runPID(&disp); //updates dispVal, reference misc.cpp
 
-        leftVal = -turnVal - dispVal > maxVal ? maxVal : -turnVal - dispVal;
-        rightVal = turnVal - dispVal > maxVal ? maxVal : turnVal - dispVal;
+        leftVal = -turnVal - dispVal;
+        leftVal = abs(leftVal) > abs(maxVal) ? maxVal * sgn(leftVal) : leftVal;
+        rightVal = turnVal - dispVal;
+        rightVal = abs(rightVal) > abs(maxVal) ? maxVal * sgn(rightVal) : rightVal;
         runLeftBase(leftVal);
         runRightBase(rightVal);
 
         std::cout << "setPoint: " << setPoint << " | currentPos: " << (getRightEnc() - getLeftEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
+        std::cout << "leftVal: " << leftVal << " | rightVal: " << rightVal << std::endl;
 
         delay(10);
 

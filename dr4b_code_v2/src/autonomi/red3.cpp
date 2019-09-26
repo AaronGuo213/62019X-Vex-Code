@@ -17,8 +17,8 @@ void red3() {
     delay(800);
     liftSetPoint = 500;
     delay(500);
-    moveStraight(-40, 2000, 5);
-    turn(-128, 1000, 40);
+    moveStraight(-30, 1700, 30);
+    turn(-128, 1400, 40);
     moveStraight(60, 2000, 70);
     liftSetPoint = 300;
     delay(500);

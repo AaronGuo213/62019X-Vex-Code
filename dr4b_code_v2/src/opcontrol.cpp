@@ -18,6 +18,7 @@ void opcontrol() {
 		if(l1() && !r1()) {
 			holdLift = false;
 			slowLift = false;
+			stack = false;
 			runLeftLift(100);
 			runRightLift(100);
 		}
@@ -25,6 +26,7 @@ void opcontrol() {
 		else if(r1() && !l1()) {
 			holdLift = false;
 			slowLift = false;
+			stack = false;
 			runLeftLift(-100);
 			runRightLift(-100);
 		}
