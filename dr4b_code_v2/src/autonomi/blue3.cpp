@@ -1,6 +1,6 @@
 #include "main.h"
 
-void red3() { //autonomous for the four in a row
+void blue3() { //autonomous for the four in a row
 
     liftSetPoint = 600;
     moveStraight(37, 1500);
@@ -18,7 +18,7 @@ void red3() { //autonomous for the four in a row
     liftSetPoint = 500;
     delay(500);
     moveStraight(-30, 1700, 30);
-    turn(-128, 1400, 40);
+    turn(128, 1400, 40);
     moveStraight(60, 2000, 70);
     liftSetPoint = 300;
     delay(500);

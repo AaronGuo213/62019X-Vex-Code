@@ -1,6 +1,6 @@
 #include "main.h"
 
-void red4() {
+void blue2() { //autonomous for the long L
 
     liftSetPoint = 600;
     moveStraight(48, 1500);
