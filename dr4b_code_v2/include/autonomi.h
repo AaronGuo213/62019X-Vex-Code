@@ -1,6 +1,7 @@
 #ifndef AUTONOMI_H
 #define AUTONOMI_H
 
+extern int autonCount;
 void red1();
 void red2();
 void red3();
