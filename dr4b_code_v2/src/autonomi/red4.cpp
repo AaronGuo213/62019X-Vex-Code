@@ -6,12 +6,12 @@ void red4() {
     moveStraight(48, 1500);
     stack = true;
     delay(800);
-    moveStraight(12, 700, 40);
+    moveStraight(12, 1000, 25);
     stack = true;
     delay(800);
     liftSetPoint = 900;
     delay(1000);
-    moveStraight(12, 1000, 30);
-    stack = true;
+    moveStraight(13, 1000, 30);
+    liftSetPoint = 300;
 
 }
