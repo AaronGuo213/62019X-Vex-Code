@@ -1,21 +1,22 @@
 #include "main.h"
 
-int clawCount = 0, clawPercent;
+int clawCount = 0, //timer for the claw
+    clawPercent; //determines what power the claw runs at
 
-void runClaw(float percent, int time) {
+void runClaw(float percent, int time) { //function for running the claw
 
-    clawCount = time;
+    clawCount = time; //assigns values to the global variables
     clawPercent = percent;
 
 }
 
-void clawCtrl(void* param) {
+void clawCtrl(void* param) { //task for running the claw
 
     while(true) {
 
-        if(clawCount != 0) {
+        if(clawCount > 0) { //while the timer is still running
 
-            clawCount --;
+            clawCount --; //remove 1ms from the timer
             claw1.move_voltage(clawPercent * 120);
             claw2.move_voltage(clawPercent * 120);
 

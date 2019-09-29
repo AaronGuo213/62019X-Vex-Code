@@ -13,7 +13,7 @@ int autonCount = 0;
 
 void lcdScroll() {
 
-    if(autonCount > 5) { //loops the options
+    if(autonCount > 6) { //loops the options
 
         autonCount = 0;
 
@@ -21,7 +21,7 @@ void lcdScroll() {
 
     else if(autonCount < 0) { //loops the options
 
-        autonCount = 5;
+        autonCount = 6;
 
     }
 
@@ -55,6 +55,10 @@ void lcdScroll() {
         case 5:
             lcd::set_text(1, "BLUE3\n");
             lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
+            break;
+
+        case 6:
+            lcd::set_text(1, "No Auton\n");
             break;
 
         default:
