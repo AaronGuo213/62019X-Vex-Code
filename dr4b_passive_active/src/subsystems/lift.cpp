@@ -26,13 +26,13 @@ int getLiftSpeed() {
 
 int liftSetPoint; //setPoint that lift PID moves to and holds at
 bool holdLift = true, slowLift = false, stack = false;
+int slowTimer = 500;
 
 void liftCtrl(void* param) {
 
     PID hold = initPID(1, 1, 0, 0.3, 0.0001, 2); //kP = 0.4, kD = 2
     PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
     float holdVal = 0, slowVal = 0;
-    int timer = 20;
 
     while(true) {
 
@@ -75,12 +75,16 @@ void liftCtrl(void* param) {
 
         else if(slowLift) {
 
-            if(abs(getLiftSpeed()) < 2) { //once the lift has been slowed to prevent bouncing
+            if(abs(getLiftSpeed()) < 2 || slowTimer <= 0) { //once the lift has been slowed to prevent bouncing
                 holdLift = true; //switches to hold lift
                 slowLift = false;
                 slow.error = 0.0; //resets slowError
                 liftSetPoint = liftPot.get_value(); //makes the lift hold at the current spot
+                std::cout << slowTimer << std::endl;
             }
+
+            else
+                slowTimer -= 10;
 
             liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
             liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
