@@ -7,17 +7,17 @@ void red3() { //autonomous for the four in a row
     stack = true;
     delay(800);
 
-    moveStraight(12, 700, 40); //stacks the second cube
+    moveStraight(12, 900, 40); //stacks the second cube
     stack = true;
-    delay(800);
+    delay(1000);
 
-    moveStraight(12, 700, 40); //stacks the third cube
+    moveStraight(12, 900, 40); //stacks the third cube
     stack = true;
-    delay(800);
+    delay(1000);
 
-    moveStraight(12, 700, 40); //stacks the fourth cube
+    moveStraight(12, 900, 40); //stacks the fourth cube
     stack = true;
-    delay(800);
+    delay(1000);
 
     liftSetPoint = 500; //lifts the cubes above the ground
     delay(500); //this helps the robot avoid dragging

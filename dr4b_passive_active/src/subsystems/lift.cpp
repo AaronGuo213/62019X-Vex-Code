@@ -30,7 +30,7 @@ int slowTimer = 500;
 
 void liftCtrl(void* param) {
 
-    PID hold = initPID(1, 1, 0, 0.3, 0.0001, 2); //kP = 0.4, kD = 2
+    PID hold = initPID(1, 1, 0, 0.3, 0.0001, 0); //kP = 0.3, kI = 0.0001
     PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
     float holdVal = 0, slowVal = 0;
 
@@ -38,7 +38,7 @@ void liftCtrl(void* param) {
 
         if(stack) {
 
-            if(getLiftHeight() > 370)
+            if(getLiftHeight() > 400)
                 liftSetPoint = 300;
 
             else {
@@ -60,16 +60,6 @@ void liftCtrl(void* param) {
             runRightLift(holdVal);
 
             //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
-
-            if(leftLift.is_over_temp() || leftLift.is_over_current())
-                leftLift.set_voltage_limit(0);
-            else
-                leftLift.set_voltage_limit(12000);
-
-            if(rightLift.is_over_temp() || rightLift.is_over_current())
-                rightLift.set_voltage_limit(0);
-            else
-                rightLift.set_voltage_limit(12000);
 
         }
 
@@ -96,18 +86,19 @@ void liftCtrl(void* param) {
             runRightLift(slowVal);
 
             //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | slow.error: " << slow.error << " | slowVal: " << slowVal << " | speed: " << getLiftSpeed() << std::endl;
-        
-            if(leftLift.is_over_temp() || leftLift.is_over_current())
-                leftLift.set_voltage_limit(0);
-            else
-                leftLift.set_voltage_limit(12000);
-
-            if(rightLift.is_over_temp() || rightLift.is_over_current())
-                rightLift.set_voltage_limit(0);
-            else
-                rightLift.set_voltage_limit(12000);
 
         }
+
+        //prevents the motors from overheating and breaking
+        if(leftLift.is_over_temp() || leftLift.is_over_current())
+            leftLift.set_voltage_limit(0);
+        else
+            leftLift.set_voltage_limit(12000);
+
+        if(rightLift.is_over_temp() || rightLift.is_over_current())
+            rightLift.set_voltage_limit(0);
+        else
+            rightLift.set_voltage_limit(12000);
 
         delay(10);
         

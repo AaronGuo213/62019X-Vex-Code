@@ -15,40 +15,34 @@ void opcontrol() {
 		runRightBase(joyValRemap(rY()));
 
 
-		if(l1() && !r1()) {
-			holdLift = false;
+		if(l1() && !r1()) { //to move the lift up
+			holdLift = false; //stops holding the lift in place
 			slowLift = false;
 			stack = false;
-			runLeftLift(100);
+			runLeftLift(100); //runs the lift motors at 100% up
 			runRightLift(100);
 		}
 
-		else if(r1() && !l1()) {
-			holdLift = false;
+		else if(r1() && !l1()) { //to move the lift down
+			holdLift = false; //stops holding the lift in place
 			slowLift = false;
 			stack = false;
-			runLeftLift(-100);
+			runLeftLift(-100); //runs the lift motors at 100% down
 			runRightLift(-100);
 		}
 
-		else if(!slowLift && !holdLift) {
-			slowTimer = 300;
-			slowLift = true;
+		else if(!slowLift && !holdLift) { //to hold the lift in place
+			slowTimer = 300; //sets the max timer for the slowLift phase
+			slowLift = true; //activates the deceleration of the lift
 		}
 
 
 		if(!r2())
 			stackAtck = true;
 		
-		else if(stackAtck) {
+		else if(stackAtck) { //allows the button to be held down and intake toggles once
 			stackAtck = false;
 			stack = true;
-			/*if(holdLift || slowLift) {
-				if(liftSetPoint > 400)
-					liftSetPoint = 300;
-				else
-					liftSetPoint = 700;
-			}*/
 		}
 
 
