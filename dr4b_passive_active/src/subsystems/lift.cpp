@@ -26,7 +26,7 @@ int getLiftSpeed() {
 
 int liftSetPoint; //setPoint that lift PID moves to and holds at
 bool holdLift = true, slowLift = false, stack = false;
-int slowTimer = 500;
+int slowTimer = 300;
 
 void liftCtrl(void* param) {
 

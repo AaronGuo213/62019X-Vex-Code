@@ -2,6 +2,11 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
+    setIntk(0);
+    delay(200);
+    setIntk(1);
+    delay(200);
+
     if(autonCount == 0)
         red1();
 
