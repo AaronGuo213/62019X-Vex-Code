@@ -10,7 +10,7 @@ void red1() { //autonomous for the four stack
 
     liftSetPoint = 1400; //stakcs 3 more cubes
     delay(1000);
-    moveStraight(29, 2000, 30);
+    moveStraight(29, 2500, 30);
     liftSetPoint = 700;
     delay(1000);
 

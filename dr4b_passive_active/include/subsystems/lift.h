@@ -7,6 +7,7 @@ int getLiftHeight();
 int getLiftSpeed();
 extern int liftSetPoint;
 extern bool holdLift, slowLift, stack;
+extern bool resetPID;
 extern int slowTimer;
 void liftCtrl(void* param); //slows and holds lift on queues
 

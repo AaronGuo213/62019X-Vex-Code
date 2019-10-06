@@ -2,7 +2,7 @@
 
 void blue2() { //autonomous for the long L
 
-    liftSetPoint = 600; //stacks the first cube
+    liftSetPoint = 650; //stacks the first cube
     moveStraight(48, 1500);
     stack = true;
     delay(800);

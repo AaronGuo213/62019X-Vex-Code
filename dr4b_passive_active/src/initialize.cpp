@@ -2,9 +2,9 @@
 
 void initialize() {
 
-    Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
-    delay(100);
+    delay(200);
     liftSetPoint = getLiftHeight();
+    Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
     setIntk(1);
 
 }
@@ -28,32 +28,32 @@ void lcdScroll() {
     switch(autonCount) {
 
         case 0:
-            lcd::set_text(1, "RED1\n");
+            lcd::set_text(2, "RED1\n");
             lcd::set_text(1, "4 Stack, 5 Cubes in Big Goal");
             break;
 
         case 1:
-            lcd::set_text(1, "RED2\n");
+            lcd::set_text(2, "RED2\n");
             lcd::set_text(1, "Long L, 5 Cubes Unscored");
             break;
 
         case 2:
-            lcd::set_text(1, "RED3\n");
+            lcd::set_text(2, "RED3\n");
             lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
             break;
 
         case 3:
-            lcd::set_text(1, "BLUE1\n");
+            lcd::set_text(2, "BLUE1\n");
             lcd::set_text(1, "4 Stack, 5 Cubes in Big Goal");
             break;
             
         case 4:
-            lcd::set_text(1, "BLUE2\n");
+            lcd::set_text(2, "BLUE2\n");
             lcd::set_text(1, "Long L, 5 Cubes Unscored");
             break;
 
         case 5:
-            lcd::set_text(1, "BLUE3\n");
+            lcd::set_text(2, "BLUE3\n");
             lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
             break;
 
@@ -102,6 +102,6 @@ void competition_initialize() {
 
 void disabled() {
 
-
+    
 
 }
