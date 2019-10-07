@@ -5,7 +5,7 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 	liftSetPoint = getLiftHeight();
 	resetPID = true;
-	bool intkPos = false, //determines the position of the intake pistons, flips when intake is toggled
+	bool intkPos = true, //determines the position of the intake pistons, flips when intake is toggled
 		intkAtck = false, //used to limit the holding of a button to a single toggle
 		lockAtck = false,
 		stackAtck = false;

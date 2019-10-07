@@ -3,7 +3,7 @@
 void red2() { //autonomous for the long L
 
     liftSetPoint = 650; //stacks the first cube
-    moveStraight(48, 1500);
+    moveStraight(50, 1500);
     stack = true;
     delay(800);
 

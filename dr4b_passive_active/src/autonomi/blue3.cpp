@@ -2,38 +2,19 @@
 
 void blue3() { //autonomous for the four in a row
 
-    liftSetPoint = 650; //stacks the first cube
-    moveStraight(37, 1500);
+    liftSetPoint = 600;
+    moveStraight(20, 1000, 80);
     liftSetPoint = 300;
-    delay(500);
-    liftSetPoint = 700;
-    delay(400);
-
-    moveStraight(12, 900, 40); //stacks the second cube
+    delay(1000);
+    liftSetPoint = 500;
+    delay(1000);
+    moveStraight(-11, 3000, 50);
+    turn(-90, 1500, 40);
+    moveStraight(60, 1700, 80); //moves to goal and lowers lift to the ground
     liftSetPoint = 300;
+    moveStraight(12, 1200, 40); //inches forward to move the cubes past the ramp
+    setIntk(0); //outtakes and backs up
     delay(500);
-    liftSetPoint = 700;
-    delay(400);
-
-    moveStraight(12, 900, 40); //stacks the third cube
-    liftSetPoint = 300;
-    delay(500);
-    liftSetPoint = 700;
-    delay(400);
-
-    moveStraight(12, 1000, 30); //stacks the fourth cube
-    liftSetPoint = 300;
-    delay(500);
-
-    liftSetPoint = 500; //lifts the cubes above the ground
-    delay(500); //this helps the robot avoid dragging
-    moveStraight(-30, 1700, 30); //moves back and turns to the goal
-    turn(128, 1400, 40);
-    moveStraight(60, 2000, 70); //runs into the goal
-    liftSetPoint = 300; //outtakes and moves back from the stack
-    delay(500);
-    setIntk(0);
-    delay(500);
-    moveStraight(-50, 1000, 50);
+    moveStraight(-20, 1000, 60);
     
 }

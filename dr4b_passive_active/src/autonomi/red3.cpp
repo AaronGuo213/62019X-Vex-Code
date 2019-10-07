@@ -27,7 +27,7 @@ void red3() { //autonomous for the four in a row
 
     liftSetPoint = 500; //lifts the cubes above the ground
     delay(500); //this helps the robot avoid dragging
-    moveStraight(-30, 1700, 30); //moves back and turns to the goal
+    moveStraight(-35, 2000, 30); //moves back and turns to the goal
     turn(-128, 1400, 40);
     moveStraight(60, 2000, 70); //runs into the goal
     liftSetPoint = 300; //outtakes and moves back from the stack
