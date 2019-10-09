@@ -1,27 +1,45 @@
 #include "main.h"
 
-void runLeftBase(float percent) {
+void runLeftBase(double percent) {
 
     leftBase1.move_voltage(percent * 120); //runs the left base motors out of 12000mV
     leftBase2.move_voltage(percent * 120);
 
 }
 
-void runRightBase(float percent) {
+void runRightBase(double percent) {
 
     rightBase1.move_voltage(percent * 120); //runs the right base motors out of 12000mV
     rightBase2.move_voltage(percent * 120);
 
 }
 
-float getLeftEnc() {
+void updateBase() {
+
+    runLeftBase(joyValRemap(lY()));
+    runRightBase(joyValRemap(rY()));
+
+    //prevents the motors from overheating and breaking
+    if(leftLift.is_over_temp())
+        leftLift.set_voltage_limit(0);
+    else
+        leftLift.set_voltage_limit(12000);
+
+    if(rightLift.is_over_temp())
+        rightLift.set_voltage_limit(0);
+    else
+        rightLift.set_voltage_limit(12000);
+
+}
+
+double getLeftEnc() {
 
     return (leftBase1.get_position() + leftBase2.get_position()) / 2; 
     //averages the left base motor encoder values
 
 }
 
-float getRightEnc() {
+double getRightEnc() {
 
     return (rightBase1.get_position() + rightBase2.get_position()) / 2; 
     //averages the right base motor encoder values
@@ -37,7 +55,7 @@ void resetBaseEnc() {
 
 }
 
-float getYawEnc() {
+double getYawEnc() {
 
     return yawEnc.get_value();
 
@@ -49,11 +67,11 @@ void resetYawEnc() {
 
 }
 
-void moveStraight(float distance, int time, float maxVal) { //PID control loop to move the base to a certain relative 
+void moveStraight(double distance, int time, double maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
     distance *= 17.4; //makes the input distance 48 exactly equal to one tile length, distance 11 exactly equal to one cube length
-    float distVal, diffVal, leftVal, rightVal;
+    double distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 0, 1, 0.75, 0, 0.6); //kP = 0.75, kD = 0.6
     PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
 
@@ -89,11 +107,11 @@ void moveStraight(float distance, int time, float maxVal) { //PID control loop t
 
 }
 
-void turn(float theta, int time, float maxVal) { //PID control loop to turn a desired angle with minimal angle error
+void turn(double theta, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    float setPoint = theta * 3.1; //adjusts the angle to fit with the encoder values
-    float turnVal, dispVal;
-    float leftVal, rightVal;
+    double setPoint = theta * 3.1; //adjusts the angle to fit with the encoder values
+    double turnVal, dispVal;
+    double leftVal, rightVal;
     PID turn = initPID(1, 0, 1, 0.8, 0, 0.6); //kP = 0.8, kD = 0.6;
     PID disp = initPID(0, 0, 0, 0, 0, 0); //disp PID not active
 

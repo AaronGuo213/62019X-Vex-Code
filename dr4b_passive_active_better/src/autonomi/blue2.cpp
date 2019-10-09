@@ -1,7 +1,7 @@
 #include "main.h"
 
 void blue2() { //autonomous for the long L
-
+/*
     liftSetPoint = 650; //stacks the first cube
     moveStraight(48, 1500);
     stack = true;
@@ -15,5 +15,5 @@ void blue2() { //autonomous for the long L
     delay(1000);
     moveStraight(13, 1000, 30);
     liftSetPoint = 300; //stacks the last two cubes
-
+*/
 }

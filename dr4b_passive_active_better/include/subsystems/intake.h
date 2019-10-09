@@ -4,4 +4,7 @@
 void setIntk(bool status);
 void setLock(bool status);
 
+extern bool intkSwitch, intkPos;
+void updateIntk();
+
 #endif

@@ -1,0 +1,11 @@
+Add the debug option to functions that is automatically false until made true, then prints in terminal
+
+Add a limit to the top and bottom of the lift and limit the speed if the lift when near the top or bottom
+
+Create a get height function for the lift that offsets the potentiometer
+
+************Create more functions for driver control (safe check for motors, update base, update intk, update lift)
+
+Make an array of values for holding a certain number of cubes, maybe use pid for moving to a setpoint in auton, then hold again
+
+************Raise lift simple function, uses main power to reach target, then uses brake power for a short period before going to hold function
