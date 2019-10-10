@@ -1,5 +1,7 @@
 #include "main.h"
 
+const int MAX_HEIGHT = 200, MIN_HEIGHT = 1600;
+
 void runLeftLift(double percent) {
 
     leftLift.move_voltage(percent * 120); //runs the leftLift motor out of 12000mV
@@ -35,7 +37,7 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 int getLiftHeight() {
 
-    return liftPot.get_value();
+    return liftPot.get_value() - 0;
 
 }
 
@@ -80,9 +82,9 @@ void liftCtrl(void* param) {
                 resetIntegral = false;
             }
 
-            liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
-            liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
-        
+            liftSetPoint = liftSetPoint > 1800 ? 1800 : liftSetPoint; //lift cannot be higher than 1800
+            liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
+    
             holdLift.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
             holdVal = runPID(&holdLift); //updates the holdVal, reference misc.cpp
 
@@ -132,13 +134,13 @@ void updateLift() {
 
     if(r1() && !l1()) {
         liftStat = LiftStatus::manual;
-        setLift(100);
+        setLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
         liftSetPoint = getLiftHeight();
     }
 
     else if(!r1() && l1()) {
         liftStat = LiftStatus::manual;
-        setLift(-100);
+        setLift(getLiftHeight() < MIN_HEIGHT ? -20 : -100);
         liftSetPoint = getLiftHeight();
     }
 

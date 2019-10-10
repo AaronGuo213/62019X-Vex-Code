@@ -1,8 +1,8 @@
 Add the debug option to functions that is automatically false until made true, then prints in terminal
 
-Add a limit to the top and bottom of the lift and limit the speed if the lift when near the top or bottom
+************Add a limit to the top and bottom of the lift and limit the speed of the lift when near the top or bottom
 
-Create a get height function for the lift that offsets the potentiometer
+************Create a get height function for the lift that offsets the potentiometer
 
 ************Create more functions for driver control (safe check for motors, update base, update intk, update lift)
 

@@ -1,6 +1,8 @@
 #ifndef LIFT_H
 #define LIFT_H
 
+extern const int MAX_HEIGHT, MIN_HEIGHT;
+
 void runLeftLift(double percent);
 void runRightLift(double percent);
 void runLift(double percent);
@@ -16,6 +18,9 @@ extern TargetStatus targetStat;
 extern int liftSetPoint, liftDelay;
 extern double liftPercent;
 extern bool resetIntegral;
+
+extern int targetHeight;
+extern double mainPower, brakePower;
 
 void liftCtrl(void* param);
 void setLift(double liftPercent, int delay = 10);
