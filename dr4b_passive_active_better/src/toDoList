@@ -6,7 +6,7 @@ Add the debug option to functions that is automatically false until made true, t
 
 ************Create more functions for driver control (safe check for motors, update base, update intk, update lift)
 
-Make an array of values for holding a certain number of cubes, maybe use pid for moving to a setpoint in auton, then hold again
+************Make an array of values for holding a certain number of cubes, maybe use pid for moving to a setpoint in auton, then hold again
 Make arrays for LITERALLY EVERYTHING
 
 ************Raise lift simple function, uses main power to reach target, then uses brake power for a short period before going to hold function

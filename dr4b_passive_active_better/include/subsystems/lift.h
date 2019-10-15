@@ -2,6 +2,7 @@
 #define LIFT_H
 
 extern const int MAX_HEIGHT, MIN_HEIGHT;
+extern const int onCubes[];
 
 void runLeftLift(double percent);
 void runRightLift(double percent);

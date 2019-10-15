@@ -3,7 +3,7 @@
 void initialize() {
 
     delay(200);
-    Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
+    //Task liftGo (liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold tasks
     setIntk(1);
 
 }

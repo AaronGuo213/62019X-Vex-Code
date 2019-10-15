@@ -1,6 +1,7 @@
 #include "main.h"
 
 const int MAX_HEIGHT = 200, MIN_HEIGHT = 1600;
+const int onCubes[] = {50, 300, 600, 900, 1200, 1500, 1800, 2100};
 
 void runLeftLift(double percent) {
 
