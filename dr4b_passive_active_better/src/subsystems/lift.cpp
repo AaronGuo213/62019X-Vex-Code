@@ -38,7 +38,7 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 int getLiftHeight() {
 
-    return liftPot.get_value() - 0;
+    return liftPot.get_value() - 900;
 
 }
 
@@ -48,18 +48,12 @@ int getLiftSpeed() {
 
 }
 
-
 enum class LiftStatus;
 LiftStatus liftStat = LiftStatus::idle;
-enum class TargetStatus;
-TargetStatus targetStat = TargetStatus::upSimple;
 
 int liftSetPoint, liftDelay;
 double liftPercent;
 bool resetIntegral = false;
-
-int targetHeight;
-double mainPower, brakePower;
 
 void liftCtrl(void* param) {
 
@@ -68,46 +62,44 @@ void liftCtrl(void* param) {
 
     while(true) {
 
-        if(liftStat == LiftStatus::idle)
-            runLift(0);
+        if(liftStat == LiftStatus::uncontrolled) {
 
-        else if(liftStat == LiftStatus::manual) {
-            runLift(liftPercent);
-            delay(liftDelay);
-        }
+            if(liftStat == LiftStatus::idle)
+                runLift(0);
 
-        else if(liftStat == LiftStatus::hold) {
-
-            if(resetIntegral) {
-                holdLift.integral = 0;
-                resetIntegral = false;
+            else if(liftStat == LiftStatus::manual) {
+                runLift(liftPercent);
+                delay(liftDelay);
             }
 
-            liftSetPoint = liftSetPoint > 1800 ? 1800 : liftSetPoint; //lift cannot be higher than 1800
-            liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
+            else if(liftStat == LiftStatus::hold) {
+
+                if(resetIntegral) {
+                    holdLift.integral = 0;
+                    resetIntegral = false;
+                }
+
+                liftSetPoint = liftSetPoint > 1800 ? 1800 : liftSetPoint; //lift cannot be higher than 1800
+                liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
     
-            holdLift.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
-            holdVal = runPID(&holdLift); //updates the holdVal, reference misc.cpp
+                holdLift.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
+                holdVal = runPID(&holdLift); //updates the holdVal, reference misc.cpp
 
-            runLift(holdVal);
+                runLift(holdVal);
 
-            std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << holdLift.error << " | holdVal: " << holdVal << std::endl;
+                std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << holdLift.error << " | holdVal: " << holdVal << std::endl;
 
-            delay(10);
+                delay(10);
 
-        }
+            }
 
-        else if(liftStat == LiftStatus::target)
-            moveSimple();
-
-        else if(liftStat == LiftStatus::stack) {
-
-            targetStat = TargetStatus::downSimple;
-            targetHeight, mainPower, brakePower = 0, 100, -50;
-            moveSimple();
-            targetStat = TargetStatus::upSimple;
-            targetHeight, mainPower, brakePower = 300, 100, 30;
-            moveSimple();
+            else if(liftStat == LiftStatus::stack) {
+                runLift(-100);
+                if(liftSwitch.get_value()) {
+                    liftSetPoint = 600;
+                    setHold();
+                }
+            }
 
         }
 
@@ -152,56 +144,33 @@ void updateLift() {
 
 void moveLiftUp(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
 
-    targetHeight = setPoint;
-    mainPower = mainPercent;
-    brakePower = brakePercent;
-    targetStat = TargetStatus::upSimple;
-    liftStat = LiftStatus::target;
+    liftStat = LiftStatus::uncontrolled;
+    runLift(mainPercent);
+
+    while(setPoint > getLiftHeight())
+        delay(10);
+    if(brakePercent){
+        runLift(brakePercent);
+        delay(300);
+    }
+    setHold();
 
 }
 
 void moveLiftDown(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
 
-    targetHeight = setPoint;
-    mainPower = mainPercent;
-    brakePower = brakePercent;
-    targetStat = TargetStatus::downSimple;
-    liftStat = LiftStatus::target;
+    liftStat = LiftStatus::uncontrolled;
+    runLift(-mainPercent);
 
-}
-
-void moveSimple() {
-
-    if(targetStat == TargetStatus::upSimple) {
-
-        runLift(mainPower);
-        while(targetHeight > getLiftHeight())
-            delay(10);
-
-        if(brakePower){
-            runLift(brakePower);
-            delay(300);
-        }
-
+    while(setPoint < getLiftHeight())
+        delay(10);
+    if(brakePercent){
+        runLift(-brakePercent);
+        delay(300);
     }
-
-    else if(targetStat == TargetStatus::downSimple) {
-
-        runLift(-mainPower);
-        while(targetHeight < getLiftHeight())
-            delay(10);
-
-        if(brakePower){
-            runLift(-brakePower);
-            delay(300);
-        }
-
-    }
-
     setHold();
 
 }
-
 
 
 

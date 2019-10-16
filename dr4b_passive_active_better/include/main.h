@@ -66,6 +66,7 @@ extern "C" {
 void autonomous(void);
 void initialize(void);
 void disabled(void);
+void printController(int color, int type);
 void competition_initialize(void);
 void opcontrol(void);
 #ifdef __cplusplus

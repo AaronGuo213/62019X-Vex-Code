@@ -30,7 +30,7 @@ void updateIntk() {
 	else
 		setLock(!intkPos);
 
-    if(r2())
-        liftStat = LiftStatus::stack;
+    /*if(r2())
+        liftStat = LiftStatus::stack;*/
 
 }

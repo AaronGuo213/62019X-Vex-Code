@@ -12,6 +12,7 @@ void opcontrol() {
 		updateBase();
 		updateLift();
 		updateIntk();
+		master.print(1, 0, "hello");
 
 		if(l1()&& !r1())
 			runLift(100);

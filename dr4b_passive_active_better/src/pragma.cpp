@@ -23,3 +23,4 @@ ADIAnalogIn liftPot(6); //potentiometer in port 3 for the lift
 ADIEncoder yawEnc(2, 3, 0); //perpendicular wheel encoder in ports 7 and 8
 ADIDigitalOut intk(7); //solonoid in port 4 for activating and deactivating the intake
 ADIDigitalOut lock(8); //solonoid in port 5 for activating and deactivating the cube lock
+ADIDigitalIn liftSwitch(5); //limit switch in port 5 for the lift
