@@ -7,7 +7,7 @@ Motor leftBase1(3, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES);
 //200 rpm motor in port 1 for powering the left side of the base
 Motor leftBase2(12, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 2 for powering the left side of the base
-Motor rightBase1(9, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+Motor rightBase1(8, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 3 for powering the right side of the base
 Motor rightBase2(20, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 5 for powering the right side of the base

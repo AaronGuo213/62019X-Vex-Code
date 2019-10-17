@@ -77,6 +77,7 @@ void opcontrol(void);
     #include "./subsystems/base.h"
     #include "./subsystems/intake.h"
     #include "./subsystems/lift.h"
+    #include "./subsystems/odometry.h"
     #include "autonomi.h"
     #include "misc.h"
     #include "pragma.h"

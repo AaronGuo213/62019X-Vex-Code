@@ -7,14 +7,19 @@ void opcontrol() {
 	bool x = false, b = false, up = false, down = false;
 	int power = 0;
 
+	resetBaseEnc();
+	odometry tracker = initOdom();
+
 	while(true) {
 
 		updateBase();
 		updateLift();
 		updateIntk();
-		master.print(1, 0, "hello");
 
-		if(l1()&& !r1())
+		updateOdom(&tracker);
+		std::cout << tracker.globalAngle << "\n";
+
+		/*if(l1()&& !r1())
 			runLift(100);
 
 		else if(!l1()&& r1())
@@ -55,7 +60,7 @@ void opcontrol() {
 			runLift(power);
 		else 
 			runLift(0);
-		std::cout << power << std::endl;
+		std::cout << power << std::endl;*/
 		
 		Task::delay_until(&now, 10);
 
