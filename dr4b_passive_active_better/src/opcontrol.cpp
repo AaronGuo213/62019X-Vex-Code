@@ -8,16 +8,12 @@ void opcontrol() {
 	int power = 0;
 
 	resetBaseEnc();
-	odometry tracker = initOdom();
 
 	while(true) {
 
 		updateBase();
 		updateLift();
 		updateIntk();
-
-		updateOdom(&tracker);
-		std::cout << tracker.globalAngle << "\n";
 
 		/*if(l1()&& !r1())
 			runLift(100);

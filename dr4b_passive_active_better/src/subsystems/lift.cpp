@@ -51,14 +51,15 @@ int getLiftSpeed() {
 enum class LiftStatus;
 LiftStatus liftStat = LiftStatus::idle;
 
-int liftSetPoint, liftDelay;
-double liftPercent;
+int liftSetPoint;
 bool resetIntegral = false;
 
 void liftCtrl(void* param) {
 
     PID holdLift = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
-    double holdVal = 0;
+    PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
+    double holdVal = 0, slowVal = 0;
+    int slowTimer = 300;
 
     while(true) {
 
@@ -67,9 +68,23 @@ void liftCtrl(void* param) {
             if(liftStat == LiftStatus::idle)
                 runLift(0);
 
-            else if(liftStat == LiftStatus::manual) {
-                runLift(liftPercent);
-                delay(liftDelay);
+            else if(liftStat == LiftStatus::slow) {
+        
+                if(slowTimer == 0) { //once the lift has been slowed to prevent bouncing
+                    slowTimer = 300;
+                    setHold();
+                    liftSetPoint = getLiftHeight(); //makes the lift hold at the current spot
+                    std::cout << "switch" << std::endl;
+                }
+                else
+                    slowTimer -= 10;
+
+                slow.error = -getLiftHeight(); //updates error for slowPID
+                slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
+                runLift(slowVal);
+
+                std::cout << "liftPos: " << getLiftHeight() << " | slow.error: " << slow.error << " | slowVal: " << slowVal << std::endl;
+
             }
 
             else if(liftStat == LiftStatus::hold) {
@@ -104,15 +119,9 @@ void liftCtrl(void* param) {
         }
 
         liftSafetyNet();
+        delay(10);
 
     }
-
-}
-
-void setLift(double percent, int delay) {
-
-    liftPercent = percent;
-    liftDelay = delay;
 
 }
 
@@ -126,19 +135,17 @@ void setHold() {
 void updateLift() {
 
     if(r1() && !l1()) {
-        liftStat = LiftStatus::manual;
-        setLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
-        liftSetPoint = getLiftHeight();
+        liftStat = LiftStatus::uncontrolled;
+        runLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
     }
 
     else if(!r1() && l1()) {
-        liftStat = LiftStatus::manual;
-        setLift(getLiftHeight() < MIN_HEIGHT ? -20 : -100);
-        liftSetPoint = getLiftHeight();
+        liftStat = LiftStatus::uncontrolled;
+        runLift(getLiftHeight() < MIN_HEIGHT ? -20 : -100);
     }
 
-    else
-        setHold();
+    else if(liftStat != LiftStatus::slow && liftStat != LiftStatus::hold)
+        liftStat = LiftStatus::slow;
 
 }
 

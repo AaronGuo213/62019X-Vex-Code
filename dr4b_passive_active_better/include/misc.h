@@ -1,6 +1,5 @@
 #ifndef MISC_H
 #define MISC_H
-#define M_PI 3.1415926535
 
 int sgn(double x); //inputs a double and outputs its sign (+ or -) as an int
 struct PID { //a holder for multiple values used in PID
