@@ -18,7 +18,7 @@ extern int liftSetPoint;
 extern bool resetIntegral;
 
 void liftCtrl(void* param);
-void setHold();
+void setHold(bool updateSetPoint = true);
 void updateLift();
 
 void moveLiftUp(int setPoint, double mainPercent, double breakPercent = 0);

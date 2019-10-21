@@ -1,6 +1,6 @@
 #include "main.h"
 
-const int MAX_HEIGHT = 200, MIN_HEIGHT = 1600;
+const int MAX_HEIGHT = 1400, MIN_HEIGHT = 200;
 const int onCubes[] = {50, 300, 600, 900, 1200, 1500, 1800, 2100};
 
 void runLeftLift(double percent) {
@@ -38,7 +38,7 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 int getLiftHeight() {
 
-    return liftPot.get_value() - 900;
+    return liftPot.get_value() - 1150;
 
 }
 
@@ -63,7 +63,12 @@ void liftCtrl(void* param) {
 
     while(true) {
 
-        if(liftStat == LiftStatus::uncontrolled) {
+        if(cubeSensor.get_value() < 1500)
+            slow.kD = 0.2;
+        else
+            slow.kD = 0.15;
+
+        if(liftStat != LiftStatus::uncontrolled) {
 
             if(liftStat == LiftStatus::idle)
                 runLift(0);
@@ -94,7 +99,7 @@ void liftCtrl(void* param) {
                     resetIntegral = false;
                 }
 
-                liftSetPoint = liftSetPoint > 1800 ? 1800 : liftSetPoint; //lift cannot be higher than 1800
+                liftSetPoint = liftSetPoint > 1600 ? 1600 : liftSetPoint; //lift cannot be higher than 1800
                 liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
     
                 holdLift.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
@@ -111,8 +116,8 @@ void liftCtrl(void* param) {
             else if(liftStat == LiftStatus::stack) {
                 runLift(-100);
                 if(liftSwitch.get_value()) {
-                    liftSetPoint = 600;
-                    setHold();
+                    liftSetPoint = 250;
+                    setHold(0);
                 }
             }
 
@@ -125,26 +130,28 @@ void liftCtrl(void* param) {
 
 }
 
-void setHold() {
+void setHold(bool updateSetPoint) {
 
     liftStat = LiftStatus::hold;
+    if(updateSetPoint)
+        liftSetPoint = getLiftHeight();
     resetIntegral = true;
 
 }
 
 void updateLift() {
 
-    if(r1() && !l1()) {
+    if(l1() && !r1()) {
         liftStat = LiftStatus::uncontrolled;
         runLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
     }
 
-    else if(!r1() && l1()) {
+    else if(!l1() && r1()) {
         liftStat = LiftStatus::uncontrolled;
-        runLift(getLiftHeight() < MIN_HEIGHT ? -20 : -100);
+        runLift(getLiftHeight() < MIN_HEIGHT ? -80 : -100);
     }
 
-    else if(liftStat != LiftStatus::slow && liftStat != LiftStatus::hold)
+    else if(liftStat == LiftStatus::uncontrolled)
         liftStat = LiftStatus::slow;
 
 }
