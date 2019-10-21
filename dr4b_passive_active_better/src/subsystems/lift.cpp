@@ -54,6 +54,10 @@ LiftStatus liftStat = LiftStatus::idle;
 int liftSetPoint;
 bool resetIntegral = false;
 
+double mainPower, brakePower;
+int targetHeight;
+bool moveUp;
+
 void liftCtrl(void* param) {
 
     PID holdLift = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
@@ -63,8 +67,10 @@ void liftCtrl(void* param) {
 
     while(true) {
 
-        if(cubeSensor.get_value() < 1500)
-            slow.kD = 0.2;
+        //std::cout << cubeSensor.get_value() << std::endl;
+
+        if(cubeSensor.get_value() < 2000)
+            slow.kD = 0.15;
         else
             slow.kD = 0.15;
 
@@ -88,7 +94,7 @@ void liftCtrl(void* param) {
                 slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
                 runLift(slowVal);
 
-                std::cout << "liftPos: " << getLiftHeight() << " | slow.error: " << slow.error << " | slowVal: " << slowVal << std::endl;
+                std::cout << "liftPos: " << getLiftHeight() << " | slow.derivative: " << slow.derivative << " | slowVal: " << slowVal << std::endl;
 
             }
 
@@ -107,7 +113,7 @@ void liftCtrl(void* param) {
 
                 runLift(holdVal);
 
-                std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << holdLift.error << " | holdVal: " << holdVal << std::endl;
+                //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << holdLift.error << " | holdVal: " << holdVal << std::endl;
 
                 delay(10);
 
@@ -119,6 +125,30 @@ void liftCtrl(void* param) {
                     liftSetPoint = 250;
                     setHold(0);
                 }
+            }
+
+            else if(liftStat == LiftStatus::target) {
+
+                if(moveUp) {
+                    if(getLiftHeight() < targetHeight)
+                        runLift(mainPower);
+                    else if(brakePower) {
+                        runLift(brakePower);
+                        delay(300);
+                        setHold();
+                    }
+                }
+
+                else {
+                    if(getLiftHeight() > targetHeight)
+                        runLift(-mainPower);
+                    else if(brakePower) {
+                        runLift(-brakePower);
+                        delay(300);
+                        setHold();
+                    }
+                }
+
             }
 
         }
@@ -151,12 +181,35 @@ void updateLift() {
         runLift(getLiftHeight() < MIN_HEIGHT ? -80 : -100);
     }
 
-    else if(liftStat == LiftStatus::uncontrolled)
+    else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+        liftStat = LiftStatus::idle;
+
+    else if(liftStat != LiftStatus::hold && liftStat != LiftStatus::slow)
         liftStat = LiftStatus::slow;
 
 }
 
 void moveLiftUp(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
+
+    mainPower = mainPercent;
+    brakePower = brakePercent;
+    targetHeight = setPoint;
+    liftStat = LiftStatus::target;
+    moveUp = true;
+
+}
+
+void moveLiftDown(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
+
+    mainPower = mainPercent;
+    brakePower = brakePercent;
+    targetHeight = setPoint;
+    liftStat = LiftStatus::target;
+    moveUp = false;
+
+}
+
+/*void moveLiftUp(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
 
     liftStat = LiftStatus::uncontrolled;
     runLift(mainPercent);
@@ -184,7 +237,7 @@ void moveLiftDown(int setPoint, double mainPercent, double brakePercent) { //use
     }
     setHold();
 
-}
+}*/
 
 
 

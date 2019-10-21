@@ -11,11 +11,15 @@ void liftSafetyNet();
 int getLiftHeight();
 int getLiftSpeed();
 
-enum class LiftStatus {idle, hold, slow, stack, uncontrolled};
+enum class LiftStatus {idle, hold, slow, stack, uncontrolled, target};
 extern LiftStatus liftStat;
 
 extern int liftSetPoint;
 extern bool resetIntegral;
+
+extern double mainPower, brakePower;
+extern int targetHeight;
+extern bool moveUp;
 
 void liftCtrl(void* param);
 void setHold(bool updateSetPoint = true);
