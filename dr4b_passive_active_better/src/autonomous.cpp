@@ -2,8 +2,6 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    setIntk(0);
-    delay(150);
     setIntk(1);
     delay(200);
 

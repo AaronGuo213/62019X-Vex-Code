@@ -184,7 +184,7 @@ void updateLift() {
     else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
         liftStat = LiftStatus::idle;
 
-    else if(liftStat != LiftStatus::hold && liftStat != LiftStatus::slow)
+    else if(liftStat == LiftStatus::uncontrolled || liftStat == LiftStatus::idle)
         liftStat = LiftStatus::slow;
 
 }
