@@ -2,6 +2,7 @@
 
 const int MAX_HEIGHT = 1400, MIN_HEIGHT = 200;
 const int onCubes[] = {50, 250, 450, 650, 900, 1100, 1300, 1500};
+const int onTower[] = {450, 500, 800, 1400};
 
 void runLeftLift(double percent) {
 
@@ -54,21 +55,26 @@ LiftStatus liftStat = LiftStatus::idle;
 int liftSetPoint;
 bool resetIntegral = false;
 
-double mainPower, brakePower;
-int targetHeight;
-bool moveUp;
-
 void liftCtrl(void* param) {
 
-    PID holdLift = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
+    PID hold = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
     PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
-    double holdVal = 0, slowVal = 0;
+    PID move = initPID(1, 1, 1, 0.45, 0.00012, 1.5);
+    double holdVal = 0, slowVal = 0, moveVal = 0;
     int slowTimer = 300;
 
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
         slow.kD = cubeSensor.get_value() < 2000 ? 0.15 : 0.15;
+        liftSetPoint = liftSetPoint > 1600 ? 1600 : liftSetPoint; //lift cannot be higher than 1800
+        liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
+
+        if(resetIntegral) {
+            hold.integral = 0;
+            move.integral = 0;
+            resetIntegral = false;
+        }
 
         if(liftStat != LiftStatus::uncontrolled) {
 
@@ -96,59 +102,31 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::hold) {
 
-                if(resetIntegral) {
-                    holdLift.integral = 0;
-                    resetIntegral = false;
-                }
-
-                liftSetPoint = liftSetPoint > 1600 ? 1600 : liftSetPoint; //lift cannot be higher than 1800
-                liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
-    
-                holdLift.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
-                holdVal = runPID(&holdLift); //updates the holdVal, reference misc.cpp
-
+                hold.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
+                holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
                 runLift(holdVal);
 
-                //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << holdLift.error << " | holdVal: " << holdVal << std::endl;
-
-                delay(10);
+                //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
 
             }
 
             else if(liftStat == LiftStatus::stack) {
                 runLift(-100);
-                if(liftSwitch.get_value()) {
+                if(getLiftHeight() < 100) {
                     liftSetPoint = 250;
                     setHold(0);
                 }
             }
 
-            else if(liftStat == LiftStatus::target) {
+            else if(liftStat == LiftStatus::move) {
 
-                if(moveUp) {
-                    if(getLiftHeight() < targetHeight)
-                        runLift(mainPower);
-                    else {
-                        /*if(brakePower) {
-                            runLift(brakePower);
-                            delay(300);
-                        }
-                        setHold();*/
-                        liftStat = LiftStatus::slow;
-                    }
-                }
+                move.error = liftSetPoint - getLiftHeight();
+                moveVal = runPID(&move);
+                runLift(moveVal);
 
-                else {
-                    if(getLiftHeight() > targetHeight)
-                        runLift(-mainPower);
-                    else {
-                        if(brakePower) {
-                            runLift(-brakePower);
-                            delay(300);
-                        }
-                        setHold();
-                    }
-                }
+                /*if(abs(move.error) < 10)
+                    liftStat = LiftStatus::hold;*/
+                //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | move.error: " << move.error << " | moveVal: " << moveVal << std::endl;
 
             }
 
@@ -193,151 +171,10 @@ void updateLift() {
 
 }
 
-void moveLiftUp(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
+void moveLift(int setPoint) {
 
-    mainPower = mainPercent;
-    brakePower = brakePercent;
-    targetHeight = setPoint;
-    liftStat = LiftStatus::target;
-    moveUp = true;
+    liftSetPoint = setPoint;
+    resetIntegral = true;
+    liftStat = LiftStatus::move;
 
 }
-
-void moveLiftDown(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
-
-    mainPower = mainPercent;
-    brakePower = brakePercent;
-    targetHeight = setPoint;
-    liftStat = LiftStatus::target;
-    moveUp = false;
-
-}
-
-/*void moveLiftUp(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
-
-    liftStat = LiftStatus::uncontrolled;
-    runLift(mainPercent);
-
-    while(setPoint > getLiftHeight())
-        delay(10);
-    if(brakePercent){
-        runLift(brakePercent);
-        delay(300);
-    }
-    setHold();
-
-}
-
-void moveLiftDown(int setPoint, double mainPercent, double brakePercent) { //use absolute value of percents
-
-    liftStat = LiftStatus::uncontrolled;
-    runLift(-mainPercent);
-
-    while(setPoint < getLiftHeight())
-        delay(10);
-    if(brakePercent){
-        runLift(-brakePercent);
-        delay(300);
-    }
-    setHold();
-
-}*/
-
-
-
-
-
-
-
-
-
-/*int liftSetPoint; //setPoint that lift PID moves to and holds at
-bool holdLift = true, slowLift = false, stack = false;
-bool resetPID = false;
-int slowTimer = 300;
-
-void liftCtrl(void* param) {
-
-    PID hold = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
-    PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
-    double holdVal = 0, slowVal = 0;
-
-    while(true) {
-
-        if(resetPID) {
-            resetPID = false;
-            hold.error = 0;
-            hold.prevError = 0;
-            hold.integral = 0;
-        }
-
-        if(stack) {
-
-            if(getLiftHeight() > 450)
-                liftSetPoint = 300;
-
-            else {
-                stack = false;
-                liftSetPoint = 700;
-            }
-
-        }
-
-        if(holdLift) {
-
-            liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
-            liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
-        
-            hold.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
-            holdVal = runPID(&hold); //updates the holdVal, referecne misc.cpp
-
-            runLeftLift(holdVal);
-            runRightLift(holdVal);
-
-            std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
-
-        }
-
-        else if(slowLift) {
-
-            liftSetPoint = liftSetPoint > 2150 ? 2150 : liftSetPoint; //lift cannot be higher than 2150
-            liftSetPoint = liftSetPoint < 300 ? 300 : liftSetPoint; //lift cannot be lower than 275
-        
-            slow.error = liftSetPoint - getLiftHeight(); //updates error for slowPID
-            
-            //std::cout << "error: " << slow.error << " | prevError: " << slow.prevError << " | speed: " << getLiftSpeed() << std::endl;
-            if(slowTimer <= 0) { //once the lift has been slowed to prevent bouncing
-                holdLift = true; //switches to hold lift
-                slowLift = false;
-                liftSetPoint = liftPot.get_value(); //makes the lift hold at the current spot
-                std::cout << "switch" << std::endl;
-            }
-
-            else
-                slowTimer -= 10;
-
-            slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
-
-            runLeftLift(slowVal);
-            runRightLift(slowVal);
-
-            std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | slow.error: " << slow.error << " | slowVal: " << slowVal << " | speed: " << getLiftSpeed() << std::endl;
-
-        }
-
-        //prevents the motors from overheating and breaking
-        if(leftLift.is_over_temp())
-            leftLift.set_voltage_limit(0);
-        else
-            leftLift.set_voltage_limit(12000);
-
-        if(rightLift.is_over_temp())
-            rightLift.set_voltage_limit(0);
-        else
-            rightLift.set_voltage_limit(12000);
-
-        delay(10);
-        
-    }
-
-}*/

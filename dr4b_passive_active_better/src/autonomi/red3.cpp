@@ -2,7 +2,7 @@
 
 void red3() { //autonomous for the four in a row
 
-    moveLiftUp(100, 80); //stacks the first cube
+    moveLift(onCubes[1]); //stacks the first cube
     moveStraight(30, 1500, 80);
     moveStraight(7, 1000, 40);
     liftStat = LiftStatus::stack;
@@ -20,7 +20,7 @@ void red3() { //autonomous for the four in a row
     liftStat = LiftStatus::stack;
     delay(1000);
 
-    moveLiftDown(onCubes[0], 50, -20); //lifts the cubes above the ground
+    moveLift(onCubes[0]); //lifts the cubes above the ground
     delay(500); //this helps the robot avoid dragging
     moveStraight(-35, 2000, 30); //moves back and turns to the goal
     turn(-128, 1400, 40);

@@ -9,25 +9,6 @@ void opcontrol() {
 
 	while(true) {
 
-		/*leftVal = lY();
-		rightVal = rX();
-		if(rightVal > 3) {
-			runLeftBase(leftVal);
-			runRightBase(leftVal - 2 * rightVal);
-		}
-
-		else if(rightVal < -3) {
-			runLeftBase(leftVal + 2 * rightVal);
-			runRightBase(leftVal);
-		}
-
-		else {
-			runLeftBase(0);
-			runRightBase(0);
-		}*/
-		std::cout << getLiftHeight() << std::endl;
-		
-
 		updateBase();
 		updateLift();
 		updateIntk();
