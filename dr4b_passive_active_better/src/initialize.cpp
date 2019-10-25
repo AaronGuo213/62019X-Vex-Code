@@ -132,7 +132,7 @@ void competition_initialize() {
     lcd::register_btn1_cb(on_center_pressed);
     lcd::register_btn2_cb(on_right_pressed);*/
 
-    int color = 0, type = 0;
+    /*int color = 0, type = 0;
     while(!master.get_digital(E_CONTROLLER_DIGITAL_A)) {
 
         if(master.get_digital_new_press(E_CONTROLLER_DIGITAL_L2))
@@ -153,7 +153,7 @@ void competition_initialize() {
 
     }
 
-    master.clear_line(0);
+    master.clear_line(0);*/
 
 }
 

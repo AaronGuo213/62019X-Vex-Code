@@ -1,7 +1,7 @@
 #include "main.h"
 
 const int MAX_HEIGHT = 1400, MIN_HEIGHT = 200;
-const int onCubes[] = {50, 300, 600, 900, 1200, 1500, 1800, 2100};
+const int onCubes[] = {50, 250, 450, 650, 900, 1100, 1300, 1500};
 
 void runLeftLift(double percent) {
 
@@ -68,11 +68,7 @@ void liftCtrl(void* param) {
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
-
-        if(cubeSensor.get_value() < 2000)
-            slow.kD = 0.15;
-        else
-            slow.kD = 0.15;
+        slow.kD = cubeSensor.get_value() < 2000 ? 0.15 : 0.15;
 
         if(liftStat != LiftStatus::uncontrolled) {
 
@@ -94,7 +90,7 @@ void liftCtrl(void* param) {
                 slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
                 runLift(slowVal);
 
-                std::cout << "liftPos: " << getLiftHeight() << " | slow.derivative: " << slow.derivative << " | slowVal: " << slowVal << std::endl;
+                //std::cout << "liftPos: " << getLiftHeight() << " | slow.derivative: " << slow.derivative << " | slowVal: " << slowVal << std::endl;
 
             }
 
@@ -132,19 +128,24 @@ void liftCtrl(void* param) {
                 if(moveUp) {
                     if(getLiftHeight() < targetHeight)
                         runLift(mainPower);
-                    else if(brakePower) {
-                        runLift(brakePower);
-                        delay(300);
-                        setHold();
+                    else {
+                        /*if(brakePower) {
+                            runLift(brakePower);
+                            delay(300);
+                        }
+                        setHold();*/
+                        liftStat = LiftStatus::slow;
                     }
                 }
 
                 else {
                     if(getLiftHeight() > targetHeight)
                         runLift(-mainPower);
-                    else if(brakePower) {
-                        runLift(-brakePower);
-                        delay(300);
+                    else {
+                        if(brakePower) {
+                            runLift(-brakePower);
+                            delay(300);
+                        }
                         setHold();
                     }
                 }
@@ -152,6 +153,9 @@ void liftCtrl(void* param) {
             }
 
         }
+
+        else
+            slowTimer = 300;
 
         liftSafetyNet();
         delay(10);
