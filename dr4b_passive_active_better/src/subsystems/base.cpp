@@ -107,7 +107,7 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
 
 }
 
-void moveStraightLimited(double distance, int time, double maxVal, double maxAccel) { //PID control loop to move the base to a certain relative 
+/*void moveStraightLimited(double distance, int time, double maxVal, double maxAccel) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
     distance *= 17.4; //makes the input distance 48 exactly equal to one tile length, distance 11 exactly equal to one cube length
@@ -135,10 +135,10 @@ void moveStraightLimited(double distance, int time, double maxVal, double maxAcc
         rightVal = abs(rightVal) > abs(maxVal) ? maxVal * sgn(rightVal) : rightVal;
 
         if(maxAccel) {
-            leftVal = prevLeftVal - leftVal > maxAccel ? prevLeftVal - 20 : leftVal;
-            leftVal = leftVal - prevLeftVal > maxAccel ? prevLeftVal + 20 : leftVal;
-            rightVal = prevRightVal - rightVal > maxAccel ? prevRightVal - 20 : rightVal;
-            rightVal = rightVal - prevRightVal > maxAccel ? prevRightVal + 20 : rightVal;
+            leftVal = prevLeftVal - leftVal > maxAccel ? prevLeftVal - maxAccel : leftVal;
+            leftVal = leftVal - prevLeftVal > maxAccel ? prevLeftVal + maxAccel : leftVal;
+            rightVal = prevRightVal - rightVal > maxAccel ? prevRightVal - maxAccel : rightVal;
+            rightVal = rightVal - prevRightVal > maxAccel ? prevRightVal + maxAccel : rightVal;
             prevLeftVal = leftVal;
             prevRightVal = rightVal;
         }
@@ -148,6 +148,7 @@ void moveStraightLimited(double distance, int time, double maxVal, double maxAcc
 
         std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
+
         delay(10);
 
     }
@@ -155,7 +156,7 @@ void moveStraightLimited(double distance, int time, double maxVal, double maxAcc
     runLeftBase(0); //stops the motors at the end
     runRightBase(0);
 
-}
+}*/
 
 void turn(double theta, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
