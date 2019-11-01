@@ -1,20 +1,39 @@
 #include "main.h"
 
-void blue3() { //autonomous for the four in a row
+void red3() { //autonomous for the four in a row
 
-    liftSetPoint = 600;
-    moveStraight(20, 1000, 80);
-    liftSetPoint = 300;
+    moveLift(onCubes[1]); //stacks the first cube
+    moveStraight(34, 1500, 90);
+    liftStat = LiftStatus::stack;
     delay(1000);
-    liftSetPoint = 500;
+
+    moveStraight(13, 1000, 60); //stacks the second cube
+    liftStat = LiftStatus::stack;
     delay(1000);
-    moveStraight(-11, 3000, 50);
-    turn(-90, 1500, 40);
-    moveStraight(60, 1700, 80); //moves to goal and lowers lift to the ground
-    liftSetPoint = 300;
-    moveStraight(12, 1200, 40); //inches forward to move the cubes past the ramp
-    setIntk(0); //outtakes and backs up
+
+    moveStraight(13, 1000, 60); //stacks the third cube
+    liftStat = LiftStatus::stack;
+    delay(1000);
+
+    moveStraight(13, 1000, 60); //stacks the fourth cube
+    liftStat = LiftStatus::uncontrolled;
+    runLift(-100);
+    while(getLiftHeight() > 20)
+        delay(10);
+    runLift(0);
+    moveLift(onCubes[0]);
+
+    moveStraight(-39, 2000, 50); //moves back and turns to the goal
+    turn(70, 1500, 60);
+    moveStraight(50, 2000, 70); //runs into the goal and outtakes
+    liftStat = LiftStatus::uncontrolled;
+    runLift(-100);
+    while(getLiftHeight() > 10)
+        delay(10);
+    runLift(0);
+    delay(200);
+    setIntk(0);
     delay(500);
-    moveStraight(-20, 1000, 60);
+    moveStraight(-50, 1000, 50);
     
 }

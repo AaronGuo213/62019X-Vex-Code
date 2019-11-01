@@ -39,7 +39,7 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 int getLiftHeight() {
 
-    return liftPot.get_value() - 1150;
+    return liftPot.get_value() - 1400;
 
 }
 
@@ -112,7 +112,7 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::stack) {
                 runLift(-100);
-                if(getLiftHeight() < 100) {
+                if(getLiftHeight() < 30) {
                     liftSetPoint = 250;
                     setHold(0);
                 }

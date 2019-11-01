@@ -73,7 +73,7 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
     distance *= 17.4; //makes the input distance 48 exactly equal to one tile length, distance 11 exactly equal to one cube length
     double distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 1, 1, 0.4, 0.00005, 0.8); //kP = 0.75, kD = 0.6
-    PID diff = initPID(1, 0, 0, 1, 0, 0); //kP = 0.5
+    PID diff = initPID(1, 0, 0, 0.1, 0, 0); //kP = 0.5
 
     resetBaseEnc();
     resetYawEnc();
@@ -81,13 +81,13 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
         dist.error = distance - ((getLeftEnc() + getRightEnc()) / 2); //updates error for distance PID
-        diff.error = -getYawEnc(); //updates error for difference PID
+        diff.error = (getLeftEnc() - getRightEnc()) / 2; //updates error for difference PID
         distVal = runPID(&dist); //updates distVal, reference misc.cpp
         distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to make and impact
         diffVal = runPID(&diff); //updates diffVal, reference misc.cpp
         
         //limits the values before sending them to the motors
-        diffVal = dist.error < 50 ? diffVal * 0.1 : diffVal; //limits the influence of the diffVal when near the setpoint
+        diffVal = dist.error < 100 ? diffVal * 0.1 : diffVal; //limits the influence of the diffVal when near the setpoint
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
@@ -105,57 +105,6 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
     runRightBase(0);
 
 }
-
-/*void moveStraightLimited(double distance, int time, double maxVal, double maxAccel) { //PID control loop to move the base to a certain relative 
-                                                            //postition with minimal forwards and sideways error
-
-    distance *= 17.4; //makes the input distance 48 exactly equal to one tile length, distance 11 exactly equal to one cube length
-    double distVal, diffVal, leftVal, rightVal;
-    double prevLeftVal = 0, prevRightVal = 0;
-    PID dist = initPID(1, 0, 1, 0.75, 0, 0.6); //kP = 0.75, kD = 0.6
-    PID diff = initPID(1, 0, 0, 0.5, 0, 0); //kP = 0.5
-
-    resetBaseEnc();
-    resetYawEnc();
-
-    for(int i = 0; i < time; i+=10) { //updates every 10 ms
-
-        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 2); //updates error for distance PID
-        diff.error = (getLeftEnc() - getRightEnc()) / 2; //updates error for difference PID
-        distVal = runPID(&dist); //updates distVal, reference misc.cpp
-        distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to make and impact
-        diffVal = runPID(&diff); //updates diffVal, reference misc.cpp
-        
-        //limits the values before sending them to the motors
-        diffVal = dist.error < 100 ? diffVal * 0.1 : diffVal; //limits the influence of the diffVal when near the setpoint
-        leftVal = distVal - diffVal;
-        leftVal = abs(leftVal) > abs(maxVal) ? maxVal * sgn(leftVal) : leftVal;
-        rightVal = distVal + diffVal;
-        rightVal = abs(rightVal) > abs(maxVal) ? maxVal * sgn(rightVal) : rightVal;
-
-        if(maxAccel) {
-            leftVal = prevLeftVal - leftVal > maxAccel ? prevLeftVal - maxAccel : leftVal;
-            leftVal = leftVal - prevLeftVal > maxAccel ? prevLeftVal + maxAccel : leftVal;
-            rightVal = prevRightVal - rightVal > maxAccel ? prevRightVal - maxAccel : rightVal;
-            rightVal = rightVal - prevRightVal > maxAccel ? prevRightVal + maxAccel : rightVal;
-            prevLeftVal = leftVal;
-            prevRightVal = rightVal;
-        }
-
-        runLeftBase(leftVal);
-        runRightBase(rightVal);
-
-        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
-
-
-        delay(10);
-
-    }
-
-    runLeftBase(0); //stops the motors at the end
-    runRightBase(0);
-
-}*/
 
 void turn(double units, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
