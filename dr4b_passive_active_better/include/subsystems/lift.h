@@ -12,7 +12,7 @@ void liftSafetyNet();
 int getLiftHeight();
 int getLiftSpeed();
 
-enum class LiftStatus {idle, hold, slow, stack, move, uncontrolled};
+enum class LiftStatus {idle, hold, slow, stack, move, manual};
 extern LiftStatus liftStat;
 
 extern int liftSetPoint;

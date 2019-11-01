@@ -1,6 +1,6 @@
 #include "main.h"
 
-void red2() { //autonomous for the long L
+void blue2() { //autonomous for the long L
 
     moveLift(onCubes[1]); //stacks the first cube
     moveStraight(47, 2000, 80);
@@ -14,7 +14,7 @@ void red2() { //autonomous for the long L
     moveLift(onCubes[2]); //moves the lift above the two cubes
     delay(1500);
     moveStraight(14, 1000, 30);
-    liftStat = LiftStatus::uncontrolled;
+    liftStat = LiftStatus::manual;
     runLift(-100);
     while(getLiftHeight() > 30) //stacks the last two cubes
         delay(10);

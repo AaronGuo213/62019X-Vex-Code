@@ -76,7 +76,7 @@ void liftCtrl(void* param) {
             resetIntegral = false;
         }
 
-        if(liftStat != LiftStatus::uncontrolled) {
+        if(liftStat != LiftStatus::manual) {
 
             if(liftStat == LiftStatus::idle)
                 runLift(0);
@@ -154,19 +154,19 @@ void setHold(bool updateSetPoint) {
 void updateLift() {
 
     if(l1() && !r1()) {
-        liftStat = LiftStatus::uncontrolled;
+        liftStat = LiftStatus::manual;
         runLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
     }
 
     else if(!l1() && r1()) {
-        liftStat = LiftStatus::uncontrolled;
+        liftStat = LiftStatus::manual;
         runLift(getLiftHeight() < MIN_HEIGHT ? -80 : -100);
     }
 
     else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
         liftStat = LiftStatus::idle;
 
-    else if(liftStat == LiftStatus::uncontrolled || liftStat == LiftStatus::idle)
+    else if(liftStat == LiftStatus::manual || liftStat == LiftStatus::idle)
         liftStat = LiftStatus::slow;
 
 }

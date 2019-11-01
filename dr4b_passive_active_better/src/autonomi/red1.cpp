@@ -5,7 +5,7 @@ void red1() { //autonomous for the four stack
     moveLift(onCubes[1]); //stacks first cube
     delay(100);
     moveStraight(45, 1500, 70);
-    liftStat = LiftStatus::uncontrolled;
+    liftStat = LiftStatus::manual;
     runLift(-100);
     while(getLiftHeight() > 20)
         delay(10);
@@ -14,7 +14,7 @@ void red1() { //autonomous for the four stack
     moveLift(onCubes[4]); //stakcs 3 more cubes
     delay(1000);
     moveStraight(24, 2500, 30);
-    liftStat = LiftStatus::uncontrolled;
+    liftStat = LiftStatus::manual;
     runLift(-100);
     while(getLiftHeight() > 40) {
         if(leftLift.is_stopped() || rightLift.is_stopped())
@@ -31,7 +31,7 @@ void red1() { //autonomous for the four stack
     moveStraight(60, 1500, 80); //moves to goal and lowers lift to the ground
     moveStraight(12, 1200, 40);
 
-    liftStat = LiftStatus::uncontrolled;
+    liftStat = LiftStatus::manual;
     runLift(-100);
     while(getLiftHeight() > 5)
         delay(10);
