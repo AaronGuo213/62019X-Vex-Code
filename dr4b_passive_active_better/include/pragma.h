@@ -20,5 +20,6 @@ extern ADIEncoder yawEnc; //encoder for horizontal movement
 extern ADIDigitalOut intk; //a solonoid for two pistons
 extern ADIDigitalOut lock; //a solonoid for two
 extern ADIDigitalIn liftSwitch; //a limit switch for the lift
+extern ADIDigitalIn cubeTrigger; //a limit switch for the base
 
 #endif

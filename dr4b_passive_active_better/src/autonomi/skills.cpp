@@ -2,46 +2,36 @@
 
 void skills() {
 
-    liftSetPoint = 700; //stacks first cube
-    moveStraight(45, 1800, 70);
-    liftSetPoint = 300;
-    delay(500);
-
-    liftSetPoint = 1400; //stakcs 3 more cubes
+    moveLift(onTower[1]);
     delay(1000);
-    moveStraight(29, 2000, 30);
-    liftSetPoint = 700;
-    delay(1000);
-
-    liftSetPoint = 800; //moves back and moves the lift down for stability
-    delay(500);
-    moveStraight(-15, 1000, 30);
-    liftSetPoint = 500;
-    delay(1000);
-
-    moveStraight(-40, 1500, 60); //moves back and turns to face the goal
-    turn(90, 1000, 80);
-    liftSetPoint = 700;
-
-    moveStraight(15, 1000, 60);
-    liftSetPoint = 300;
-    delay(500);
-    moveStraight(-5, 1000, 20);
-    liftSetPoint = 800;
-    moveStraight(10, 1000, 60);
+    moveStraight(15, 1500, 60);
     setLock(0);
-    delay(300);
+    delay(200);
     setLock(1);
-    moveStraight(-10, 1500, 20);
-    liftSetPoint = 500;
+    moveStraight(-10, 1000, 60);
+    moveLift(onCubes[0]);
+
+    turn(-20, 1000, 100);
+    moveStraight(-15, 1500);
+    turn(60, 1500);
+    moveStraight(-6, 1000, 60);
+
+    /*red1();
+
+    moveStraight(-15, 2000, 40);
+    moveLift(onCubes[0]);
+    moveStraight(-50, 2000);
+    turn(-60, 1500);
+    moveLift(onCubes[1]);
+    moveStraight(80, 2500);
+    liftStat = LiftStatus::stack;
     delay(1000);
-    turn(170, 2000, 60);
-    moveStraight(60, 1700, 80);
-    moveStraight(12, 1200, 40);
-    liftSetPoint = 300;
-    delay(500);
-    setIntk(0);
-    delay(500);
-    moveStraight(-10, 1000, 70);
+
+    moveStraight(-5, 500, 60);
+    moveLift(onTower[2]);
+    delay(1500);
+    moveStraight(15, 1000, 60);
+    setLock(0);
+    moveLift(onCubes[6]);*/
 
 }

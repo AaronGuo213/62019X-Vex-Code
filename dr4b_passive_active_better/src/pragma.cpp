@@ -25,3 +25,4 @@ ADIEncoder yawEnc(4, 3, 0); //perpendicular wheel encoder in ports 7 and 8
 ADIDigitalOut intk(7); //solonoid in port 4 for activating and deactivating the intake
 ADIDigitalOut lock(8); //solonoid in port 5 for activating and deactivating the cube lock
 ADIDigitalIn liftSwitch(2); //limit switch in port 5 for the lift
+ADIDigitalIn cubeTrigger(1); //limit switch in port 1 for the base

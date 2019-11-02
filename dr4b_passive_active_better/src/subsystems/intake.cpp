@@ -21,8 +21,8 @@ void updateIntk() {
 		intkSwitch = true;
 	else if(intkSwitch) { //allows the button to be held down and intake toggles once
 		intkSwitch = false;
-		intkPos = !intkPos;
 		setIntk(intkPos);
+		intkPos = !intkPos;
 	}
 
     if(master.get_digital(E_CONTROLLER_DIGITAL_A))

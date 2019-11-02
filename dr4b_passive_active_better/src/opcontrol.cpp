@@ -13,7 +13,7 @@ void opcontrol() {
 		updateLift();
 		updateIntk();
 
-		//std::cout <<getLiftHeight() << std::endl;
+		std::cout << getLiftHeight() << std::endl;
 		
 		Task::delay_until(&now, 10);
 

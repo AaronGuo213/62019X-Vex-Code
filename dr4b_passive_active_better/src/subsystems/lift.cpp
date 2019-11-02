@@ -1,7 +1,7 @@
 #include "main.h"
 
 const int MAX_HEIGHT = 1400, MIN_HEIGHT = 200;
-const int onCubes[] = {50, 250, 450, 650, 900, 1100, 1300, 1500};
+const int onCubes[] = {200, 500, 850, 1150, 1400, 1700, 2100, 2500};
 const int onTower[] = {450, 500, 800, 1400};
 
 void runLeftLift(double percent) {
@@ -39,7 +39,7 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 int getLiftHeight() {
 
-    return liftPot.get_value() - 1400;
+    return liftPot.get_value() - 900;
 
 }
 
@@ -67,7 +67,7 @@ void liftCtrl(void* param) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
         slow.kD = cubeSensor.get_value() < 2000 ? 0.15 : 0.15;
-        liftSetPoint = liftSetPoint > 1600 ? 1600 : liftSetPoint; //lift cannot be higher than 1800
+        liftSetPoint = liftSetPoint > 2600 ? 2600 : liftSetPoint; //lift cannot be higher than 1800
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
         if(resetIntegral) {
@@ -120,7 +120,7 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::move) {
 
-                move.error = liftSetPoint - getLiftHeight();
+                move.error = (liftSetPoint - getLiftHeight()) * 5 / 7;
                 moveVal = runPID(&move);
                 runLift(moveVal);
 
