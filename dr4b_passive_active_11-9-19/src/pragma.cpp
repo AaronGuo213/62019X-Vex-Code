@@ -12,7 +12,7 @@ Motor rightBase1(9, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES);
 Motor rightBase2(20, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 5 for powering the right side of the base
 
-Motor leftLift(18, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor leftLift(16, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
 //100 rpm motor in port 11 for powering the left side of the lift
 Motor rightLift(17, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
 //reversed 100 rpm motor in port 12 for powering the right side of the lift

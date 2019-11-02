@@ -1,7 +1,6 @@
 #ifndef LIFT_H
 #define LIFT_H
 
-extern const int MAX_HEIGHT, MIN_HEIGHT;
 extern const int onCubes[];
 extern const int onTower[];
 

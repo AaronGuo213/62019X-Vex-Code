@@ -1,6 +1,5 @@
 #include "main.h"
 
-const int MAX_HEIGHT = 1400, MIN_HEIGHT = 200;
 const int onCubes[] = {200, 500, 850, 1150, 1400, 1700, 2100, 2500};
 const int onTower[] = {450, 500, 800, 1400};
 
@@ -92,7 +91,7 @@ void liftCtrl(void* param) {
                 else
                     slowTimer -= 10;
 
-                slow.error = -getLiftHeight(); //updates error for slowPID
+                slow.error = -getLiftHeight() * 5 / 7; //updates error for slowPID
                 slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
                 runLift(slowVal);
 
@@ -102,7 +101,7 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::hold) {
 
-                hold.error = liftSetPoint - getLiftHeight(); //updates error for holdPID
+                hold.error = (liftSetPoint - getLiftHeight()) * 5 / 7; //updates error for holdPID
                 holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
                 runLift(holdVal);
 
@@ -113,7 +112,7 @@ void liftCtrl(void* param) {
             else if(liftStat == LiftStatus::stack) {
                 runLift(-100);
                 if(getLiftHeight() < 30) {
-                    liftSetPoint = 250;
+                    liftSetPoint = 550;
                     setHold(0);
                 }
             }
@@ -155,12 +154,12 @@ void updateLift() {
 
     if(l1() && !r1()) {
         liftStat = LiftStatus::manual;
-        runLift(getLiftHeight() > MAX_HEIGHT ? 50 : 100);
+        runLift(100);
     }
 
     else if(!l1() && r1()) {
         liftStat = LiftStatus::manual;
-        runLift(getLiftHeight() < MIN_HEIGHT ? -80 : -100);
+        runLift(-100);
     }
 
     else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
