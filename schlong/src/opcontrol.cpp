@@ -1,8 +1,11 @@
 #include "main.h"
-
+int run = 0;
 void opcontrol() {
 
 	std::uint_least32_t now = millis();
+	tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    intk1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    intk2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 
 	while(true) {
 
@@ -10,15 +13,27 @@ void opcontrol() {
 		runRightBase(joyValRemap(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y)));
 
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2))
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L1) && !master.get_digital(E_CONTROLLER_DIGITAL_L2)){
 			runIntk(100);
-
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1))
+			run = 0;
+		}
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2) && !master.get_digital(E_CONTROLLER_DIGITAL_L1)){
 			runIntk(-100);
+	run = 0;
+		}
+		else{
+			if(run == 0){
+             runIntk(0);
+			 run = 1;
 
-		else
-			runIntk(0);
-
+			}
+			    intk1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+             intk2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+			
+				
+        
+		
+		}
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_R1) && !master.get_digital(E_CONTROLLER_DIGITAL_R2))
 			runTray(100);
@@ -26,9 +41,14 @@ void opcontrol() {
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_R2) && !master.get_digital(E_CONTROLLER_DIGITAL_R1))
 			runTray(-100);
 
-		else
-			runTray(0);
+		else{
+//runTray(0);
+                //if(intk1.move_voltage == 0)
 
+				runTray(0);
+				tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+		}
 
 		if(leftBase1.is_over_temp() || leftBase1.is_over_current())
 			leftBase1.set_voltage_limit(0);
@@ -65,7 +85,7 @@ void opcontrol() {
 		else
 			tray.set_voltage_limit(12000);
 
-		Task::delay_until(&now, 10);		
+		delay(50);		
 
 	}
 

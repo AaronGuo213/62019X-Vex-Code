@@ -7,17 +7,11 @@ void blue2() { //autonomous for the long L
     liftStat = LiftStatus::stack;
     delay(1000);
 
-    moveStraight(12.8, 1000, 30); //stacks the second cube
+    moveStraight(13, 1000, 30); //stacks the second cube
     liftStat = LiftStatus::stack;
     delay(1000);
 
-    moveLift(onCubes[2]); //moves the lift above the two cubes
-    delay(1500);
-    moveStraight(14, 1000, 30);
-    liftStat = LiftStatus::manual;
-    runLift(-100);
-    while(getLiftHeight() > 30) //stacks the last two cubes
-        delay(10);
-    runLift(0);
+    moveStraight(14, 1000, 30); //pushes the top cube off and gets the lower cube
+    liftToGnd(30);
 
 }

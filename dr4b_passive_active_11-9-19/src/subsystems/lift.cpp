@@ -1,7 +1,7 @@
 #include "main.h"
 
 const int onCubes[] = {200, 500, 850, 1150, 1400, 1700, 2100, 2500};
-const int onTower[] = {450, 500, 800, 1400};
+const int onTower[] = {450, 1150, 800, 1400};
 
 void runLeftLift(double percent) {
 
@@ -19,6 +19,16 @@ void runLift(double percent) {
 
     leftLift.move_voltage(percent * 120); //runs lift motors out of 12000mV
     rightLift.move_voltage(percent * 120);
+
+}
+
+void liftToGnd(int threshhold) {
+
+    liftStat = LiftStatus::manual;
+    runLift(-100);
+    while(getLiftHeight() > threshhold)
+        delay(10);
+    runLift(0);
 
 }
 

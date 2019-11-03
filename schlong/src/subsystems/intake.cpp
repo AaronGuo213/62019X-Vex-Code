@@ -2,8 +2,8 @@
 
 void runIntk(double percent) {
 
-    intk1.move_voltage(percent * 120);
-    intk2.move_voltage(percent * 120);
+    intk1.move_voltage(percent * 100);
+    intk2.move_voltage(percent * 100);
 
 }
 

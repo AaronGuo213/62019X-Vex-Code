@@ -68,6 +68,17 @@ void resetYawEnc() {
 
 }
 
+void moveToObject(double percent) { //moves the base until the front hits an object (cube, tower, or goal)
+
+    runLeftBase(percent);
+    runRightBase(percent);
+    while(!cubeTrigger.get_value())
+        delay(10);
+    runLeftBase(0);
+    runRightBase(0);
+
+}   
+
 void moveStraight(double distance, int time, double maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 

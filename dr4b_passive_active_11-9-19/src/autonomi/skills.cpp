@@ -3,18 +3,18 @@
 void skills() {
 
     moveLift(onTower[1]);
-    delay(1000);
-    moveStraight(15, 1500, 60);
-    setLock(0);
-    delay(200);
-    setLock(1);
-    moveStraight(-10, 1000, 60);
+    delay(400);
+    moveToObject(30);
+    delay(500);
+    setIntk(0);
+    moveStraight(-20, 1000, 40);
     moveLift(onCubes[0]);
+    delay(800);
 
-    turn(-20, 1000, 100);
+    /*turn(-15, 1000, 100);
     moveStraight(-15, 1500);
     turn(60, 1500);
-    moveStraight(-6, 1000, 60);
+    moveStraight(-6, 1000, 60);*/
 
     /*red1();
 
