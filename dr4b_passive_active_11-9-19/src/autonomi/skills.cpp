@@ -7,14 +7,17 @@ void skills() {
     moveToObject(30);
     delay(500);
     setIntk(0);
-    moveStraight(-20, 1000, 40);
-    moveLift(onCubes[0]);
+    moveStraight(-18, 1000, 40);
+    moveLift(0);
     delay(800);
+    setIntk(1);
 
-    /*turn(-15, 1000, 100);
-    moveStraight(-15, 1500);
-    turn(60, 1500);
-    moveStraight(-6, 1000, 60);*/
+    turn(-27, 1000, 100);
+    moveStraight(-33, 1500, 70);
+    turn(47, 1500);
+    runLeftBase(-30);
+    runRightBase(-30);
+    delay(1000);
 
     /*red1();
 

@@ -12,5 +12,6 @@ extern Motor rightBase2;
 extern Motor intk1;
 extern Motor intk2;
 extern Motor tray;
+extern Motor tray2;
 
 #endif

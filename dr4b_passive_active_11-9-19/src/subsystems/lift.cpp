@@ -121,7 +121,7 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::stack) {
                 runLift(-100);
-                if(getLiftHeight() < 30) {
+                if(getLiftHeight() < 40) {
                     liftSetPoint = 550;
                     setHold(0);
                 }

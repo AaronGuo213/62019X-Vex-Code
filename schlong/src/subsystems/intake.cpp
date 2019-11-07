@@ -10,5 +10,6 @@ void runIntk(double percent) {
 void runTray(double percent) {
 
     tray.move_voltage(percent * 120);
+    tray2.move_voltage(percent * 120);
 
 }

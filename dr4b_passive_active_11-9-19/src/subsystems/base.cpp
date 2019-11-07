@@ -154,3 +154,70 @@ void turn(double units, int time, double maxVal) { //PID control loop to turn a 
     runRightBase(0);
 
 }
+
+void moveCurved(double radius, double angle, int time, double maxVal) {
+
+    double leftSetPoint = (radius - 4) * (angle * M_PI / 180) / (3.25 * M_PI) * 360;
+    double rightSetPoint = (radius + 4) * (angle * M_PI / 180) / (3.25 * M_PI) * 360;
+    double ratio = abs(leftSetPoint) > abs(rightSetPoint) ? rightSetPoint / leftSetPoint : leftSetPoint / rightSetPoint;
+    PID dist = initPID(1, 1, 1, 0.4, 0.00005, 0.8); //kP = 0.4, kI = 0.00005, kD = 0.8
+    PID diff = initPID(1, 0, 0, 0.1, 0, 0); //kP = 0.1
+    double distVal, diffVal, leftVal, rightVal;
+    resetBaseEnc();
+    resetYawEnc();
+
+    if(leftSetPoint > rightSetPoint) {
+
+        for(int i = 0; i < time; i+=10) { //updates every 10 ms
+
+            dist.error = leftSetPoint - getLeftEnc();
+            diff.error = (getLeftEnc() - (getRightEnc() * ratio)) / 2; //updates error for difference PID
+            distVal = runPID(&dist); //updates distVal
+            diffVal = runPID(&diff); //updates diffVal
+            
+            //limits the values before sending them to the motors
+            distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
+            leftVal = distVal - diffVal;
+            rightVal = (distVal * ratio) + diffVal;
+
+            leftBase1.move_velocity(leftVal); //assigns the values to the motors
+            leftBase2.move_velocity(leftVal);
+            rightBase1.move_velocity(rightVal);
+            rightBase2.move_velocity(rightVal);
+
+            delay(10);
+
+        }
+        runLeftBase(0); //stops the motors
+        runRightBase(0);
+
+    }
+
+    else {
+
+        for(int i = 0; i < time; i+=10) { //updates every 10 ms
+
+            dist.error = rightSetPoint - getRightEnc();
+            diff.error = ((getLeftEnc() * ratio) - getRightEnc()) / 2; //updates error for difference PID
+            distVal = runPID(&dist); //updates distVal
+            diffVal = runPID(&diff); //updates diffVal
+            
+            //limits the values before sending them to the motors
+            distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
+            leftVal = (distVal * ratio) - diffVal;
+            rightVal = distVal * ratio + diffVal;
+
+            leftBase1.move_velocity(leftVal); //assigns the values to the motors
+            leftBase2.move_velocity(leftVal);
+            rightBase1.move_velocity(rightVal);
+            rightBase2.move_velocity(rightVal);
+
+            delay(10);
+
+        }
+        runLeftBase(0); //stops the motors
+        runRightBase(0);
+
+    }
+
+}
