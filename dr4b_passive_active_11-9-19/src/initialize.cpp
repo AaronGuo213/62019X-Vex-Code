@@ -11,7 +11,7 @@ void initialize() {
 
 int autonCount = 0;
 
-/*void lcdScroll() {
+void lcdScroll() {
 
     if(autonCount > 6) { //loops the options
 
@@ -29,12 +29,12 @@ int autonCount = 0;
 
         case 0:
             lcd::set_text(2, "RED1\n");
-            lcd::set_text(1, "4 Stack, 5 Cubes in Big Goal");
+            lcd::set_text(1, "4 Stack, 6 Cubes in Big Goal");
             break;
 
         case 1:
             lcd::set_text(2, "RED2\n");
-            lcd::set_text(1, "Long L, 5 Cubes Unscored");
+            lcd::set_text(1, "Long L, 4 Cubes Unscored");
             break;
 
         case 2:
@@ -43,22 +43,22 @@ int autonCount = 0;
             break;
 
         case 3:
-            lcd::set_text(2, "BLUE1\n");
-            lcd::set_text(1, "4 Stack, 5 Cubes in Big Goal");
-            break;
-            
-        case 4:
-            lcd::set_text(2, "BLUE2\n");
-            lcd::set_text(1, "Long L, 5 Cubes Unscored");
+            lcd::set_text(1, "No Auton\n");
             break;
 
+        case 4:
+            lcd::set_text(2, "BLUE1\n");
+            lcd::set_text(1, "4 Stack, 6 Cubes in Big Goal");
+            break;
+            
         case 5:
-            lcd::set_text(2, "BLUE3\n");
-            lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
+            lcd::set_text(2, "BLUE2\n");
+            lcd::set_text(1, "Long L, 4 Cubes Unscored");
             break;
 
         case 6:
-            lcd::set_text(1, "No Auton\n");
+            lcd::set_text(2, "BLUE3\n");
+            lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
             break;
 
         default:
@@ -87,9 +87,9 @@ void on_right_pressed() {
     autonCount++;
     lcdScroll();
 
-}*/
+}
 
-void printController(int color, int type) {
+/*void printController(int color, int type) {
 
     master.print(0, 0, "Choose Auton:");
     delay(100);
@@ -121,16 +121,16 @@ void printController(int color, int type) {
             break;
     }
 
-}
+}*/
 
 void competition_initialize() {
 
-    /*lcd::initialize();
+    lcd::initialize();
     lcd::set_text(0, "choose auton");
     lcdScroll();
     lcd::register_btn0_cb(on_left_pressed);
     lcd::register_btn1_cb(on_center_pressed);
-    lcd::register_btn2_cb(on_right_pressed);*/
+    lcd::register_btn2_cb(on_right_pressed);
 
     /*int color = 0, type = 0;
     while(!master.get_digital(E_CONTROLLER_DIGITAL_A)) {
