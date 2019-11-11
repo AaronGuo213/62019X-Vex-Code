@@ -66,6 +66,7 @@ bool resetIntegral = false;
 
 void liftCtrl(void* param) {
 
+    std::uint32_t now = millis();
     PID hold = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
     PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
     PID move = initPID(1, 1, 1, 0.45, 0.00012, 1.5);
@@ -145,7 +146,7 @@ void liftCtrl(void* param) {
             slowTimer = 300;
 
         liftSafetyNet();
-        delay(10);
+        Task::delay_until(&now, 10);
 
     }
 
