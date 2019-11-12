@@ -33,6 +33,22 @@ void updateBase() {
 
 }
 
+const double inchPerDegree = 0;
+
+/*double getLeftEnc() {
+
+    //averages the left base motor encoder values
+    return (leftBase1.get_position() + leftBase2.get_position()) / 2 * inchPerDegree; 
+
+}
+
+double getRightEnc() {
+
+    //averages the right base motor encoder values
+    return (rightBase1.get_position() + rightBase2.get_position()) / 2 * inchPerDegree; 
+
+}*/
+
 double getLeftEnc() {
 
     //averages the left base motor encoder values
@@ -58,9 +74,15 @@ void resetBaseEnc() {
 
 double getYawEnc() {
 
-    return yawEnc.get_value();
+    return yawEnc.get_value() * inchPerDegree;
 
 }
+
+/*double getYawEnc() {
+
+    return yawEnc.get_value();
+
+}*/
 
 void resetYawEnc() {
 

@@ -2,7 +2,7 @@
 
 class Odometry {
 
-    const int LEFT_DISP = 0, RIGHT_DISP = 0, YAW_DISP = 0;
+    const int LEFT_DISP = 3.875, RIGHT_DISP = 3.875, YAW_DISP = 0;
     double x, y, angle;
     double angleChange, xChangeLocal, yChangeLocal, xChange, yChange;
     double chordAngle;
@@ -30,8 +30,15 @@ class Odometry {
 
     void calcLocalChanges() {
 
-        xChangeLocal = 2 * cos(angleChange / 2) * ((yawEncChange / angleChange) - YAW_DISP);
-        yChangeLocal = 2 * sin(angleChange / 2) * ((rightEncChange / angleChange) - RIGHT_DISP);
+        if(angleChange == 0) {
+            xChange = yawEncChange;
+            yChange = rightEncChange;
+        }
+
+        else {
+            xChangeLocal = 2 * sin(angleChange / 2) * ((yawEncChange / angleChange) - YAW_DISP);
+            yChangeLocal = 2 * sin(angleChange / 2) * ((rightEncChange / angleChange) - RIGHT_DISP);
+        }
 
     }
 
@@ -44,8 +51,8 @@ class Odometry {
 
     void updateGlobalVars() {
 
-        x += xChange;
-        y += yChange;
+        //x += xChange;
+        //y += yChange;
         angle += angleChange;
 
     }
@@ -67,8 +74,8 @@ class Odometry {
 
         updateData();
         calcAngleChange();
-        calcLocalChanges();
-        calcGlobalChanges();
+        /*calcLocalChanges();
+        calcGlobalChanges();*/
         updateGlobalVars();
 
     }
@@ -95,6 +102,8 @@ void trackPos(void* param) {
     while(true) {
 
         tracker.update();
+        //std::cout << tracker.getAngle() * 180 / M_PI << std::endl;
+
         Task::delay_until(&now, 50);
     
     }

@@ -5,6 +5,7 @@ void runLeftBase(double percent);
 void runRightBase(double percent);
 void updateBase();
 
+extern const double inchPerDegree;
 double getLeftEnc();
 double getRightEnc();
 void resetBaseEnc();
