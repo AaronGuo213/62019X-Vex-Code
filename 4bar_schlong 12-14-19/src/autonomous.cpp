@@ -1,11 +1,8 @@
 #include "main.h"
 
 void autonomous() { //15 second autonomous period at the beginning of the match
-
-    setIntk(1);
-    delay(200);
     
-    switch (autonCount) {
+    /*switch (autonCount) {
 
         case 0:
             red1();
@@ -31,6 +28,6 @@ void autonomous() { //15 second autonomous period at the beginning of the match
             blue3();
             break;
 
-    }
+    }*/
     
 }

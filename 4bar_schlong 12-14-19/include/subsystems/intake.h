@@ -1,10 +1,11 @@
 #ifndef INTAKE_H
 #define INTAKE_H
 
-void setIntk(bool status);
-void setLock(bool status);
-
-extern bool intkSwitch, intkPos;
+void runIntk(double percent);
 void updateIntk();
+
+void runTray(double percent);
+int getTrayPos();
+void updateTray();
 
 #endif

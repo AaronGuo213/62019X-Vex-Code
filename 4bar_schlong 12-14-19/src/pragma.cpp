@@ -12,17 +12,21 @@ Motor rightBase1(9, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES);
 Motor rightBase2(20, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 5 for powering the right side of the base
 
-Motor leftLift(16, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor lift(16, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
 //100 rpm motor in port 11 for powering the left side of the lift
-Motor rightLift(17, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
-//reversed 100 rpm motor in port 12 for powering the right side of the lift
+
+Motor leftIntk(18, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
+//200 rpm motor in port 11 for powering the left intake
+Motor rightIntk(19, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+//reversed 200 rpm motor in port 12 for powering the right intake
+
+Motor tray(4, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES);
+//100 rpm motor in port 4 for powering the tray
 
 
 //Legacy Components
-ADIAnalogIn liftPot(6); //potentiometer in port 3 for the lift
-ADIAnalogIn cubeSensor(5); //line sensor in port 6 for detecting a certain number of cubes
-ADIEncoder yawEnc(3, 4, 1); //perpendicular wheel encoder in ports 7 and 8
-ADIDigitalOut intk(7); //solonoid in port 4 for activating and deactivating the intake
-ADIDigitalOut lock(8); //solonoid in port 5 for activating and deactivating the cube lock
-ADIDigitalIn liftSwitch(2); //limit switch in port 5 for the lift
-ADIDigitalIn cubeTrigger(1); //limit switch in port 1 for the base
+ADIAnalogIn liftPot(7); //potentiometer in port 6 for the lift
+ADIAnalogIn trayPot(8); //potentiometer in port 8 for the tray
+ADIEncoder yawEnc(1, 2, 1); //perpendicular wheel encoder in ports 2 and 3
+ADIEncoder leftEnc(3, 4, 0); //left wheel encoder in ports 4 and 5
+ADIEncoder rightEnc(5, 6, 0); //right wheel encoder in ports 6 and 7

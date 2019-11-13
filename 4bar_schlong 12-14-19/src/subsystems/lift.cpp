@@ -3,22 +3,9 @@
 const int onCubes[] = {200, 500, 850, 1150, 1400, 1700, 2100, 2500};
 const int onTower[] = {450, 1150, 800, 1400};
 
-void runLeftLift(double percent) {
-
-    leftLift.move_voltage(percent * 120); //runs the leftLift motor out of 12000mV
-
-}
-
-void runRightLift(double percent) {
-
-    rightLift.move_voltage(percent * 120); //runs the rightLift motor out of 12000mV
-
-}
-
 void runLift(double percent) {
 
-    leftLift.move_voltage(percent * 120); //runs lift motors out of 12000mV
-    rightLift.move_voltage(percent * 120);
+    lift.move_voltage(percent * 120); //runs the lift motor out of 12000mV
 
 }
 
@@ -34,30 +21,18 @@ void liftToGnd(int threshhold) {
 
 void liftSafetyNet() { //prevents the motors from overheating and breaking
 
-    if(leftLift.is_over_temp())
-        leftLift.set_voltage_limit(0);
+    if(lift.is_over_temp())
+        lift.set_voltage_limit(0);
     else
-        leftLift.set_voltage_limit(12000);
-
-    if(rightLift.is_over_temp())
-        rightLift.set_voltage_limit(0);
-    else
-        rightLift.set_voltage_limit(12000);
+        lift.set_voltage_limit(12000);
 
 }
 
 int getLiftHeight() {
 
-    return liftPot.get_value() - 1220;//900;
+    return liftPot.get_value() - 1220;
 
 }
-
-int getLiftSpeed() {
-
-    return (leftLift.get_actual_velocity() + rightLift.get_actual_velocity()) / 2;
-
-}
-
 enum class LiftStatus;
 LiftStatus liftStat = LiftStatus::idle;
 
@@ -76,7 +51,6 @@ void liftCtrl(void* param) {
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
-        slow.kD = cubeSensor.get_value() < 2000 ? 0.15 : 0.15;
         liftSetPoint = liftSetPoint > 2600 ? 2600 : liftSetPoint; //lift cannot be higher than 1800
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
@@ -118,14 +92,6 @@ void liftCtrl(void* param) {
 
                 //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
 
-            }
-
-            else if(liftStat == LiftStatus::stack) {
-                runLift(-100);
-                if(getLiftHeight() < 40) {
-                    liftSetPoint = 550;
-                    setHold(0);
-                }
             }
 
             else if(liftStat == LiftStatus::move) {

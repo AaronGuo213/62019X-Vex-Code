@@ -4,15 +4,16 @@
 void runLeftBase(double percent);
 void runRightBase(double percent);
 void updateBase();
+void baseSafetyNet();
 
-extern const double inchPerDegree;
+extern const double inchPerTickForward;
+extern const double inchPerTickYaw;
 double getLeftEnc();
 double getRightEnc();
 void resetBaseEnc();
 double getYawEnc();
 void resetYawEnc();
 
-void moveToObject(double percent);
 void moveStraight(double dist, int time, double maxVal = 90); //PID control loop for straight movement
 void turn(double theta, int time, double maxVal = 100); //PID control loop for turning
 

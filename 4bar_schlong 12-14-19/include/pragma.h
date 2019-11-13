@@ -9,17 +9,18 @@ extern Motor leftBase2;
 extern Motor rightBase1;
 extern Motor rightBase2;
 
-extern Motor leftLift; //left and right lift motors
-extern Motor rightLift;
+extern Motor lift; //lift motor
 
+extern Motor leftIntk; //left and right intake motors
+extern Motor rightIntk;
+
+extern Motor tray; //tray motor
 
 //Legacy Components
 extern ADIAnalogIn liftPot; //potentiameter for lift control
-extern ADIAnalogIn cubeSensor; //light sensor for intake and lift
+extern ADIAnalogIn trayPot; //potentiometer for the tray control
 extern ADIEncoder yawEnc; //encoder for horizontal movement
-extern ADIDigitalOut intk; //a solonoid for two pistons
-extern ADIDigitalOut lock; //a solonoid for two
-extern ADIDigitalIn liftSwitch; //a limit switch for the lift
-extern ADIDigitalIn cubeTrigger; //a limit switch for the base
+extern ADIEncoder leftEnc;
+extern ADIEncoder rightEnc;
 
 #endif

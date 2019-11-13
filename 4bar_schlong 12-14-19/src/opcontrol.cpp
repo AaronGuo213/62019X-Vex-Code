@@ -13,6 +13,7 @@ void opcontrol() {
 		updateBase();
 		updateLift();
 		updateIntk();
+		updateTray();
 
 		std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getLiftHeight() << std::endl;

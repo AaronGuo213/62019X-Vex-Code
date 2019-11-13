@@ -1,36 +1,48 @@
 #include "main.h"
 
-void setIntk(bool status) {
+void runIntk(double percent) {
 
-    intk.set_value(status);
-    lock.set_value(status);
-
-}
-
-void setLock(bool status) {
-
-    lock.set_value(status);
+    leftIntk.move_voltage(percent * 120);
+	rightIntk.move_voltage(percent * 120);
 
 }
-
-bool intkSwitch = false, intkPos = true;
 
 void updateIntk() {
 
-    if(!l2())
-		intkSwitch = true;
-	else if(intkSwitch) { //allows the button to be held down and intake toggles once
-		intkSwitch = false;
-		setIntk(intkPos);
-		intkPos = !intkPos;
+    if(l1() && !l2())
+		runIntk(100);
+
+	else if(l2() && !l1())
+		runIntk(-100);
+
+	else
+		runIntk(0);
+
+}
+
+void runTray(double percent) {
+
+    tray.move_voltage(percent * 120);
+	
+}
+
+int getTrayPos() {
+
+	return trayPot.get_value() - 0;
+		
+}
+
+void updateTray() {
+
+	if(r1() && !r2()) {
+		runTray(getTrayPos());
 	}
 
-    if(master.get_digital(E_CONTROLLER_DIGITAL_A))
-		setLock(0);
-	else
-		setLock(!intkPos);
+	else if(r2() && !r1()) {
+		runTray(-1000 + getTrayPos());
+	}
 
-	if(r2())
-        liftStat = LiftStatus::stack;
+	else
+		runTray(0);
 
 }
