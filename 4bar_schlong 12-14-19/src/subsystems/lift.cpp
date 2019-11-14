@@ -1,7 +1,7 @@
 #include "main.h"
 
-const int onCubes[] = {200, 500, 850, 1150, 1400, 1700, 2100, 2500};
-const int onTower[] = {450, 1150, 800, 1400};
+const int atCube[] = {0, 0, 0, 0, 0};
+const int onTower[] = {0, 0, 0};
 
 void runLift(double percent) {
 
@@ -69,7 +69,7 @@ void liftCtrl(void* param) {
         
                 if(slowTimer == 0) { //once the lift has been slowed to prevent bouncing
                     slowTimer = 300;
-                    setHold();
+                    setLiftHold();
                     liftSetPoint = getLiftHeight(); //makes the lift hold at the current spot
                     std::cout << "switch" << std::endl;
                 }
@@ -118,12 +118,18 @@ void liftCtrl(void* param) {
 
 }
 
-void setHold(bool updateSetPoint) {
+void setLiftHold(bool updateSetPoint) {
 
     liftStat = LiftStatus::hold;
     if(updateSetPoint)
         liftSetPoint = getLiftHeight();
     resetIntegral = true;
+
+}
+
+void setLiftIdle() {
+
+    liftStat = LiftStatus::idle;
 
 }
 

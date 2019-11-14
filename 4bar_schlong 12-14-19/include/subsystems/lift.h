@@ -1,7 +1,7 @@
 #ifndef LIFT_H
 #define LIFT_H
 
-extern const int onCubes[];
+extern const int atCube[];
 extern const int onTower[];
 
 void runLift(double percent);
@@ -15,7 +15,8 @@ extern int liftSetPoint;
 extern bool resetIntegral;
 
 void liftCtrl(void* param);
-void setHold(bool updateSetPoint = true);
+void setLiftHold(bool updateSetPoint = true);
+void setLiftIdle();
 void updateLift();
 void moveLift(int setPoint);
 

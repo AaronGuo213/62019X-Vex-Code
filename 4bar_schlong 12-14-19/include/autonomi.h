@@ -2,12 +2,13 @@
 #define AUTONOMI_H
 
 extern int autonCount;
-void red1();
-void red2();
-void red3();
-void blue1();
-void blue2();
-void blue3();
+
+void red4Stack();
+void red8Cube();
+void red4Row();
+void blue4Stack();
+void blue8Cube();
+void blue4Row();
 void skills();
 
 #endif

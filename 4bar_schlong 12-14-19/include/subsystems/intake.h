@@ -8,4 +8,6 @@ void runTray(double percent);
 int getTrayPos();
 void updateTray();
 
+void outtake(double intkSpeed = 0);
+
 #endif

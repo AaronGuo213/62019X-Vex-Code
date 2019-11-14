@@ -46,3 +46,23 @@ void updateTray() {
 		runTray(0);
 
 }
+
+void outtake(double intkSpeed) {
+
+	leftIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	rightIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
+
+	runTray(getTrayPos());
+	while(getTrayPos() > 50)
+		delay(10);
+	delay(100);
+	runTray(0);
+	if(intkSpeed)
+		runIntk(-intkSpeed);
+	moveStraight(-15, 1000);
+	runIntk(0);
+
+	leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+}
