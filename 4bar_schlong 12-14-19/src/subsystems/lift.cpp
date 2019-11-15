@@ -33,6 +33,7 @@ int getLiftHeight() {
     return liftPot.get_value() - 1220;
 
 }
+
 enum class LiftStatus;
 LiftStatus liftStat = LiftStatus::idle;
 
@@ -42,9 +43,9 @@ bool resetIntegral = false;
 void liftCtrl(void* param) {
 
     std::uint32_t now = millis();
-    PID hold = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
-    PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
-    PID move = initPID(1, 1, 1, 0.45, 0.00012, 1.5);
+    PID hold = initPID(1, 1, 0, 0.2, 0.00015, 0); //kP = 0.3, kI = 0.0001
+    PID slow = initPID(0, 0, 1, 0, 0, 0.1); //kD = 0.15
+    PID move = initPID(1, 1, 1, 0.32, 0.00009, 1.1);
     double holdVal = 0, slowVal = 0, moveVal = 0;
     int slowTimer = 300;
 
@@ -145,10 +146,10 @@ void updateLift() {
         runLift(-100);
     }
 
-    else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+    else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN) || getLiftHeight() < 100)
         liftStat = LiftStatus::idle;
 
-    else if(liftStat == LiftStatus::manual || liftStat == LiftStatus::idle)
+    else if(liftStat == LiftStatus::manual)
         liftStat = LiftStatus::slow;
 
 }
