@@ -83,6 +83,7 @@ void opcontrol(void);
     #include "pragma.h"
     #define _USE_MATH_DEFINES
     #include <cmath>
+    #include <vector>
 #endif
 
 #endif  // _PROS_MAIN_H_
