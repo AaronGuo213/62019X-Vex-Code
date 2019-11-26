@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "DR4B Piston Intake",
+        "project_name": "6bar_schlong",
         "target": "v5",
         "templates": {
             "kernel": {

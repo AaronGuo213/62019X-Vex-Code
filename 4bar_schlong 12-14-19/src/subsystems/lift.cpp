@@ -136,7 +136,7 @@ void setLiftIdle() {
 
 void updateLift() {
 
-    if(l1() && !r1()) {
+    /*if(l1() && !r1()) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
@@ -150,7 +150,16 @@ void updateLift() {
         liftStat = LiftStatus::idle;
 
     else if(liftStat == LiftStatus::manual)
-        liftStat = LiftStatus::slow;
+        liftStat = LiftStatus::slow;*/
+
+    if(master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+        runLift(100);
+    
+    else if(!master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+        runLift(-100);
+
+    else 
+        runLift(0);
 
 }
 

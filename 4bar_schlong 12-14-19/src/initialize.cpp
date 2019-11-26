@@ -3,7 +3,7 @@
 void initialize() {
 
     delay(200);
-    Task liftGo(liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
+    //Task liftGo(liftCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     //Task trayGo(trayCtrl, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
     liftSetPoint = getLiftHeight();
     leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);

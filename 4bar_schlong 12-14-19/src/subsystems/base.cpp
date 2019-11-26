@@ -54,14 +54,14 @@ const double inchPerTickYaw = 0;
 double getLeftEnc() {
 
     //averages the left base motor encoder values
-    return (leftBase1.get_position() + leftBase2.get_position()) / 2; //* inchPerTickForward; 
+    return (leftBase1.get_position() + leftBase2.get_position()) / 2 * inchPerTickForward; 
 
 }
 
 double getRightEnc() {
 
     //averages the right base motor encoder values
-    return (rightBase1.get_position() + rightBase2.get_position()) / 2; //* inchPerTickForward; 
+    return (rightBase1.get_position() + rightBase2.get_position()) / 2 * inchPerTickForward; 
 
 }
 
@@ -76,7 +76,7 @@ void resetBaseEnc() {
 
 double getYawEnc() {
 
-    return yawEnc.get_value();// * inchPerTickYaw;
+    return yawEnc.get_value() * inchPerTickYaw;
 
 }
 
@@ -124,9 +124,9 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
 
 }
 
-void turn(double units, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
+void turn(double setPoint, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    double setPoint = units * 10; //makes the input more friendly numbers
+    setPoint *= 10; //makes the input more friendly numbers
     double turnVal, dispVal;
     double leftVal, rightVal;
     PID turn = initPID(1, 1, 1, 0.19, 0.0001, 0.8); //kP = 0.19, kI = 0.0001, kD = 0.8;
@@ -137,7 +137,7 @@ void turn(double units, int time, double maxVal) { //PID control loop to turn a 
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        turn.error = setPoint - getYawEnc(); //updates error for turn PID
+        turn.error = setPoint - ((getLeftEnc() - getRightEnc()) / 2); //updates error for turn PID
         disp.error = (getLeftEnc() + getRightEnc()) / 4; //updates error for displacement PID
         turnVal = runPID(&turn); //updates turnVal
         dispVal = runPID(&disp); //updates dispVal
@@ -150,7 +150,7 @@ void turn(double units, int time, double maxVal) { //PID control loop to turn a 
         runLeftBase(leftVal); //assigns values to the motors
         runRightBase(rightVal);
 
-        std::cout << "setPoint: " << setPoint << " | currentPos: " << getYawEnc() << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << setPoint << " | currentPos: " << (getLeftEnc() - getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
 
         delay(10);
 

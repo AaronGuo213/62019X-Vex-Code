@@ -26,23 +26,14 @@ double joyValRemap(double joyVal) {
 
     double percentVal;
 
-    if((double)joyVal <= -3.0) { //threshold at 3/100 to prevent unwanted movement at low values
-
+    if((double)joyVal <= -3.0) //threshold at 3/100 to prevent unwanted movement at low values
         percentVal = pow(-pow((double)joyVal, 2) - 6 * (double)joyVal + 18327.7, 0.5) - 154.414; //uses the equation of a circle to optimize slow and fast movements
 
-    }
-
-    else if((double)joyVal >= 3.0) { //threshold at 3/100 to prevent unwanted movement at low values
-
+    else if((double)joyVal >= 3.0) //threshold at 3/100 to prevent unwanted movement at low values
         percentVal = -pow(-pow((double)joyVal, 2) + 6 * (double)joyVal + 18327.7, 0.5) + 154.414; //uses the reflected equation to optimize slow and fast backwards movements
 
-    }
-
-    else {
-
+    else
         percentVal = 0.0;
-
-    }
 
     return percentVal;
 

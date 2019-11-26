@@ -6,7 +6,7 @@ void opcontrol() {
 	liftSetPoint = getLiftHeight();
 	resetBaseEnc();
 	resetYawEnc();
-	Task trackingGo(trackPos, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
+	//Task trackingGo(trackPos, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
 
 	while(true) {
 

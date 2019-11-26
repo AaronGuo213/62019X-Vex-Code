@@ -3,24 +3,24 @@
 Controller master (CONTROLLER_MASTER); //main controller
 
 //V5 Components
-Motor leftBase1(3, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor leftBase1(1, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 1 for powering the left side of the base
-Motor leftBase2(11, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor leftBase2(2, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 2 for powering the left side of the base
-Motor rightBase1(9, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+Motor rightBase1(3, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 3 for powering the right side of the base
-Motor rightBase2(20, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+Motor rightBase2(4, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 5 for powering the right side of the base
 
-Motor lift(16, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor lift(20, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
 //100 rpm motor in port 11 for powering the left side of the lift
 
-Motor leftIntk(1, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor leftIntk(6, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 11 for powering the left intake
-Motor rightIntk(2, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+Motor rightIntk(7, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 12 for powering the right intake
 
-Motor tray(4, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES);
+Motor tray(10, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES);
 //100 rpm motor in port 4 for powering the tray
 
 

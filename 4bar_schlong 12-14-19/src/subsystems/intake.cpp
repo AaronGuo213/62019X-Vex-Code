@@ -9,10 +9,10 @@ void runIntk(double percent) {
 
 void updateIntk() {
 
-    if(l1() && !l2()) //l1 pressed runs intake inwards
+    if(l1() && !r1()) //l1 pressed runs intake inwards
 		runIntk(100);
 
-	else if(l2() && !l1()) //l2 pressed runs intake outwards
+	else if(r1() && !l1()) //l2 pressed runs intake outwards
 		runIntk(-100);
 
 	else //otherwise dont run the intake
@@ -45,7 +45,16 @@ double calcTrayPow(bool moveForward) {
 
 void updateTray() {
 
-	if(r1() && !r2()) { //r1 pressed runs the tray outward
+	if(r2() && !l2())
+		runTray(100);
+	
+	else if(l2() && !r2())
+		runTray(-100);
+
+	else 
+		runTray(0);
+
+	/*if(r1() && !r2()) { //r1 pressed runs the tray outward
 		runTray(calcTrayPow(1));
 	}
 
@@ -54,7 +63,7 @@ void updateTray() {
 	}
 
 	else //otherwise dont run the tray motor
-		runTray(0);
+		runTray(0);*/
 
 	/*if(r1() && !r2()) {
 		if(trayStat == trayStatus::retract || trayStat == trayStatus::idle)
