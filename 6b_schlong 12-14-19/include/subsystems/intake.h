@@ -3,11 +3,13 @@
 
 void runIntk(double percent);
 void updateIntk();
+void intkSafetyNet();
 
 void runTray(double percent);
 int getTrayPos();
 double calcTrayPow(bool isOuttaking);
 void updateTray();
+void traySafetyNet();
 
 void outtake(double intkSpeed = 0);
 

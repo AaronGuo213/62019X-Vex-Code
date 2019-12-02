@@ -16,9 +16,9 @@ double lY();
 double lX();
 double rY();
 double rX();
-bool l1();
-bool l2();
-bool r1();
-bool r2();
+bool l1(bool newPress = false);
+bool l2(bool newPress = false);
+bool r1(bool newPress = false);
+bool r2(bool newPress = false);
 
 #endif

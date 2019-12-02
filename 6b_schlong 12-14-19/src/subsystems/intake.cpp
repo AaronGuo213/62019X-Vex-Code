@@ -18,6 +18,22 @@ void updateIntk() {
 	else //otherwise dont run the intake
 		runIntk(0);
 
+	intkSafetyNet();
+
+}
+
+void intkSafetyNet() {
+
+	if(leftIntk.is_over_temp())
+		leftIntk.set_voltage_limit(0);
+	else
+		leftIntk.set_voltage_limit(12000);
+
+	if(rightIntk.is_over_temp())
+		rightIntk.set_voltage_limit(0);
+	else
+		rightIntk.set_voltage_limit(12000);
+
 }
 
 void runTray(double percent) {
@@ -28,42 +44,37 @@ void runTray(double percent) {
 
 int getTrayPos() {
 
-	return tray.get_position() - 0;
+	return tray.get_position();
 		
 }
 
  //calculates the power to send to the tray motor for a consistent outtaking process
 double calcTrayPow(bool moveForward) {
 
-	if(moveForward) {
-		return getTrayPos();
-	}
+	if(moveForward && getTrayPos() < 1130)
+		return(1130 - getTrayPos()) / 6 + 20;
+		//return (1130 - getTrayPos()) / 5 + 5;
 
-	return -1000 + getTrayPos();
+	if(!moveForward && getTrayPos() > 0)
+		return -getTrayPos();
+
+	return 0;
 
 }
 
 void updateTray() {
 
-	if(r2() && !l2())
-		runTray(100);
-	
-	else if(l2() && !r2())
-		runTray(-100);
-
-	else 
-		runTray(0);
-
-	/*if(r1() && !r2()) { //r1 pressed runs the tray outward
+	if(r2() && !l2()) { //r1 pressed runs the tray outward
 		runTray(calcTrayPow(1));
+		//runTray(100);
 	}
 
-	else if(r2() && !r1()) { //r2 pressed runs the tray inward
+	else if(l2() && !r2()) { //r2 pressed runs the tray inward
 		runTray(calcTrayPow(0));
 	}
 
 	else //otherwise dont run the tray motor
-		runTray(0);*/
+		runTray(0);
 
 	/*if(r1() && !r2()) {
 		if(trayStat == trayStatus::retract || trayStat == trayStatus::idle)
@@ -71,6 +82,17 @@ void updateTray() {
 		else if(trayStat == trayStatus::outtake || trayStat == trayStatus::hold)
 			trayStat = trayStatus::retract;
 	}*/
+
+	traySafetyNet();
+
+}
+
+void traySafetyNet() {
+
+	if(tray.is_over_temp())
+		tray.set_voltage_limit(0);
+	else 
+		tray.set_voltage_limit(12000);
 
 }
 

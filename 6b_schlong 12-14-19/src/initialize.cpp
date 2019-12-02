@@ -9,6 +9,7 @@ void initialize() {
     leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    tray.tare_position();
 
 }
 
