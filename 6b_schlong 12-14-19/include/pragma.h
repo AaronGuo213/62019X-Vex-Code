@@ -2,6 +2,7 @@
 #define PRAGMA_H
 
 extern Controller master;
+extern Controller partner;
 
 //V5 Components
 extern Motor leftBase1; //four base motors

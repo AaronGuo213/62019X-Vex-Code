@@ -92,6 +92,7 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
     double distVal, diffVal, leftVal, rightVal;
     PID dist = initPID(1, 1, 1, 0.4, 0.00005, 0.8); //kP = 0.4, kI = 0.00005, kD = 0.8
     PID diff = initPID(1, 0, 0, 0.1, 0, 0); //kP = 0.1
+    double multiplier = 20;
 
     resetBaseEnc();
     resetYawEnc();
@@ -106,6 +107,7 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
         //limits the values before sending them to the motors
         //distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to have an effect
         diffVal = dist.error < 100 ? diffVal * 0.1 : diffVal; //limits the influence of the diffVal when near the setpoint
+        distVal *= multiplier;
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;

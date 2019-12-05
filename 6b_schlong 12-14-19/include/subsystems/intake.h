@@ -13,8 +13,10 @@ void traySafetyNet();
 
 void outtake(double intkSpeed = 0);
 
-enum class trayStatus {idle, hold, outtake, retract};
+extern double traySetPoint;
+extern bool resetTrayIntegral;
+enum class trayStatus {idle, hold, manual};
 extern trayStatus trayStat;
-void trayCtrl(void* param);
+void ctrlTray(void* param);
 
 #endif

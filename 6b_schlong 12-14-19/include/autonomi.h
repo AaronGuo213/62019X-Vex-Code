@@ -2,6 +2,8 @@
 #define AUTONOMI_H
 
 extern int autonCount;
+extern bool autonColor;
+extern int autonType;
 
 void red4Stack();
 void red8Cube();

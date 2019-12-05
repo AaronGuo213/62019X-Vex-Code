@@ -14,7 +14,7 @@ extern LiftStatus liftStat;
 extern int liftSetPoint;
 extern bool resetIntegral;
 
-void liftCtrl(void* param);
+void ctrlLift(void* param);
 void setLiftHold(bool updateSetPoint = true);
 void setLiftIdle();
 void updateLift();

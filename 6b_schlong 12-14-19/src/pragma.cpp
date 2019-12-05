@@ -1,6 +1,7 @@
 #include "main.h"
 
 Controller master (CONTROLLER_MASTER); //main controller
+Controller partner (CONTROLLER_PARTNER);
 
 //V5 Components
 Motor leftBase1(1, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
@@ -12,12 +13,12 @@ Motor rightBase1(3, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES);
 Motor rightBase2(12, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 5 for powering the right side of the base
 
-Motor lift(20, MOTOR_GEARSET_36, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor lift(20, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
 //100 rpm motor in port 11 for powering the left side of the lift
 
-Motor leftIntk(10, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
+Motor leftIntk(21, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
 //200 rpm motor in port 11 for powering the left intake
-Motor rightIntk(6, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
+Motor rightIntk(5, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
 //reversed 200 rpm motor in port 12 for powering the right intake
 
 Motor tray(8, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES);

@@ -51,8 +51,8 @@ int getTrayPos() {
  //calculates the power to send to the tray motor for a consistent outtaking process
 double calcTrayPow(bool moveForward) {
 
-	if(moveForward && getTrayPos() < 1130)
-		return(1130 - getTrayPos()) / 6 + 20;
+	if(moveForward && getTrayPos() < 950)
+		return(950 - getTrayPos()) / 8 + 15;
 		//return (1130 - getTrayPos()) / 5 + 5;
 
 	if(!moveForward && getTrayPos() > 0)
@@ -64,7 +64,7 @@ double calcTrayPow(bool moveForward) {
 
 void updateTray() {
 
-	if(r2() && !l2()) { //r1 pressed runs the tray outward
+	/*if(r2() && !l2()) { //r1 pressed runs the tray outward
 		runTray(calcTrayPow(1));
 		//runTray(100);
 	}
@@ -74,14 +74,26 @@ void updateTray() {
 	}
 
 	else //otherwise dont run the tray motor
-		runTray(0);
+		runTray(0);*/
 
-	/*if(r1() && !r2()) {
-		if(trayStat == trayStatus::retract || trayStat == trayStatus::idle)
-			trayStat = trayStatus::outtake;
-		else if(trayStat == trayStatus::outtake || trayStat == trayStatus::hold)
-			trayStat = trayStatus::retract;
-	}*/
+	if(r2() && !l2()) { //r1 pressed runs the tray outward
+		trayStat = trayStatus::manual;
+		runTray(calcTrayPow(1));
+	}
+
+	else if(l2() && !r2()) { //r2 pressed runs the tray inward
+		trayStat = trayStatus::manual;
+		runTray(calcTrayPow(0));
+	}
+
+	else if(getTrayPos() < 200) {
+		trayStat = trayStatus::idle;
+	}
+
+	else if(trayStat == trayStatus::manual) { //otherwise dont run the tray motor
+		traySetPoint = getTrayPos();
+		trayStat = trayStatus::hold;
+	}
 
 	traySafetyNet();
 
@@ -118,38 +130,46 @@ void outtake(double intkSpeed) {
 
 }
 
+double traySetPoint = 0;
+bool resetTrayIntegral = false;
 enum class trayStatus;
 trayStatus trayStat = trayStatus::idle;
 
 void ctrlTray(void* param) { //tray control task
 
+	std::uint32_t now = millis();
+	PID hold = initPID(1, 0, 0, 1, 0, 0); //kP = 0.3, kI = 0.0001
+	PID move = initPID(1, 0, 0, 1, 0, 0); //kP = 0.3, kI = 0.0001
+	double holdVal, moveVal;
+
 	while(true) {
 
-		if(trayStat == trayStatus::idle) { //doesnt make the tray hold the position, lets the motor rest
-			tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
-			runTray(0);
+		traySetPoint = traySetPoint > 950 ? 950 : traySetPoint; //lift cannot be higher than 1800
+        traySetPoint = traySetPoint < 0 ? 0 : traySetPoint; //lift cannot be lower than 0
+
+		if(resetTrayIntegral) {
+            hold.integral = 0;
+            move.integral = 0;
+            resetIntegral = false;
+        }
+
+		if(trayStat != trayStatus::manual) {
+
+			if(trayStat == trayStatus::idle) { //doesnt make the tray hold the position, lets the motor rest
+				runTray(0);
+			}
+
+			else if(trayStat == trayStatus::hold) { //holds the tray in place
+				hold.error = (traySetPoint - getTrayPos()); //updates error for holdPID
+                holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
+                runTray(holdVal);
+				//std::cout << "traySetPoint: " << traySetPoint << " | trayPos: " << getTrayPos() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
+			}
+
 		}
 
-		else if(trayStat == trayStatus::hold) { //holds the tray in place
-			tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-			runTray(0);
-		}
-
-		else if(trayStat == trayStatus::outtake) { //runs the tray out until it is vertical
-			if(getTrayPos() > 20)
-				runTray(calcTrayPow(1));
-			else 
-				trayStat = trayStatus::hold; //then holds the tray's position
-		}
-
-		else if(trayStat == trayStatus::retract) { //runs the tray in until it is at the rest position
-			if(getTrayPos() < 1000)
-				runTray(calcTrayPow(0));
-			else 
-				trayStat = trayStatus::idle; //then lets the tray motor rest
-		}
-
-		delay(50);
+		traySafetyNet();
+		Task::delay_until(&now, 50);
 
 	}
 

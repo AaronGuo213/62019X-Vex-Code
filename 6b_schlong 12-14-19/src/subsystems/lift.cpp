@@ -40,14 +40,15 @@ LiftStatus liftStat = LiftStatus::idle;
 int liftSetPoint;
 bool resetIntegral = false;
 
-void liftCtrl(void* param) {
+void ctrlLift(void* param) {
 
     std::uint32_t now = millis();
-    PID hold = initPID(1, 1, 0, 0.2, 0.00015, 0); //kP = 0.3, kI = 0.0001
-    PID slow = initPID(0, 0, 1, 0, 0, 0.1); //kD = 0.15
-    PID move = initPID(1, 1, 1, 0.32, 0.00009, 1.1);
+    PID hold = initPID(1, 1, 0, 0.3, 0.0002, 0); //kP = 0.3, kI = 0.0001
+    PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
+    PID move = initPID(1, 1, 1, 0.45, 0.00012, 1.5);
     double holdVal = 0, slowVal = 0, moveVal = 0;
     int slowTimer = 300;
+    double multiplier = 2;
 
     while(true) {
 
@@ -77,9 +78,9 @@ void liftCtrl(void* param) {
                 else
                     slowTimer -= 10;
 
-                slow.error = -getLiftHeight() * 5 / 7; //updates error for slowPID
+                slow.error = -getLiftHeight(); //updates error for slowPID
                 slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
-                runLift(slowVal);
+                runLift(slowVal * multiplier);
 
                 //std::cout << "liftPos: " << getLiftHeight() << " | slow.derivative: " << slow.derivative << " | slowVal: " << slowVal << std::endl;
 
@@ -87,9 +88,9 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::hold) {
 
-                hold.error = (liftSetPoint - getLiftHeight()) * 5 / 7; //updates error for holdPID
+                hold.error = (liftSetPoint - getLiftHeight()); //updates error for holdPID
                 holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
-                runLift(holdVal);
+                runLift(holdVal * multiplier);
 
                 //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
 
@@ -97,9 +98,9 @@ void liftCtrl(void* param) {
 
             else if(liftStat == LiftStatus::move) {
 
-                move.error = (liftSetPoint - getLiftHeight()) * 5 / 7;
+                move.error = (liftSetPoint - getLiftHeight());
                 moveVal = runPID(&move);
-                runLift(moveVal);
+                runLift(moveVal * multiplier);
 
                 /*if(abs(move.error) < 10)
                     liftStat = LiftStatus::hold;*/
@@ -136,26 +137,26 @@ void setLiftIdle() {
 
 void updateLift() {
 
-    /*if(l1() && !r1()) {
+    /*if((partner.get_digital(E_CONTROLLER_DIGITAL_L1) && !partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN))) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
 
-    else if(!l1() && r1()) {
+    else if((!partner.get_digital(E_CONTROLLER_DIGITAL_L1) && partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (!master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital(E_CONTROLLER_DIGITAL_DOWN))) {
         liftStat = LiftStatus::manual;
         runLift(-100);
     }
 
-    else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN) || getLiftHeight() < 100)
+    else if(getLiftHeight() < 100)
         liftStat = LiftStatus::idle;
 
     else if(liftStat == LiftStatus::manual)
         liftStat = LiftStatus::slow;*/
 
-    if(master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+    if((partner.get_digital(E_CONTROLLER_DIGITAL_L1) && !partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN)))
         runLift(100);
     
-    else if(!master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
+    else if((!partner.get_digital(E_CONTROLLER_DIGITAL_L1) && partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (!master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital(E_CONTROLLER_DIGITAL_DOWN)))
         runLift(-100);
 
     else 
