@@ -48,29 +48,27 @@ void baseSafetyNet() {
 
 }
 
-const double inchPerTickForward = 0;
+const double inchPerTickForward = 0.02440678; //1475 ticks over 36 inches
 const double inchPerTickYaw = 0;
 
 double getLeftEnc() {
 
     //averages the left base motor encoder values
-    return (leftBase1.get_position() + leftBase2.get_position()) / 2 * inchPerTickForward; 
+    return leftEnc.get_value() * inchPerTickForward; 
 
 }
 
 double getRightEnc() {
 
     //averages the right base motor encoder values
-    return (rightBase1.get_position() + rightBase2.get_position()) / 2 * inchPerTickForward; 
+    return rightEnc.get_value() * inchPerTickForward; 
 
 }
 
 void resetBaseEnc() {
 
-    leftBase1.tare_position();
-    leftBase2.tare_position();
-    rightBase1.tare_position();
-    rightBase2.tare_position();
+    leftEnc.reset();
+    rightEnc.reset();
 
 }
 
@@ -90,9 +88,8 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
                                                             //postition with minimal forwards and sideways error
 
     double distVal, diffVal, leftVal, rightVal;
-    PID dist = initPID(1, 1, 1, 0.4, 0.00005, 0.8); //kP = 0.4, kI = 0.00005, kD = 0.8
-    PID diff = initPID(1, 0, 0, 0.1, 0, 0); //kP = 0.1
-    double multiplier = 20;
+    PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 200, 0, 0); //kP = 200
 
     resetBaseEnc();
     resetYawEnc();
@@ -107,7 +104,6 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
         //limits the values before sending them to the motors
         //distVal = distVal > 90 ? 90 : distVal; //limits distVal to 90 in order to allow diffVal to have an effect
         diffVal = dist.error < 100 ? diffVal * 0.1 : diffVal; //limits the influence of the diffVal when near the setpoint
-        distVal *= multiplier;
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
@@ -128,31 +124,26 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
 
 void turn(double setPoint, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    setPoint *= 10; //makes the input more friendly numbers
     double turnVal, dispVal;
     double leftVal, rightVal;
-    PID turn = initPID(1, 1, 1, 0.19, 0.0001, 0.8); //kP = 0.19, kI = 0.0001, kD = 0.8;
-    PID disp = initPID(0, 0, 0, 0, 0, 0); //disp PID not active
+    //PID turn = initPID(1, 1, 1, 0.19, 0.0001, 0.8); //kP = 0.19, kI = 0.0001, kD = 0.8;
+    PID turn = initPID(1, 0, 1, 20, 0.0001, 10); //kP = 0.19, kI = 0.0001, kD = 0.8;
 
     resetBaseEnc();
     resetYawEnc();
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        turn.error = setPoint - ((getLeftEnc() - getRightEnc()) / 2); //updates error for turn PID
-        disp.error = (getLeftEnc() + getRightEnc()) / 4; //updates error for displacement PID
+        turn.error = setPoint - ((-getLeftEnc() + getRightEnc()) / 2); //updates error for turn PID
         turnVal = runPID(&turn); //updates turnVal
-        dispVal = runPID(&disp); //updates dispVal
 
         //limits the values before sending them to the motors
-        leftVal = -turnVal - dispVal;
-        leftVal = abs(leftVal) > abs(maxVal) ? maxVal * sgn(leftVal) : leftVal;
-        rightVal = turnVal - dispVal;
-        rightVal = abs(rightVal) > abs(maxVal) ? maxVal * sgn(rightVal) : rightVal;
+        leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
+        rightVal = abs(turnVal) > abs(maxVal) ? maxVal * sgn(turnVal) : turnVal;
         runLeftBase(leftVal); //assigns values to the motors
         runRightBase(rightVal);
 
-        std::cout << "setPoint: " << setPoint << " | currentPos: " << (getLeftEnc() - getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | dispError: " << disp.error << " | dispVal: " << dispVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << setPoint << " | currentPos: " << (-getLeftEnc() + getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
 
         delay(10);
 

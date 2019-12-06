@@ -104,20 +104,20 @@ void calcAuton() {
 lv_res_t switchColor(lv_obj_t *btn) {
 
     //Determines which side the robot is on
-    static lv_style_t red, blueAlliance;
+    static lv_style_t red, blue;
     lv_style_copy(&red, &lv_style_plain);
-    red.body.main_color = LV_COLOR_HEX(0xD42630);
-    red.body.grad_color = LV_COLOR_HEX(0xD42630);
+    red.body.main_color = LV_COLOR_RED;
+    red.body.grad_color = LV_COLOR_RED;
     red.body.border.width = 2;
     red.body.radius = 10;
     red.body.border.color = LV_COLOR_WHITE;
-    lv_style_copy(&blueAlliance, &red);
-    blueAlliance.body.main_color = LV_COLOR_HEX(0x0077C9);
-    blueAlliance.body.grad_color = LV_COLOR_HEX(0x0077C9);
+    lv_style_copy(&blue, &red);
+    blue.body.main_color = LV_COLOR_BLUE;
+    blue.body.grad_color = LV_COLOR_BLUE;
 
     autonColor = !autonColor;
     if(autonColor)
-        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &blueAlliance);
+        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &blue);
     else
         lv_btn_set_style(btn, LV_BTN_STYLE_REL, &red);
 
@@ -155,7 +155,7 @@ void competition_initialize() { //480 x 240 cortex
     /*================================
     STYLES STYLES STYLES STYLES STYLES
     ================================*/
-    static lv_style_t grey, red, silver;
+    static lv_style_t grey, red, blue, redBlue, blueRed, black, green, black2;
 
     lv_style_copy(&grey, &lv_style_plain);
     grey.body.main_color = LV_COLOR_HEX(0x828F8F);
@@ -165,32 +165,63 @@ void competition_initialize() { //480 x 240 cortex
     grey.body.border.color = LV_COLOR_WHITE;
 
     lv_style_copy(&red, &grey);
-    red.body.main_color = LV_COLOR_HEX(0xD42630);
-    red.body.grad_color = LV_COLOR_HEX(0xD42630);
+    red.body.main_color = LV_COLOR_RED;
+    red.body.grad_color = LV_COLOR_RED;
     red.body.radius = 10;
 
-    lv_style_copy(&silver, &red);
-    silver.body.main_color = LV_COLOR_SILVER;
-    silver.body.grad_color = LV_COLOR_SILVER;
+    lv_style_copy(&blue, &red);
+    blue.body.main_color = LV_COLOR_BLUE;
+    blue.body.grad_color = LV_COLOR_BLUE;
+    
+    lv_style_copy(&redBlue, &red);
+    redBlue.body.grad_color = LV_COLOR_BLUE;
+
+    lv_style_copy(&blueRed, &blue);
+    blueRed.body.grad_color = LV_COLOR_RED;
+
+    lv_style_copy(&black, &red);
+    black.body.main_color = LV_COLOR_BLACK;
+    black.body.grad_color = LV_COLOR_BLACK;
+    black.body.border.color = LV_COLOR_GRAY;
+    black.text.color = LV_COLOR_RED;
+    black.text.letter_space = 5;
+
+    lv_style_copy(&green, &grey);
+    green.body.main_color = LV_COLOR_GREEN;
+    green.body.grad_color = LV_COLOR_GREEN;
+    green.body.radius = 50;
+
+    lv_style_copy(&black2, &black);
+    black2.body.radius = 0;
+
+    lv_obj_t *sample = lv_btnm_create(lv_scr_act(), NULL);
+    lv_obj_set_pos(sample, 500, 250);
+    lv_style_t redOutline, blueOutline;
+    lv_style_copy(&redOutline, lv_btnm_get_style(sample, LV_BTNM_STYLE_BTN_TGL_REL));
+    redOutline.body.radius = 15;
+    redOutline.body.border.width = 2;
+    redOutline.body.border.color = LV_COLOR_RED;
+    lv_style_copy(&blueOutline, &redOutline);
+    blueOutline.body.border.color = LV_COLOR_BLUE;
 
     /*=====================
     62019X LOGO (TEXT AREA)
     =====================*/
     lv_obj_t *teamName = lv_ta_create(lv_scr_act(), NULL);
-    lv_obj_set_size(teamName, 265, 75);
-    lv_obj_set_pos(teamName, 210, 5);
+    lv_obj_set_size(teamName, 230, 40);
+    lv_obj_set_pos(teamName, 5, 5);
     lv_ta_set_cursor_type(teamName, LV_CURSOR_NONE);
-    lv_ta_set_style(teamName, LV_TA_STYLE_BG, &silver);
+    lv_ta_set_style(teamName, LV_TA_STYLE_BG, &black);
     lv_ta_set_text(teamName, "62019X");
 
     /*==============================
     ALLIANCE COLOR SELECTOR (BUTTON)
     ==============================*/
     lv_obj_t *color = lv_btn_create(lv_scr_act(), NULL);
-    lv_obj_set_size(color, 200, 75);
+    lv_obj_set_size(color, 230, 80);
     lv_btn_set_style(color, LV_BTN_STYLE_REL, &red);
-    lv_btn_set_style(color, LV_BTN_STYLE_PR, &silver);
-    lv_obj_align(color, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
+    lv_btn_set_style(color, LV_BTN_STYLE_PR, &redBlue);
+    lv_obj_set_pos(color, 5, 50);
     lv_obj_t *colorLabel = lv_label_create(color, NULL);
     lv_label_set_text(colorLabel, "Alliance Color");
     lv_btn_set_action(color, LV_BTN_ACTION_CLICK, switchColor);
@@ -201,36 +232,66 @@ void competition_initialize() { //480 x 240 cortex
     static const char *autons[] = {"4 stack", "skills", "\n", "4 row", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
-    lv_obj_set_size(auton, 200, 150);
-    lv_obj_set_pos(auton, 5, 85);
+    lv_obj_set_size(auton, 230, 125);
+    lv_obj_set_pos(auton, 240, 5);
     lv_btnm_set_toggle(auton, true, 3);
     lv_btnm_set_action(auton, selectAuton);
 
-    /*=====================
-    CONFIRM BUTTON (BUTTON)
-    =====================*/
+    /*=================================
+    CONFIRM BUTTON/DESCRIPTION (BUTTON)
+    =================================*/
     lv_obj_t *confirm = lv_btn_create(lv_scr_act(), NULL);
-    lv_obj_set_size(confirm, 265, 150);
-    lv_obj_set_pos(confirm, 210, 85);
+    lv_obj_set_size(confirm, 470, 100);
+    lv_obj_set_pos(confirm, 5, 135);
+    lv_btn_set_style(confirm, LV_BTN_STYLE_PR, &green);
     lv_obj_t *confirmLabel = lv_label_create(confirm, NULL);
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
-    lv_label_set_text(confirmLabel, "CONFRIM AUTON");
-    /*while(!confirmed) {
+    lv_label_set_align(confirmLabel, LV_LABEL_ALIGN_CENTER);
+    const char *stackDesc = "8 cubes in the outer stack of the big goal.\nGets the preload, the cube in front, the 4 stack,\nthe cube next to the tower, and the stray cube.\nCLICK TO CONFIRM";
+    const char *rowDesc = "8 cubes in the small goal.\nGets the preload, the 3 grounded cubes\nfrom the long L, and the 4 cubes in a row.\nCLICK TO CONFIRM";
+    const char *skillsDesc = "\nDescription not available.\n\nCLICK TO CONFIRM";
+    const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
+    while(!confirmed) {
         switch(autonType) {
             case 0:
-                lv_label_set_text(confirmLabel, "Gets the preload, the 4 stack and the cube in front, the cube under the medium tower, and the cube next to the goal. 8 cubes in the outer stack of the big goal.");
+                lv_label_set_text(confirmLabel, stackDesc);
                 break;
             case 1:
-                lv_label_set_text(confirmLabel, "Gets the preload, the 3 ground cubes from the long L, and the 4 cubes in a row. 8 cubes in the small goal.");
+                lv_label_set_text(confirmLabel, rowDesc);
                 break;
             case 2:
-                lv_label_set_text(confirmLabel, "Description not available.");
+                lv_label_set_text(confirmLabel, skillsDesc);
                 break;
             case 3:
-                lv_label_set_text(confirmLabel, "No auton, you loser.");
+                lv_label_set_text(confirmLabel, noneDesc);
                 break;
         }
-    }*/
+        if(autonColor) {
+            lv_btn_set_style(color, LV_BTN_STYLE_PR, &blueRed);
+            lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_PR, &blueOutline);
+            //lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_PR, &blue);
+            lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &blueOutline);
+        }
+        else {
+            lv_btn_set_style(color, LV_BTN_STYLE_PR, &redBlue);
+            lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_PR, &redOutline);
+            //lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_PR, &redOutline);
+            lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &redOutline);
+        }
+        delay(100);
+    }
+
+    /*=======================
+    COVER AFTER AUTON CONFIRM
+    =======================*/
+    lv_obj_t *cover = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_pos(cover, 0, 0);
+    lv_obj_set_size(cover, 480, 240);
+    black.body.radius = 0;
+    lv_obj_set_style(cover, &black2);
+    lv_obj_t *coverLabel = lv_label_create(cover, NULL);
+    lv_label_set_align(coverLabel, LV_LABEL_ALIGN_CENTER);
+    lv_label_set_text(coverLabel, "GO GET EM BOYS");
 
     /*std::vector<std::vector<lv_style_t*>> tileData = {
         {&grey, &red , &grey, &grey, &blue, &grey},
