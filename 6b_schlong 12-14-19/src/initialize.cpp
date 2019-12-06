@@ -14,8 +14,6 @@ void initialize() {
 
 }
 
-int autonCount = 0;
-
 /*void lcdScroll() {
 
     if(autonCount > 6) { //loops the options
@@ -94,19 +92,26 @@ void on_right_pressed() {
 
 }*/
 
-bool autonColor = false;
-int autonType = 0;
+int autonCount = 3, autonType = 3;
+bool autonColor = false, confirmed = false;
+
+void calcAuton() {
+
+    autonCount = autonColor * 4 + autonType;
+
+}
 
 lv_res_t switchColor(lv_obj_t *btn) {
 
-    static lv_style_t redAlliance, blueAlliance;
-    lv_style_copy(&redAlliance, &lv_style_plain);
-    redAlliance.body.main_color = LV_COLOR_HEX(0xD42630);
-    redAlliance.body.grad_color = LV_COLOR_HEX(0xD42630);
-    redAlliance.body.border.width = 2;
-    redAlliance.body.radius = 10;
-    redAlliance.body.border.color = LV_COLOR_WHITE;
-    lv_style_copy(&blueAlliance, &redAlliance);
+    //Determines which side the robot is on
+    static lv_style_t red, blueAlliance;
+    lv_style_copy(&red, &lv_style_plain);
+    red.body.main_color = LV_COLOR_HEX(0xD42630);
+    red.body.grad_color = LV_COLOR_HEX(0xD42630);
+    red.body.border.width = 2;
+    red.body.radius = 10;
+    red.body.border.color = LV_COLOR_WHITE;
+    lv_style_copy(&blueAlliance, &red);
     blueAlliance.body.main_color = LV_COLOR_HEX(0x0077C9);
     blueAlliance.body.grad_color = LV_COLOR_HEX(0x0077C9);
 
@@ -114,14 +119,16 @@ lv_res_t switchColor(lv_obj_t *btn) {
     if(autonColor)
         lv_btn_set_style(btn, LV_BTN_STYLE_REL, &blueAlliance);
     else
-        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &redAlliance);
+        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &red);
 
+    calcAuton();
     return LV_RES_OK;
 
 }
 
 lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
 
+    //Determines which auton is desired
     if(txt == "4 stack")
         autonType = 0;
     else if(txt == "4 row")
@@ -131,18 +138,25 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
     else if(txt == "none")
         autonType = 3;
 
+    calcAuton();
+
 }
 
 lv_res_t confirmAuton(lv_obj_t *btn) {
 
-    autonCount = autonColor * 4 + autonType;
+    //Calculates which auton will be used
+    calcAuton();
+    confirmed = true;
 
 }
 
-void competition_initialize() {
+void competition_initialize() { //480 x 240 cortex
 
-    //480 x 240 cortex
-    static lv_style_t grey;//, red, blue;
+    /*================================
+    STYLES STYLES STYLES STYLES STYLES
+    ================================*/
+    static lv_style_t grey, red, silver;
+
     lv_style_copy(&grey, &lv_style_plain);
     grey.body.main_color = LV_COLOR_HEX(0x828F8F);
     grey.body.grad_color = LV_COLOR_HEX(0x828F8F);
@@ -150,42 +164,40 @@ void competition_initialize() {
     grey.body.radius = 10;
     grey.body.border.color = LV_COLOR_WHITE;
 
-    /*lv_style_copy(&red, &grey);
+    lv_style_copy(&red, &grey);
     red.body.main_color = LV_COLOR_HEX(0xD42630);
     red.body.grad_color = LV_COLOR_HEX(0xD42630);
+    red.body.radius = 10;
 
-    lv_style_copy(&blue, &grey);
-    blue.body.main_color = LV_COLOR_HEX(0x0077C9);
-    blue.body.grad_color = LV_COLOR_HEX(0x0077C9);*/
+    lv_style_copy(&silver, &red);
+    silver.body.main_color = LV_COLOR_SILVER;
+    silver.body.grad_color = LV_COLOR_SILVER;
 
-    static lv_style_t redAlliance, noAlliance;
-    lv_style_copy(&redAlliance, &grey);
-    redAlliance.body.main_color = LV_COLOR_HEX(0xD42630);
-    redAlliance.body.grad_color = LV_COLOR_HEX(0xD42630);
-    redAlliance.body.radius = 10;
-    lv_style_copy(&noAlliance, &redAlliance);
-    noAlliance.body.main_color = LV_COLOR_SILVER;
-    noAlliance.body.grad_color = LV_COLOR_SILVER;
-
-    static lv_style_t teamStyle;
-    lv_style_copy(&teamStyle, &noAlliance);
-
+    /*=====================
+    62019X LOGO (TEXT AREA)
+    =====================*/
     lv_obj_t *teamName = lv_ta_create(lv_scr_act(), NULL);
     lv_obj_set_size(teamName, 265, 75);
     lv_obj_set_pos(teamName, 210, 5);
     lv_ta_set_cursor_type(teamName, LV_CURSOR_NONE);
-    lv_ta_set_style(teamName, LV_TA_STYLE_BG, &teamStyle);
+    lv_ta_set_style(teamName, LV_TA_STYLE_BG, &silver);
     lv_ta_set_text(teamName, "62019X");
 
+    /*==============================
+    ALLIANCE COLOR SELECTOR (BUTTON)
+    ==============================*/
     lv_obj_t *color = lv_btn_create(lv_scr_act(), NULL);
     lv_obj_set_size(color, 200, 75);
-    lv_btn_set_style(color, LV_BTN_STYLE_REL, &redAlliance);
-    lv_btn_set_style(color, LV_BTN_STYLE_PR, &noAlliance);
+    lv_btn_set_style(color, LV_BTN_STYLE_REL, &red);
+    lv_btn_set_style(color, LV_BTN_STYLE_PR, &silver);
     lv_obj_align(color, NULL, LV_ALIGN_IN_TOP_LEFT, 5, 5);
     lv_obj_t *colorLabel = lv_label_create(color, NULL);
     lv_label_set_text(colorLabel, "Alliance Color");
     lv_btn_set_action(color, LV_BTN_ACTION_CLICK, switchColor);
 
+    /*=================================
+    AUTON TYPE SELECTOR (BUTTON MATRIX)
+    =================================*/
     static const char *autons[] = {"4 stack", "skills", "\n", "4 row", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
@@ -194,40 +206,31 @@ void competition_initialize() {
     lv_btnm_set_toggle(auton, true, 3);
     lv_btnm_set_action(auton, selectAuton);
 
+    /*=====================
+    CONFIRM BUTTON (BUTTON)
+    =====================*/
     lv_obj_t *confirm = lv_btn_create(lv_scr_act(), NULL);
     lv_obj_set_size(confirm, 265, 150);
     lv_obj_set_pos(confirm, 210, 85);
     lv_obj_t *confirmLabel = lv_label_create(confirm, NULL);
-    lv_label_set_text(confirmLabel, "CONFRIM AUTON");
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
-
-    /*lv_obj_t *colorText = lv_ta_create(lv_scr_act(), NULL);
-    lv_obj_set_size(colorText, 150, 50);
-    lv_obj_align(colorText, NULL, LV_ALIGN_IN_TOP_LEFT, 0, 0);
-    lv_ta_set_cursor_type(colorText, LV_CURSOR_NONE);
-    lv_ta_set_text(colorText, "Alliance Color: ");
-
-    lv_obj_t *color = lv_sw_create(lv_scr_act(), NULL);
-    lv_obj_set_size(color, 60, 30);
-    lv_sw_set_style(color, LV_SW_STYLE_BG, &red);
-    lv_sw_set_style(color, LV_SW_STYLE_KNOB_OFF, &red);
-    lv_sw_set_style(color, LV_SW_STYLE_INDIC, &blue);
-    lv_sw_set_style(color, LV_SW_STYLE_KNOB_ON, &blue);
-    lv_sw_off(color);
-    lv_obj_set_pos(color, 160, 10);*/
-
-    /*lv_obj_t *modeText = lv_ta_create(lv_scr_act(), NULL);
-    lv_obj_set_size(modeText, 100, 50);
-    lv_obj_align(modeText, NULL, LV_ALIGN_IN_TOP_LEFT, 100, 100);
-    lv_ta_set_cursor_type(modeText, LV_CURSOR_NONE);
-    lv_ta_set_text(modeText, "Select Auton: ");
-
-    lv_obj_t *mode = lv_slider_create(lv_scr_act(), NULL);
-    lv_obj_set_width(mode, LV_DPI * 2);
-    lv_obj_set_pos(mode, 100, 100);
-    lv_slider_set_range(mode, 0, 2);
-    lv_slider_set_value(mode, 1);*/
-
+    lv_label_set_text(confirmLabel, "CONFRIM AUTON");
+    /*while(!confirmed) {
+        switch(autonType) {
+            case 0:
+                lv_label_set_text(confirmLabel, "Gets the preload, the 4 stack and the cube in front, the cube under the medium tower, and the cube next to the goal. 8 cubes in the outer stack of the big goal.");
+                break;
+            case 1:
+                lv_label_set_text(confirmLabel, "Gets the preload, the 3 ground cubes from the long L, and the 4 cubes in a row. 8 cubes in the small goal.");
+                break;
+            case 2:
+                lv_label_set_text(confirmLabel, "Description not available.");
+                break;
+            case 3:
+                lv_label_set_text(confirmLabel, "No auton, you loser.");
+                break;
+        }
+    }*/
 
     /*std::vector<std::vector<lv_style_t*>> tileData = {
         {&grey, &red , &grey, &grey, &blue, &grey},
@@ -249,7 +252,6 @@ void competition_initialize() {
             lv_obj_set_style(tileObj, tileData[y][x]);
         }
     }*/
-
 
     /*lcd::initialize();
     lcd::set_text(0, "choose auton");

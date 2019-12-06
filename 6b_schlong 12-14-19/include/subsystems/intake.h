@@ -15,8 +15,8 @@ void outtake(double intkSpeed = 0);
 
 extern double traySetPoint;
 extern bool resetTrayIntegral;
-enum class trayStatus {idle, hold, manual};
-extern trayStatus trayStat;
+enum class TrayStatus {idle, hold, manual};
+extern TrayStatus trayStat;
 void ctrlTray(void* param);
 
 #endif

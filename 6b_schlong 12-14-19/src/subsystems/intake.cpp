@@ -77,22 +77,22 @@ void updateTray() {
 		runTray(0);*/
 
 	if(r2() && !l2()) { //r1 pressed runs the tray outward
-		trayStat = trayStatus::manual;
+		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(1));
 	}
 
 	else if(l2() && !r2()) { //r2 pressed runs the tray inward
-		trayStat = trayStatus::manual;
+		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(0));
 	}
 
 	else if(getTrayPos() < 200) {
-		trayStat = trayStatus::idle;
+		trayStat = TrayStatus::idle;
 	}
 
-	else if(trayStat == trayStatus::manual) { //otherwise dont run the tray motor
+	else if(trayStat == TrayStatus::manual) { //otherwise dont run the tray motor
 		traySetPoint = getTrayPos();
-		trayStat = trayStatus::hold;
+		trayStat = TrayStatus::hold;
 	}
 
 	traySafetyNet();
@@ -132,8 +132,8 @@ void outtake(double intkSpeed) {
 
 double traySetPoint = 0;
 bool resetTrayIntegral = false;
-enum class trayStatus;
-trayStatus trayStat = trayStatus::idle;
+enum class TrayStatus;
+TrayStatus trayStat = TrayStatus::idle;
 
 void ctrlTray(void* param) { //tray control task
 
@@ -153,13 +153,13 @@ void ctrlTray(void* param) { //tray control task
             resetIntegral = false;
         }
 
-		if(trayStat != trayStatus::manual) {
+		if(trayStat != TrayStatus::manual) {
 
-			if(trayStat == trayStatus::idle) { //doesnt make the tray hold the position, lets the motor rest
+			if(trayStat == TrayStatus::idle) { //doesnt make the tray hold the position, lets the motor rest
 				runTray(0);
 			}
 
-			else if(trayStat == trayStatus::hold) { //holds the tray in place
+			else if(trayStat == TrayStatus::hold) { //holds the tray in place
 				hold.error = (traySetPoint - getTrayPos()); //updates error for holdPID
                 holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
                 runTray(holdVal);

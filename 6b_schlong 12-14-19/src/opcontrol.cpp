@@ -15,7 +15,7 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 
-		std::cout << tray.get_position() << std::endl;
+		//std::cout << tray.get_position() << std::endl;
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getLiftHeight() << std::endl;
 		
