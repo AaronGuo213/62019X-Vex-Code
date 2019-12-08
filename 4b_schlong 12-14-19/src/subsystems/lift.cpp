@@ -28,9 +28,15 @@ void liftSafetyNet() { //prevents the motors from overheating and breaking
 
 }
 
-int getLiftHeight() {
+double getLiftHeight() {
 
-    return liftPot.get_value() - 1220;
+    return lift.get_position() * 4;
+
+}
+
+int getLiftPot() {
+
+    return liftPot.get_value();
 
 }
 
@@ -47,8 +53,8 @@ void ctrlLift(void* param) {
     PID slow = initPID(0, 0, 1, 0, 0, 0.15); //kD = 0.15
     PID move = initPID(1, 1, 1, 0.45, 0.00012, 1.5);
     double holdVal = 0, slowVal = 0, moveVal = 0;
-    int slowTimer = 300;
-    double multiplier = 2;
+    int slowTimer = 300, holdDownTimer = 4000;
+    bool keepDown = false;
 
     while(true) {
 
@@ -80,7 +86,7 @@ void ctrlLift(void* param) {
 
                 slow.error = -getLiftHeight(); //updates error for slowPID
                 slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
-                runLift(slowVal * multiplier);
+                runLift(slowVal);
 
                 //std::cout << "liftPos: " << getLiftHeight() << " | slow.derivative: " << slow.derivative << " | slowVal: " << slowVal << std::endl;
 
@@ -90,7 +96,7 @@ void ctrlLift(void* param) {
 
                 hold.error = (liftSetPoint - getLiftHeight()); //updates error for holdPID
                 holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
-                runLift(holdVal * multiplier);
+                runLift(holdVal);
 
                 //std::cout << "liftSetPoint: " << liftSetPoint << " | liftPos: " << getLiftHeight() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
 
@@ -100,7 +106,7 @@ void ctrlLift(void* param) {
 
                 move.error = (liftSetPoint - getLiftHeight());
                 moveVal = runPID(&move);
-                runLift(moveVal * multiplier);
+                runLift(moveVal);
 
                 /*if(abs(move.error) < 10)
                     liftStat = LiftStatus::hold;*/
@@ -108,10 +114,32 @@ void ctrlLift(void* param) {
 
             }
 
+            else if(liftStat == LiftStatus::holdDown) {
+
+                if(getLiftPot() > 300) 
+                    keepDown = true;
+
+                if(keepDown) {
+                    runLift(-30);
+                    if(holdDownTimer > 0)
+                        holdDownTimer -= 10;
+                    else {
+                        keepDown = false;
+                        holdDownTimer = 4000;
+                    }
+                }
+
+                else
+                    runLift(0);
+
+            }
+
         }
 
-        else
+        else {
             slowTimer = 300;
+            holdDownTimer = 4000;
+        }
 
         liftSafetyNet();
         Task::delay_until(&now, 10);
@@ -147,8 +175,8 @@ void updateLift() {
         runLift(-100);
     }
 
-    else if(getLiftHeight() < 100)
-        liftStat = LiftStatus::idle;
+    else if(getLiftPot() < 400)
+        liftStat = LiftStatus::holdDown;
 
     else if(liftStat == LiftStatus::manual)
         liftStat = LiftStatus::slow;*/

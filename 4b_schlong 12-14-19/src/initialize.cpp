@@ -2,15 +2,16 @@
 
 void initialize() {
 
+    leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    tray.tare_position();
+    lift.tare_position();
     delay(200);
     //Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
     liftSetPoint = getLiftHeight();
     traySetPoint = 0;
-    leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-    rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-    tray.tare_position();
 
 }
 
@@ -95,6 +96,47 @@ void on_right_pressed() {
 int autonCount = 3, autonType = 3;
 bool autonColor = false, confirmed = false;
 
+/*=======================
+STYLE CREATTION FUNCTIONS
+=======================*/
+
+lv_style_t lvMakeStyle(lv_style_t copy, lv_color_t mainColor, lv_color_t gradColor, int radius = -1) {
+
+    lv_style_t style;
+    lv_style_copy(&style, &copy);
+    style.body.main_color = mainColor;
+    style.body.grad_color = gradColor;
+    if(radius != -1)
+        style.body.radius = radius;
+    return style;
+
+}
+
+lv_style_t lvSetBorder(lv_style_t style, lv_color_t color, int thickness = -1) {
+
+    style.body.border.color = color;
+    if(thickness != -1)
+        style.body.border.width = thickness;
+    return style;
+
+}
+
+lv_style_t lvSetText(lv_style_t style, lv_color_t txtColor, lv_font_t *font, int spaceSize = -1, int lineSize = -1) {
+
+    style.text.color = txtColor;
+    style.text.font = font;
+    if(spaceSize != -1)
+        style.text.letter_space = spaceSize;
+    if(lineSize != -1)
+        style.text.line_space = lineSize;
+    return style;
+
+}
+
+/*===========================
+ACTIONS FUNCTIONS FOR BUTTONS
+===========================*/
+
 void calcAuton() {
 
     autonCount = autonColor * 4 + autonType;
@@ -105,22 +147,12 @@ lv_res_t switchColor(lv_obj_t *btn) {
 
     //Determines which side the robot is on
     static lv_style_t red, blue;
-    lv_style_copy(&red, &lv_style_plain);
-    red.body.main_color = LV_COLOR_RED;
-    red.body.grad_color = LV_COLOR_RED;
-    red.body.border.width = 2;
-    red.body.radius = 10;
-    red.body.border.color = LV_COLOR_WHITE;
-    lv_style_copy(&blue, &red);
-    blue.body.main_color = LV_COLOR_BLUE;
-    blue.body.grad_color = LV_COLOR_BLUE;
+    red = lvMakeStyle(lv_style_plain, LV_COLOR_RED, LV_COLOR_RED, 10);
+    red = lvSetBorder(red, LV_COLOR_WHITE, 2);
+    blue = lvMakeStyle(red, LV_COLOR_BLUE, LV_COLOR_BLUE);
 
     autonColor = !autonColor;
-    if(autonColor)
-        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &blue);
-    else
-        lv_btn_set_style(btn, LV_BTN_STYLE_REL, &red);
-
+    lv_btn_set_style(btn, LV_BTN_STYLE_REL, autonColor ? &blue : &red);
     calcAuton();
     return LV_RES_OK;
 
@@ -139,6 +171,7 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
         autonType = 3;
 
     calcAuton();
+    return LV_RES_OK;
 
 }
 
@@ -147,60 +180,38 @@ lv_res_t confirmAuton(lv_obj_t *btn) {
     //Calculates which auton will be used
     calcAuton();
     confirmed = true;
+    return LV_RES_OK;
 
 }
+
+/*=====================================
+INTIALIZE (RUNS WHEN ROBOT IS DISABLED)
+=====================================*/
 
 void competition_initialize() { //480 x 240 cortex
 
     /*================================
     STYLES STYLES STYLES STYLES STYLES
     ================================*/
-    static lv_style_t grey, red, blue, redBlue, blueRed, black, green, black2;
+    static lv_style_t red, blue, redBlue, blueRed, black, black2, black3;
 
-    lv_style_copy(&grey, &lv_style_plain);
-    grey.body.main_color = LV_COLOR_HEX(0x828F8F);
-    grey.body.grad_color = LV_COLOR_HEX(0x828F8F);
-    grey.body.border.width = 2;
-    grey.body.radius = 10;
-    grey.body.border.color = LV_COLOR_WHITE;
-
-    lv_style_copy(&red, &grey);
-    red.body.main_color = LV_COLOR_RED;
-    red.body.grad_color = LV_COLOR_RED;
-    red.body.radius = 10;
-
-    lv_style_copy(&blue, &red);
-    blue.body.main_color = LV_COLOR_BLUE;
-    blue.body.grad_color = LV_COLOR_BLUE;
-    
-    lv_style_copy(&redBlue, &red);
-    redBlue.body.grad_color = LV_COLOR_BLUE;
-
-    lv_style_copy(&blueRed, &blue);
-    blueRed.body.grad_color = LV_COLOR_RED;
-
-    lv_style_copy(&black, &red);
-    black.body.main_color = LV_COLOR_BLACK;
-    black.body.grad_color = LV_COLOR_BLACK;
-    black.body.border.color = LV_COLOR_GRAY;
-    black.text.color = LV_COLOR_RED;
-    black.text.letter_space = 5;
-
-    lv_style_copy(&green, &grey);
-    green.body.main_color = LV_COLOR_GREEN;
-    green.body.grad_color = LV_COLOR_GREEN;
-    green.body.radius = 50;
-
-    lv_style_copy(&black2, &black);
-    black2.body.radius = 0;
+    red = lvMakeStyle(lv_style_plain, LV_COLOR_RED, LV_COLOR_RED, 10);
+    red = lvSetBorder(red, LV_COLOR_WHITE, 2);
+    blue = lvMakeStyle(red, LV_COLOR_BLUE, LV_COLOR_BLUE);
+    redBlue = lvMakeStyle(red, LV_COLOR_RED, LV_COLOR_BLUE);
+    blueRed = lvMakeStyle(blue, LV_COLOR_BLUE, LV_COLOR_RED);
+    black = lvMakeStyle(red, LV_COLOR_BLACK, LV_COLOR_RED);
+    black = lvSetBorder(black, LV_COLOR_GRAY);
+    black = lvSetText(black, LV_COLOR_WHITE, &lv_font_dejavu_20, 5);
+    black2 = lvMakeStyle(black, LV_COLOR_BLACK, LV_COLOR_RED, 50);
+    black3 = lvMakeStyle(black, LV_COLOR_BLACK, LV_COLOR_BLACK, 0);
 
     lv_obj_t *sample = lv_btnm_create(lv_scr_act(), NULL);
     lv_obj_set_pos(sample, 500, 250);
     lv_style_t redOutline, blueOutline;
     lv_style_copy(&redOutline, lv_btnm_get_style(sample, LV_BTNM_STYLE_BTN_TGL_REL));
     redOutline.body.radius = 15;
-    redOutline.body.border.width = 2;
-    redOutline.body.border.color = LV_COLOR_RED;
+    redOutline = lvSetBorder(redOutline, LV_COLOR_RED, 2);
     lv_style_copy(&blueOutline, &redOutline);
     blueOutline.body.border.color = LV_COLOR_BLUE;
 
@@ -243,7 +254,7 @@ void competition_initialize() { //480 x 240 cortex
     lv_obj_t *confirm = lv_btn_create(lv_scr_act(), NULL);
     lv_obj_set_size(confirm, 470, 100);
     lv_obj_set_pos(confirm, 5, 135);
-    lv_btn_set_style(confirm, LV_BTN_STYLE_PR, &green);
+    lv_btn_set_style(confirm, LV_BTN_STYLE_PR, &black2);
     lv_obj_t *confirmLabel = lv_label_create(confirm, NULL);
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
     lv_label_set_align(confirmLabel, LV_LABEL_ALIGN_CENTER);
@@ -288,38 +299,10 @@ void competition_initialize() { //480 x 240 cortex
     lv_obj_set_pos(cover, 0, 0);
     lv_obj_set_size(cover, 480, 240);
     black.body.radius = 0;
-    lv_obj_set_style(cover, &black2);
+    lv_obj_set_style(cover, &black3);
     lv_obj_t *coverLabel = lv_label_create(cover, NULL);
     lv_label_set_align(coverLabel, LV_LABEL_ALIGN_CENTER);
     lv_label_set_text(coverLabel, "GO GET EM BOYS");
-
-    /*std::vector<std::vector<lv_style_t*>> tileData = {
-        {&grey, &red , &grey, &grey, &blue, &grey},
-        {&red , &grey, &grey, &grey, &grey, &blue},
-        {&grey, &grey, &grey, &grey, &grey, &grey},
-        {&grey, &grey, &grey, &grey, &grey, &grey},
-        {&grey, &grey, &grey, &grey, &grey, &grey},
-        {&grey, &grey, &grey, &grey, &grey, &grey}
-    };
-
-    lv_obj_t* field = lv_obj_create(lv_scr_act(), NULL);
-    int fieldLength = lv_obj_get_height(field);
-    int tileLength = fieldLength / 6;
-    for(int y = 0; y < 6; y++) {
-        for(int x = 0; x < 6; x++) {
-            lv_obj_t* tileObj = lv_btn_create(lv_scr_act(), NULL);
-            lv_obj_set_size(tileObj, tileLength ,tileLength);
-            lv_obj_set_pos(tileObj, x * tileLength, y * tileLength);
-            lv_obj_set_style(tileObj, tileData[y][x]);
-        }
-    }*/
-
-    /*lcd::initialize();
-    lcd::set_text(0, "choose auton");
-    lcdScroll();
-    lcd::register_btn0_cb(on_left_pressed);
-    lcd::register_btn1_cb(on_center_pressed);
-    lcd::register_btn2_cb(on_right_pressed);*/
 
 }
 

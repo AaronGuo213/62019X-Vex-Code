@@ -110,23 +110,20 @@ void traySafetyNet() {
 
 void outtake(double intkSpeed) {
 
-	leftIntk.set_brake_mode(E_MOTOR_BRAKE_COAST); //lets the cubes slide down the intake slowly
-	rightIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
-
-	while(getTrayPos() > 50) { //runs the tray forward until it is vertical
+	trayStat = TrayStatus::manual;
+	while(getTrayPos() < 940) { //runs the tray forward until it is vertical
 		runTray(calcTrayPow(1));
-		delay(10);
+		delay(50);
 	}
-	delay(100);
 	runTray(0);
 
 	if(intkSpeed) //if requested, the intake will run outwards
 		runIntk(-intkSpeed);
-	moveStraight(-15, 1000); //moves back
+	runTray(-100);
+	moveStraight(-15, 1000, 80); //moves back
 	runIntk(0);
-
-	leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD); //allows the intake to hold the cubes again
-	rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	runTray(0);
+	trayStat = TrayStatus::idle;
 
 }
 

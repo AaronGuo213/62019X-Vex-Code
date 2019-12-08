@@ -7,9 +7,10 @@ extern const int onTower[];
 void runLift(double percent);
 void liftToGnd(int threshhold);
 void liftSafetyNet();
-int getLiftHeight();
+double getLiftHeight();
+int getLiftPot();
 
-enum class LiftStatus {idle, hold, slow, move, manual};
+enum class LiftStatus {idle, hold, slow, move, manual, holdDown};
 extern LiftStatus liftStat;
 extern int liftSetPoint;
 extern bool resetIntegral;

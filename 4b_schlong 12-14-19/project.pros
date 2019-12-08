@@ -1,7 +1,7 @@
 {
     "py/object": "pros.conductor.project.Project",
     "py/state": {
-        "project_name": "6bar_schlong",
+        "project_name": "4bar_schlong",
         "target": "v5",
         "templates": {
             "kernel": {
