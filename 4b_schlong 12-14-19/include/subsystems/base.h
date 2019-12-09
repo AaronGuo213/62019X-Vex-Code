@@ -14,8 +14,8 @@ void resetBaseEnc();
 double getYawEnc();
 void resetYawEnc();
 
-void moveStraight(double dist, int time, double maxVal = 100); //PID control loop for straight movement
-void turn(double theta, int time, double maxVal = 100); //PID control loop for turning
+void moveStraight(double dist, int time = 2000, double maxVal = 100); //PID control loop for straight movement
+void turn(double theta, int time = 2000, double maxVal = 100); //PID control loop for turning
 
 void moveCurved(double radius, double angle, int time, double maxVal = 100);
 

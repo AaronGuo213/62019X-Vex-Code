@@ -8,8 +8,9 @@ void initialize() {
     tray.tare_position();
     lift.tare_position();
     delay(200);
-    //Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
+    Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
+    Task intkGo(ctrlIntk, (void*)"PROS", TASK_PRIORITY_MIN, TASK_STACK_DEPTH_DEFAULT, "intk contrl task"); //starts the intake task
     liftSetPoint = getLiftHeight();
     traySetPoint = 0;
 
@@ -262,7 +263,7 @@ void competition_initialize() { //480 x 240 cortex
     const char *rowDesc = "8 cubes in the small goal.\nGets the preload, the 3 grounded cubes\nfrom the long L, and the 4 cubes in a row.\nCLICK TO CONFIRM";
     const char *skillsDesc = "\nDescription not available.\n\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
-    while(!confirmed) {
+    /*while(!confirmed) {
         switch(autonType) {
             case 0:
                 lv_label_set_text(confirmLabel, stackDesc);
@@ -290,7 +291,7 @@ void competition_initialize() { //480 x 240 cortex
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &redOutline);
         }
         delay(100);
-    }
+    }*/
 
     /*=======================
     COVER AFTER AUTON CONFIRM

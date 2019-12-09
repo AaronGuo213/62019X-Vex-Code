@@ -78,9 +78,11 @@ void opcontrol(void);
     #include "./subsystems/intake.h"
     #include "./subsystems/lift.h"
     #include "./subsystems/odometry.h"
+    #include "./subsystems/tray.h"
     #include "autonomi.h"
     #include "misc.h"
     #include "pragma.h"
+    #include "subautons.h"
     #define _USE_MATH_DEFINES
     #include <cmath>
     #include <vector>
