@@ -1,6 +1,6 @@
 #include "main.h"
 
-const int atCube[] = {0, 0, 150, 330, 480, 650};
+const int atCube[] = {0, 0, 150, 350, 480, 650};
 const int onTower[] = {500, 540, 720};
 
 void runLift(double percent) {
@@ -177,8 +177,6 @@ void updateLift() {
 
     else if(getLiftHeight() < 150)
         liftStat = LiftStatus::idle;
-    /*else if(getLiftPot() < 400)
-        liftStat = LiftStatus::holdDown;*/
 
     else if(liftStat == LiftStatus::manual)
         liftStat = LiftStatus::slow;

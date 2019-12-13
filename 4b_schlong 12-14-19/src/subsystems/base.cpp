@@ -84,7 +84,7 @@ void resetYawEnc() {
 
 }
 
-/*void moveStraight(double distance, int time, double maxVal) { //PID control loop to move the base to a certain relative 
+void moveStraightTimed(double distance, int time, double maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
 
     double distVal, diffVal, leftVal, rightVal;
@@ -122,12 +122,11 @@ void resetYawEnc() {
 
 }
 
-void turn(double setPoint, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
+void turnTimed(double setPoint, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    double turnVal, dispVal;
+    double turnVal;
     double leftVal, rightVal;
-    //PID turn = initPID(1, 1, 1, 0.19, 0.0001, 0.8); //kP = 0.19, kI = 0.0001, kD = 0.8;
-    PID turn = initPID(1, 0, 1, 20, 0.0001, 10); //kP = 0.19, kI = 0.0001, kD = 0.8;
+    PID turn = initPID(1, 0, 1, 35, 0.00004, 200); //kP = 0.19, kI = 0.0001, kD = 0.8;
 
     resetBaseEnc();
     resetYawEnc();
@@ -152,7 +151,7 @@ void turn(double setPoint, int time, double maxVal) { //PID control loop to turn
     runLeftBase(0); //stops the motors at the end
     runRightBase(0);
 
-}*/
+}
 
 void moveStraight(double distance, int time, double maxVal) { //PID control loop to move the base to a certain relative 
                                                             //postition with minimal forwards and sideways error
@@ -178,7 +177,7 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
 
-        if(abs(dist.error) < 0.3);
+        if(abs(dist.error) < 0.2)
             break;
 
         runLeftBase(leftVal); //assigns the values to the motors
@@ -197,10 +196,9 @@ void moveStraight(double distance, int time, double maxVal) { //PID control loop
 
 void turn(double setPoint, int time, double maxVal) { //PID control loop to turn a desired angle with minimal angle error
 
-    double turnVal, dispVal;
+    double turnVal;
     double leftVal, rightVal;
-    //PID turn = initPID(1, 1, 1, 0.19, 0.0001, 0.8); //kP = 0.19, kI = 0.0001, kD = 0.8;
-    PID turn = initPID(1, 0, 1, 20, 0.0001, 10); //kP = 0.19, kI = 0.0001, kD = 0.8;
+    PID turn = initPID(1, 0, 1, 35, 0.00004, 200); //kP = 0.19, kI = 0.0001, kD = 0.8;
 
     resetBaseEnc();
     resetYawEnc();
@@ -216,10 +214,10 @@ void turn(double setPoint, int time, double maxVal) { //PID control loop to turn
         runLeftBase(leftVal); //assigns values to the motors
         runRightBase(rightVal);
 
-        if(abs(turn.error < 0.1))
+        if(abs(turn.error) < 0.1)
             break;
 
-        std::cout << "setPoint: " << setPoint << " | currentPos: " << (-getLeftEnc() + getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << setPoint << " | leftPos: " << -getLeftEnc() << " | rightPos: " << getRightEnc() << " | currentPos: " << (-getLeftEnc() + getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
 
         delay(10);
 

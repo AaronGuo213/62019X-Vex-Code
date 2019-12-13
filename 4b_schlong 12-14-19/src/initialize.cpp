@@ -16,84 +16,6 @@ void initialize() {
 
 }
 
-/*void lcdScroll() {
-
-    if(autonCount > 6) { //loops the options
-
-        autonCount = 0;
-
-    }
-
-    else if(autonCount < 0) { //loops the options
-
-        autonCount = 6;
-
-    }
-
-    switch(autonCount) {
-
-        case 0:
-            lcd::set_text(2, "RED1\n");
-            lcd::set_text(1, "4 Stack, 6 Cubes in Big Goal");
-            break;
-
-        case 1:
-            lcd::set_text(2, "RED2\n");
-            lcd::set_text(1, "Long L, 4 Cubes Unscored");
-            break;
-
-        case 2:
-            lcd::set_text(2, "RED3\n");
-            lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
-            break;
-
-        case 3:
-            lcd::set_text(1, "No Auton\n");
-            break;
-
-        case 4:
-            lcd::set_text(2, "BLUE1\n");
-            lcd::set_text(1, "4 Stack, 6 Cubes in Big Goal");
-            break;
-            
-        case 5:
-            lcd::set_text(2, "BLUE2\n");
-            lcd::set_text(1, "Long L, 4 Cubes Unscored");
-            break;
-
-        case 6:
-            lcd::set_text(2, "BLUE3\n");
-            lcd::set_text(1, "4 in a Row, 5 Cubes in Small Goal");
-            break;
-
-        default:
-            lcd::set_text(1, "ERROR");
-            break;
-
-    }
-
-}
-
-void on_left_pressed() {
-
-    autonCount--;
-    lcdScroll();
-
-}
-
-void on_center_pressed() {
-
-    lcd::shutdown();
-
-}
-
-void on_right_pressed() {
-
-    autonCount++;
-    lcdScroll();
-
-}*/
-
 int autonCount = 3, autonType = 3;
 bool autonColor = false, confirmed = false;
 
@@ -162,11 +84,11 @@ lv_res_t switchColor(lv_obj_t *btn) {
 lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
 
     //Determines which auton is desired
-    if(txt == "4 stack")
+    if(txt == "stack-8")
         autonType = 0;
-    else if(txt == "4 row")
+    else if(txt == "row-8")
         autonType = 1;
-    else if(txt == "skills")
+    else if(txt == "row-6")
         autonType = 2;
     else if(txt == "none")
         autonType = 3;
@@ -241,7 +163,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=================================
     AUTON TYPE SELECTOR (BUTTON MATRIX)
     =================================*/
-    static const char *autons[] = {"4 stack", "skills", "\n", "4 row", "none", ""};
+    static const char *autons[] = {"stack-8", "row-8", "\n", "row-6", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
     lv_obj_set_size(auton, 230, 125);
@@ -260,19 +182,19 @@ void competition_initialize() { //480 x 240 cortex
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
     lv_label_set_align(confirmLabel, LV_LABEL_ALIGN_CENTER);
     const char *stackDesc = "8 cubes in the outer stack of the big goal.\nGets the preload, the cube in front, the 4 stack,\nthe cube next to the tower, and the stray cube.\nCLICK TO CONFIRM";
-    const char *rowDesc = "8 cubes in the small goal.\nGets the preload, the 3 grounded cubes\nfrom the long L, and the 4 cubes in a row.\nCLICK TO CONFIRM";
-    const char *skillsDesc = "\nDescription not available.\n\nCLICK TO CONFIRM";
+    const char *row8Desc = "8 cubes unscored.\nGets the preload, the row of 4 cubes,\n and 3 cubes from the long L.\nCLICK TO CONFIRM";
+    const char *row6Desc = "6 cubes in the small goal.\nGets the preload, the row of 4,\n and the cube under the tower.\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
-    /*while(!confirmed) {
+    while(!confirmed) {
         switch(autonType) {
             case 0:
                 lv_label_set_text(confirmLabel, stackDesc);
                 break;
             case 1:
-                lv_label_set_text(confirmLabel, rowDesc);
+                lv_label_set_text(confirmLabel, row8Desc);
                 break;
             case 2:
-                lv_label_set_text(confirmLabel, skillsDesc);
+                lv_label_set_text(confirmLabel, row6Desc);
                 break;
             case 3:
                 lv_label_set_text(confirmLabel, noneDesc);
@@ -281,17 +203,15 @@ void competition_initialize() { //480 x 240 cortex
         if(autonColor) {
             lv_btn_set_style(color, LV_BTN_STYLE_PR, &blueRed);
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_PR, &blueOutline);
-            //lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_PR, &blue);
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &blueOutline);
         }
         else {
             lv_btn_set_style(color, LV_BTN_STYLE_PR, &redBlue);
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_PR, &redOutline);
-            //lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_PR, &redOutline);
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &redOutline);
         }
         delay(100);
-    }*/
+    }
 
     /*=======================
     COVER AFTER AUTON CONFIRM

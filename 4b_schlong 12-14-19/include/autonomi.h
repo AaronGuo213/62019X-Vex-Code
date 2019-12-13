@@ -4,12 +4,14 @@
 extern int autonCount, autonType;
 extern bool autonColor, confirmed;
 
-void red4Stack();
-void red8Cube();
-void red4Row();
-void blue4Stack();
-void blue8Cube();
-void blue4Row();
+void redStack8();
+void redStack7();
+void redRow8();
+void redRow6();
+void blueStack8();
+void blueStack7();
+void blueRow8();
+void blueRow6();
 void skills();
 
 #endif

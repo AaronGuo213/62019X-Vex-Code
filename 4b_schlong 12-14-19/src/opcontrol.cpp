@@ -16,9 +16,28 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 
+		/*if(l1()) {
+			while(!l2() && !r2()) {
+				runLeftBase(60);
+				runRightBase(60);
+				runIntk(100);
+			}
+		}
+
+		if(r1()) {
+			while(!l2() && !r2()) {
+				runLeftBase(70);
+				runRightBase(70);
+				runIntk(100);
+			}
+		}
+
+		runIntk(0);*/
+
 		//std::cout << tray.get_position() << std::endl;
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
-		std::cout << getLiftHeight() << std::endl;
+		//std::cout << getLiftHeight() << std::endl;
+		std::cout << leftIntk.get_position() << std::endl;;
 		
 		Task::delay_until(&now, 10);
 

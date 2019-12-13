@@ -42,11 +42,18 @@ double intkPow = 0;
 void ctrlIntk(void *param) {
 
 	std::uint32_t now = millis();
+	bool stopIntk = false;
 	while(true) {
 
 		if(intkTimer) {
 			runIntk(intkPow);
 			intkTimer -= 50;
+			stopIntk = true;
+		}
+
+		else if(stopIntk) {
+			stopIntk = false;
+			runIntk(0);
 		}
 
 		Task::delay_until(&now, 50);
