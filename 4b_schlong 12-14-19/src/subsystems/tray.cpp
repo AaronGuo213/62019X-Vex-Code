@@ -89,14 +89,17 @@ void updateTray() {
 		runTray(calcTrayPow(0));
 	}
 
-	else if(getTrayPos() < 200) {
+	else 
+		trayStat = TrayStatus::idle;
+
+	/*(else if(getTrayPos() < 200) {
 		trayStat = TrayStatus::idle;
 	}
 
 	else if(trayStat == TrayStatus::manual) { //otherwise dont run the tray motor
 		traySetPoint = getTrayPos();
 		trayStat = TrayStatus::hold;
-	}
+	}*/
 
 	traySafetyNet();
 

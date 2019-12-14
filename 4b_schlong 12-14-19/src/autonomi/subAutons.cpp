@@ -3,10 +3,11 @@
 void deploy() {
 
     liftStat = LiftStatus::idle;
-    moveTray(215);
-    delay(1000);
+    moveTray(200);
+    delay(400);
 	tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	trayStat = TrayStatus::idle;
+	delay(600);
     runIntk(100);
 	delay(1000);
 	runIntk(0);

@@ -16,7 +16,7 @@ void initialize() {
 
 }
 
-int autonCount = 3, autonType = 3;
+int autonCount = 9, autonType = 9;
 bool autonColor = false, confirmed = false;
 
 /*=======================
@@ -90,8 +90,12 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
         autonType = 1;
     else if(txt == "row-6")
         autonType = 2;
-    else if(txt == "none")
+    else if(txt == "stack-7")
         autonType = 3;
+    else if(txt == "deploy")
+        autonType = 8;
+    else if(txt == "none")
+        autonType = 9;
 
     calcAuton();
     return LV_RES_OK;
@@ -163,12 +167,12 @@ void competition_initialize() { //480 x 240 cortex
     /*=================================
     AUTON TYPE SELECTOR (BUTTON MATRIX)
     =================================*/
-    static const char *autons[] = {"stack-8", "row-8", "\n", "row-6", "none", ""};
+    static const char *autons[] = {"stack-8", "row-8", "deploy", "\n", "stack-7", "row-6", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
     lv_obj_set_size(auton, 230, 125);
     lv_obj_set_pos(auton, 240, 5);
-    lv_btnm_set_toggle(auton, true, 3);
+    lv_btnm_set_toggle(auton, true, 5);
     lv_btnm_set_action(auton, selectAuton);
 
     /*=================================
@@ -181,14 +185,16 @@ void competition_initialize() { //480 x 240 cortex
     lv_obj_t *confirmLabel = lv_label_create(confirm, NULL);
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
     lv_label_set_align(confirmLabel, LV_LABEL_ALIGN_CENTER);
-    const char *stackDesc = "8 cubes in the outer stack of the big goal.\nGets the preload, the cube in front, the 4 stack,\nthe cube next to the tower, and the stray cube.\nCLICK TO CONFIRM";
+    const char *stack8Desc = "8 cubes in the outer stack of the big goal.\nGets the preload, the cube in front, the 4 stack,\nthe cube next to the tower, and the stray cube.\nCLICK TO CONFIRM";
     const char *row8Desc = "8 cubes unscored.\nGets the preload, the row of 4 cubes,\n and 3 cubes from the long L.\nCLICK TO CONFIRM";
     const char *row6Desc = "6 cubes in the small goal.\nGets the preload, the row of 4,\n and the cube under the tower.\nCLICK TO CONFIRM";
+    const char *stack7Desc = "7 cubes in the outer stack of the big goal.\nGets the preload, the cube in front,\nthe 4 stack, and the stray cube.\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
+    const char *deployDesc = "\nDeploy only.\n\nCLICK TO CONFIRM";
     while(!confirmed) {
         switch(autonType) {
             case 0:
-                lv_label_set_text(confirmLabel, stackDesc);
+                lv_label_set_text(confirmLabel, stack8Desc);
                 break;
             case 1:
                 lv_label_set_text(confirmLabel, row8Desc);
@@ -197,6 +203,12 @@ void competition_initialize() { //480 x 240 cortex
                 lv_label_set_text(confirmLabel, row6Desc);
                 break;
             case 3:
+                lv_label_set_text(confirmLabel, stack7Desc);
+                break;
+            case 8:
+                lv_label_set_text(confirmLabel, deployDesc);
+                break;
+            case 9:
                 lv_label_set_text(confirmLabel, noneDesc);
                 break;
         }

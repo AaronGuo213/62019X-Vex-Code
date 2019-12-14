@@ -1,6 +1,6 @@
 #include "main.h"
 
-void blueStack8() {
+void blueStack7() {
 
     //gets the first cube
     moveTray(0);
@@ -26,22 +26,16 @@ void blueStack8() {
     runIntk(50);
     setLiftIdle();
 
-    //gets the cube next to the tower
-    turn(-1, 500);
-    runIntk(100);
-    moveStraightTimed(20, 1500);
-    //runIntk(0);
-
     //gets the stray cube near the goal
-    turnTimed(-5.3, 1400, 80);
-    moveTray(200);
-    delay(300);
+    turnTimed(-4.7, 1200, 80);
     runIntk(100);
-    moveStraightTimed(38, 1600, 80);
+    moveStraightTimed(20, 1500, 80);
     runIntk(0);
+    turnTimed(-1.2, 800);
     leftIntk.move_relative(-150, 50);
     rightIntk.move_relative(-150, 50);
-    moveStraight(-2, 400);
+    moveTray(400);
+    moveStraight(12, 1000, 80);
 
     //outtakes
     outtake();

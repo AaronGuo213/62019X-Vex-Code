@@ -44,6 +44,6 @@ void redStack8() {
     moveStraight(-2, 400);
 
     //outtakes
-    outtake(0);
+    outtake();
 
 }
