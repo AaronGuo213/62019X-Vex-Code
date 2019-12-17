@@ -16,7 +16,7 @@ int getTrayPos() {
 double calcTrayPow(bool moveForward) {
 
 	if(moveForward && getTrayPos() < 950)
-		return(950 - getTrayPos()) / 8 + 15;
+		return(950 - getTrayPos()) / 8.5 + 10;
 
 	if(!moveForward && getTrayPos() > 0)
 		return -getTrayPos();

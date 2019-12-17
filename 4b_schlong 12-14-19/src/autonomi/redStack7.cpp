@@ -35,7 +35,8 @@ void redStack7() {
     leftIntk.move_relative(-150, 50);
     rightIntk.move_relative(-150, 50);
     moveTray(400);
-    moveStraight(13, 1000, 80);
+    moveStraight(12, 1000, 80);
+    runIntk(0);
 
     //outtakes
     outtake();

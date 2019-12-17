@@ -31,11 +31,12 @@ void blueStack7() {
     runIntk(100);
     moveStraightTimed(20, 1500, 80);
     runIntk(0);
-    turnTimed(-1.2, 800);
+    turnTimed(-1.3, 800);
     leftIntk.move_relative(-150, 50);
     rightIntk.move_relative(-150, 50);
     moveTray(400);
     moveStraight(12, 1000, 80);
+    runIntk(0);
 
     //outtakes
     outtake();
