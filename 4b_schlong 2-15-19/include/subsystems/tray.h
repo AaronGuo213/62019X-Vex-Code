@@ -12,6 +12,8 @@ extern bool resetTrayIntegral;
 enum class TrayStatus {idle, hold, manual};
 extern TrayStatus trayStat;
 void ctrlTray(void* param);
+void setTrayHold(bool updateSetPoint = true);
+void setTrayIdle();
 void moveTray(int setPoint);
 
 #endif

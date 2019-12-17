@@ -33,7 +33,7 @@ void outtake(double intkSpeed) {
 	runLeftBase(25); //pushes the stack forward
 	runRightBase(25);
 	delay(300);
-	moveStraight(-15, 1000, 60); //moves back
+	moveStraight(-15, 1, 1000, 60); //moves back
 	runIntk(0);
 	runTray(0);
 	trayStat = TrayStatus::idle;

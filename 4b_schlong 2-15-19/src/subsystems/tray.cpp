@@ -105,6 +105,20 @@ void updateTray() {
 
 }
 
+void setTrayHold(bool updateSetPoint) {
+
+	trayStat = TrayStatus::hold;
+	if(updateSetPoint)
+		traySetPoint = getTrayPos();
+
+}
+
+void setTrayIdle() {
+
+	trayStat = TrayStatus::idle;
+
+}
+
 void moveTray(int setPoint) {
 
 	trayStat = TrayStatus::hold;

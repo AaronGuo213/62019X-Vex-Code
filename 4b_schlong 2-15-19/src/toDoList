@@ -1,18 +1,17 @@
 LIFT:
--Find out how you are going to regulate the lift, cause its one motor now
+-Try the move velocity function
 
 BASE:
--Finish theorietical odometry and apply to the code for future use
+-get the odometry working
+-work with sonars if possible
+-curvy boi
+-changing speed base PID
 
 INTAKE:
--Create intake functions
 -Nothing special yet
 
 TRAY:
--Create tray functions
--Make a function that calculates how much power should be given to the tray motor based on how close to vertical the tray is
+-Nothing special yet
 
 OTHER:
--Make the 8 cube auton on the row side
--Make the auton on the stack side
--Find a skills auton path
+-reorganize everything

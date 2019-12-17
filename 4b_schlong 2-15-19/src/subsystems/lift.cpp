@@ -9,16 +9,6 @@ void runLift(double percent) {
 
 }
 
-void liftToGnd(int threshhold) {
-
-    liftStat = LiftStatus::manual;
-    runLift(-100);
-    while(getLiftHeight() > threshhold)
-        delay(10);
-    runLift(0);
-
-}
-
 void liftSafetyNet() { //prevents the motors from overheating and breaking
 
     if(lift.is_over_temp())

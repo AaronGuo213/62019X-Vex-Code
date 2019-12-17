@@ -75,6 +75,7 @@ void opcontrol(void);
 
 #ifdef __cplusplus
     #include "./subsystems/base.h"
+    #include "./subsystems/baseFunctions.h"
     #include "./subsystems/intake.h"
     #include "./subsystems/lift.h"
     #include "./subsystems/odometry.h"
