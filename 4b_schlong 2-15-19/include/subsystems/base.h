@@ -1,8 +1,8 @@
 #ifndef BASICS_H
 #define BASICS_H
 
-void runLeftBase(double percent);
-void runRightBase(double percent);
+void runBase(double leftPercent, double rightPercent);
+void runBaseVel(double leftRPM, double rightRPM);
 void updateBase();
 void baseSafetyNet();
 extern const double inchPerTickForward;
@@ -11,6 +11,5 @@ double getLeftEnc();
 double getRightEnc();
 void resetBaseEnc();
 double getYawEnc();
-void resetYawEnc();
 
 #endif

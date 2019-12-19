@@ -12,9 +12,9 @@ int getTrayPos() {
 		
 }
 
- //calculates the power to send to the tray motor for a consistent outtaking process
 double calcTrayPow(bool moveForward) {
 
+	//calculates the power to send to the tray motor for a consistent outtaking process
 	if(moveForward && getTrayPos() < 950)
 		return(950 - getTrayPos()) / 8.5 + 10;
 
@@ -27,6 +27,7 @@ double calcTrayPow(bool moveForward) {
 
 void traySafetyNet() {
 
+	//checks if the tray motor is over the safe temperature
 	if(tray.is_over_temp())
 		tray.set_voltage_limit(0);
 	else 
@@ -34,23 +35,24 @@ void traySafetyNet() {
 
 }
 
-double traySetPoint = 0;
+double traySetPoint = 0; //determines where the tray actively tries to move to
 bool resetTrayIntegral = false;
-enum class TrayStatus;
+enum class TrayStatus; //states for the current tray status
 TrayStatus trayStat = TrayStatus::idle;
 
 void ctrlTray(void* param) { //tray control task
 
 	std::uint32_t now = millis();
-	PID hold = initPID(1, 0, 0, 1, 0, 0); //kP = 0.3, kI = 0.0001
+	PID hold = initPID(1, 0, 0, 1, 0, 0); //kP = 1
 	double holdVal;
 
 	while(true) {
 
-		traySetPoint = traySetPoint > 950 ? 950 : traySetPoint; //lift cannot be higher than 1800
+		traySetPoint = traySetPoint > 950 ? 950 : traySetPoint; //lift cannot be higher than 950
         traySetPoint = traySetPoint < 0 ? 0 : traySetPoint; //lift cannot be lower than 0
 
 		if(resetTrayIntegral) {
+			//prevents integral windup
             hold.integral = 0;
             resetIntegral = false;
         }
@@ -65,11 +67,13 @@ void ctrlTray(void* param) { //tray control task
 				hold.error = (traySetPoint - getTrayPos()); //updates error for holdPID
                 holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
                 runTray(holdVal);
+				//debugging
 				//std::cout << "traySetPoint: " << traySetPoint << " | trayPos: " << getTrayPos() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;
 			}
 
 		}
 
+		//prevents the tray motor from overheating
 		traySafetyNet();
 		Task::delay_until(&now, 50);
 
@@ -79,20 +83,20 @@ void ctrlTray(void* param) { //tray control task
 
 void updateTray() {
 
-	if(r2() && !l2()) { //r1 pressed runs the tray outward
+	if(r2() && !l2()) { //r2 pressed runs the tray outward
 		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(1));
 	}
 
-	else if(l2() && !r2()) { //r2 pressed runs the tray inward
+	else if(l2() && !r2()) { //l2 pressed runs the tray inward
 		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(0));
 	}
 
-	else 
+	else //otherwise let the tray rest
 		trayStat = TrayStatus::idle;
 
-	/*(else if(getTrayPos() < 200) {
+	/*(else if(getTrayPos() < 200) { //if the tray is not near the lowest point, hold its position
 		trayStat = TrayStatus::idle;
 	}
 
@@ -101,12 +105,11 @@ void updateTray() {
 		trayStat = TrayStatus::hold;
 	}*/
 
-	traySafetyNet();
-
 }
 
 void setTrayHold(bool updateSetPoint) {
 
+	//makes the tray hold its current position
 	trayStat = TrayStatus::hold;
 	if(updateSetPoint)
 		traySetPoint = getTrayPos();
@@ -115,12 +118,14 @@ void setTrayHold(bool updateSetPoint) {
 
 void setTrayIdle() {
 
+	//lets the tray rest
 	trayStat = TrayStatus::idle;
 
 }
 
 void moveTray(int setPoint) {
 
+	//sets the setpoint for the tray and starts the PID loop
 	trayStat = TrayStatus::hold;
 	traySetPoint = setPoint;
 

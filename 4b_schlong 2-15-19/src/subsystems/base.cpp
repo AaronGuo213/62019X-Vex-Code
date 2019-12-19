@@ -1,24 +1,28 @@
 #include "main.h"
 
-void runLeftBase(double percent) {
+void runBase(double leftPercent, double rightPercent) { //values -100 to 100
 
-    leftBase1.move_voltage(percent * 120); //runs the left base motors out of 12000mV
-    leftBase2.move_voltage(percent * 120);
+    leftBase1.move_voltage(leftPercent * 120); //runs the left base motors out of 12000mV
+    leftBase2.move_voltage(leftPercent * 120);
+    rightBase1.move_voltage(rightPercent * 120); //runs the right base motors out of 12000mV
+    rightBase2.move_voltage(rightPercent * 120);
 
 }
 
-void runRightBase(double percent) {
+void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
-    rightBase1.move_voltage(percent * 120); //runs the right base motors out of 12000mV
-    rightBase2.move_voltage(percent * 120);
+    leftBase1.move_velocity(leftRPM); //runs the left and right base motors out of 200 rpm
+    leftBase2.move_velocity(leftRPM);
+    rightBase1.move_velocity(leftRPM);
+    rightBase2.move_velocity(leftRPM);
 
 }
 
 void updateBase() {
 
     //gets controller joystick values and translate them to the motors
-    runLeftBase(joyValRemap(lY()));
-    runRightBase(joyValRemap(rY()));
+    runBase(joyValRemap(lY()), joyValRemap(rY()));
+    //checks for overheating
     baseSafetyNet();
 
 }
@@ -49,18 +53,18 @@ void baseSafetyNet() {
 }
 
 const double inchPerTickForward = 0.02440678; //1475 ticks over 36 inches
-const double inchPerTickYaw = 0;
+const double inchPerTickYaw = 0.02440678;
 
 double getLeftEnc() {
 
-    //averages the left base motor encoder values
+    //returns the number of inches travelled by the left encoder wheel
     return leftEnc.get_value() * inchPerTickForward; 
 
 }
 
 double getRightEnc() {
 
-    //averages the right base motor encoder values
+    //returns the number of inches travelled by the right encoder wheel
     return rightEnc.get_value() * inchPerTickForward; 
 
 }
@@ -69,17 +73,13 @@ void resetBaseEnc() {
 
     leftEnc.reset();
     rightEnc.reset();
+    yawEnc.reset();
 
 }
 
 double getYawEnc() {
 
+    //returns the number of inches travelled by the yaw encoder wheel
     return yawEnc.get_value() * inchPerTickYaw;
-
-}
-
-void resetYawEnc() {
-
-    yawEnc.reset();
 
 }

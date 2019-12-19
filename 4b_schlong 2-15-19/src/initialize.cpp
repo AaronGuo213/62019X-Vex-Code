@@ -2,12 +2,13 @@
 
 void initialize() {
 
-    leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the intake motors hold their position
     rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-    tray.tare_position();
+    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the tray motor hold its position to an extent
+    tray.tare_position(); //resets the motor position values
     lift.tare_position();
     delay(200);
+    //initiates the control tasks
     Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
     Task intkGo(ctrlIntk, (void*)"PROS", TASK_PRIORITY_MIN, TASK_STACK_DEPTH_DEFAULT, "intk contrl task"); //starts the intake task
@@ -16,12 +17,16 @@ void initialize() {
 
 }
 
+/*============
+AUTON SELECTOR
+============*/
+
 int autonCount = 9, autonType = 9;
 bool autonColor = false, confirmed = false;
 
-/*=======================
-STYLE CREATTION FUNCTIONS
-=======================*/
+/*======================
+STYLE CREATION FUNCTIONS
+======================*/
 
 lv_style_t lvMakeStyle(lv_style_t copy, lv_color_t mainColor, lv_color_t gradColor, int radius = -1) {
 
@@ -104,7 +109,7 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
 
 lv_res_t confirmAuton(lv_obj_t *btn) {
 
-    //Calculates which auton will be used
+    //locks the auton so it can't be changed
     calcAuton();
     confirmed = true;
     return LV_RES_OK;
@@ -191,6 +196,10 @@ void competition_initialize() { //480 x 240 cortex
     const char *stack7Desc = "7 cubes in the outer stack of the big goal.\nGets the preload, the cube in front,\nthe 4 stack, and the stray cube.\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
     const char *deployDesc = "\nDeploy only.\n\nCLICK TO CONFIRM";
+
+    /*=================================================
+    CONSTANTLY UPDATES THE COLORS OF THE AUTON SELECTOR
+    =================================================*/
     while(!confirmed) {
         switch(autonType) {
             case 0:

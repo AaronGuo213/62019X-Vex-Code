@@ -6,22 +6,6 @@ int sgn(double x) { //inputs a double and outputs its sign (+, -, or 0) as an in
 
 }
 
-PID initPID(bool useP, bool useI, bool useD, double kP, double kI, double kD) { //gives a created PID struct its values
-
-    return { 0, 0, 0, 0, kP, kI, kD, useP, useI, useD };
-
-}
-
-double runPID(PID *pid) {
-
-    pid->integral += pid->error;//pid->integrate ? pid->error : 0; //increment integral by current error
-    pid->derivative = pid->error - pid->prevError; //set derivative to the delta error
-    pid->prevError = pid->error; //set prevError to current error to be used for next iteration
-    double output = (pid->error * pid->kP * (double)pid->useP) + (pid->integral * pid->kI * (double)pid->useI) + (pid->derivative * pid->kD * (double)pid->useD); //calculate final value
-    return output;
-
-}
-
 double joyValRemap(double joyVal) {
 
     double percentVal;
@@ -36,6 +20,22 @@ double joyValRemap(double joyVal) {
         percentVal = 0.0;
 
     return percentVal;
+
+}
+
+PID initPID(bool useP, bool useI, bool useD, double kP, double kI, double kD) { //gives a created PID struct its values
+
+    return { 0, 0, 0, 0, kP, kI, kD, useP, useI, useD };
+
+}
+
+double runPID(PID *pid) {
+
+    pid->integral += pid->error;//pid->integrate ? pid->error : 0; //increment integral by current error
+    pid->derivative = pid->error - pid->prevError; //set derivative to the delta error
+    pid->prevError = pid->error; //set prevError to current error to be used for next iteration
+    double output = (pid->error * pid->kP * (double)pid->useP) + (pid->integral * pid->kI * (double)pid->useI) + (pid->derivative * pid->kD * (double)pid->useD); //calculate final value
+    return output;
 
 }
 

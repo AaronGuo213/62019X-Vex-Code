@@ -2,6 +2,6 @@
 #define SUBAUTONS_H
 
 void deploy();
-void outtake(double intkSpeed = 0);
+void outtake();
 
 #endif
