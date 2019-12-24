@@ -1,5 +1,7 @@
 #include "main.h"
 
+const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078;
+
 int sgn(double x) { //inputs a double and outputs its sign (+, -, or 0) as an int
 
     return (x > 0) - (x < 0);
