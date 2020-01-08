@@ -15,6 +15,8 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 		
+		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
+		std::cout << getTrayPos() << std::endl;
 		Task::delay_until(&now, 10);
 
 	}

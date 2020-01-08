@@ -15,8 +15,9 @@ int getTrayPos() {
 double calcTrayPow(bool moveForward) {
 
 	//calculates the power to send to the tray motor for a consistent outtaking process
-	if(moveForward && getTrayPos() < 950)
-		return(950 - getTrayPos()) / 8.5 + 10;
+	if(moveForward && getTrayPos() < 825)
+		//return (825 - getTrayPos()) / 12 + 15;
+		return (825 - getTrayPos()) / 5 + 5;
 
 	if(!moveForward && getTrayPos() > 0)
 		return -getTrayPos();

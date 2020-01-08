@@ -95,7 +95,7 @@ void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
         
         //proportionally updates the velocity of the right side if it's slower
         if(abs(maxLeftRPM) > abs(maxRightRPM)) {
-            //if the goalRPM is reachable this turn, make the velocity the goalRPM
+            //if the goalRPM is reachable now, make the velocity the goalRPM
             if(abs(leftRPM) + abs(maxAccel) >= abs(maxLeftRPM)) {
                 leftRPM = maxLeftRPM;
                 rightRPM = maxRightRPM;
@@ -103,21 +103,21 @@ void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
             //otherwise increase the RPM of the motors proportionally
             else {
                 leftRPM += maxAccel * sgn(maxLeftRPM);
-                rightRPM += maxAccel * (maxRightRPM / maxLeftRPM) * sgn(maxRightRPM);
+                rightRPM += leftRPM * maxRightRPM / maxLeftRPM;
             }
         }
 
         //proportionally updates the velocity of the left side if it's slower
         else if(abs(maxRightRPM) > abs(maxLeftRPM)) {
-            //if the goalRPM is reachable this turn, make the velocity the goalRPM
+            //if the goalRPM is reachable now, make the velocity the goalRPM
             if(abs(rightRPM) + abs(maxAccel) >= abs(maxRightRPM)) {
                 leftRPM = maxLeftRPM;
                 rightRPM = maxRightRPM;
             }
             //otherwise increase the RPM of the motors proportionally
             else {
-                leftRPM += maxAccel * sgn(maxLeftRPM);
-                rightRPM += maxAccel * (maxRightRPM / maxLeftRPM) * sgn(maxRightRPM);
+                rightRPM += maxAccel * sgn(maxRightRPM);
+                leftRPM = rightRPM * maxLeftRPM / maxRightRPM;
             }
         }
 
