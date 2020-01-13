@@ -5,7 +5,7 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 	liftSetPoint = getLiftHeight();
 	resetBaseEnc();
-	//Task trackingGo(trackPos, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
+	Task trackingGo(trackPos, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
 
 	while(true) {
 
@@ -16,7 +16,7 @@ void opcontrol() {
 		updateTray();
 		
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
-		std::cout << getTrayPos() << std::endl;
+		//std::cout << getTrayPos() << std::endl;
 		Task::delay_until(&now, 10);
 
 	}

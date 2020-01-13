@@ -2,12 +2,12 @@
 
 class Odometry {
 
-    const int LEFT_DISP = 3.875, RIGHT_DISP = 3.875, YAW_DISP = 0;
+    const double LEFT_DISP = 2.72, RIGHT_DISP = 2.72;
     double x, y, angle;
     double angleChange, xChangeLocal, yChangeLocal, xChange, yChange;
     double chordAngle;
-    double leftEncPrev, rightEncPrev, yawEncPrev;
-    double leftEncChange, rightEncChange, yawEncChange;
+    double leftEncPrev = 0, rightEncPrev = 0;
+    double leftEncChange, rightEncChange;
 
     public:
 
@@ -26,42 +26,38 @@ class Odometry {
         //updates data
         leftEncChange = getLeftEnc() - leftEncPrev;
         rightEncChange = getRightEnc() - rightEncPrev;
-        yawEncChange = getYawEnc() - yawEncPrev;
         leftEncPrev = getLeftEnc();
         rightEncPrev = getRightEnc();
-        yawEncPrev = getYawEnc();
 
         //calculates the change of angle
         angleChange = (rightEncChange - leftEncChange) / (LEFT_DISP + RIGHT_DISP);
         chordAngle = angle + (angleChange / 2);
         
         //calculates the position change in the local axes
-        /*if(angleChange == 0) {
-            xChangeLocal = yawEncChange;
+        if(angleChange == 0) {
+            //xChangeLocal = yawEncChange;
             yChangeLocal = rightEncChange;
         }
 
         else {
-            xChangeLocal = 2 * sin(angleChange / 2) * ((yawEncChange / angleChange) - YAW_DISP);
+            //xChangeLocal = 2 * sin(angleChange / 2) * ((yawEncChange / angleChange) - YAW_DISP);
             yChangeLocal = 2 * sin(angleChange / 2) * ((rightEncChange / angleChange) - RIGHT_DISP);
-        }*/
+        }
         
         //calculates the global position change
+        xChange = yChangeLocal * cos(chordAngle);
+        yChange = yChangeLocal * sin(chordAngle);
         /*xChange = xChangeLocal * sin(chordAngle) + yChangeLocal * cos(chordAngle);
         yChange = yChangeLocal * sin(chordAngle) - xChangeLocal * cos(chordAngle);*/
-
-        //5225 method
-        /*xChange = yChangeLocal * sin(chordAngle) + xChangeLocal * cos(chordAngle);
-        yChange = yChangeLocal * cos(chordAngle) - xChangeLocal * sin(chordAngle);*/
         
         //updates the absolute position and angle
-        //x += xChange;
-        //y += yChange;
+        x += xChange;
+        y += yChange;
         angle += angleChange;
 
     }
 
-    //get value functions
+    //get-value functions
     double getAngle() {
         return angle * 180 / PI;
     }
@@ -83,8 +79,8 @@ void trackPos(void* param) {
     while(true) {
 
         tracker.update();
-        //std::cout << tracker.getAngle() * 180 / M_PI << std::endl;
-        Task::delay_until(&now, 50);
+        std::cout << "x: " << tracker.getX() << " | y: " << tracker.getY() << " | angle: " << tracker.getAngle() << std::endl;
+        Task::delay_until(&now, 20);
     
     }
 

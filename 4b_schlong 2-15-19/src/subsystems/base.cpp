@@ -13,8 +13,8 @@ void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
     leftBase1.move_velocity(leftRPM); //runs the left and right base motors out of 200 rpm
     leftBase2.move_velocity(leftRPM);
-    rightBase1.move_velocity(leftRPM);
-    rightBase2.move_velocity(leftRPM);
+    rightBase1.move_velocity(rightRPM);
+    rightBase2.move_velocity(rightRPM);
 
 }
 

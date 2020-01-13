@@ -78,6 +78,7 @@ void turn(double setPoint, bool stopEarly, int time, double maxVal) {
 void curveBase(double leftPow, double rightPow, double fastSideDist) {
     //simple curving with constant voltage until a certain distance is achieved
 
+    resetBaseEnc();
     runBase(leftPow, rightPow);
     while(abs(getLeftEnc()) < abs(fastSideDist) && abs(getRightEnc()) < abs(fastSideDist))
         delay(10);
@@ -88,7 +89,8 @@ void curveBase(double leftPow, double rightPow, double fastSideDist) {
 void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
     //curving using the built in velocity rpm and slew rate
 
-    double maxAccel = 5;
+    resetBaseEnc();
+    double maxAccel = 7;
     double leftRPM = 0, rightRPM = 0;
     //runs until a certain distance is achieved
     while(abs(getLeftEnc()) < abs(fastSideDist) && abs(getRightEnc()) < abs(fastSideDist)) {
@@ -103,8 +105,9 @@ void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
             //otherwise increase the RPM of the motors proportionally
             else {
                 leftRPM += maxAccel * sgn(maxLeftRPM);
-                rightRPM += leftRPM * maxRightRPM / maxLeftRPM;
+                rightRPM = leftRPM * maxRightRPM / maxLeftRPM;
             }
+            std::cout << "leftRPM: " << leftRPM << " | rightRPM: " << rightRPM << " | goalDist: " << fastSideDist <<  " | leftDist: " << getLeftEnc() << std::endl;
         }
 
         //proportionally updates the velocity of the left side if it's slower
@@ -119,6 +122,7 @@ void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
                 rightRPM += maxAccel * sgn(maxRightRPM);
                 leftRPM = rightRPM * maxLeftRPM / maxRightRPM;
             }
+            std::cout << "leftRPM: " << leftRPM << " | rightRPM: " << rightRPM << " | goalDist: " << fastSideDist <<  " | rightDist: " << getRightEnc() << std::endl;
         }
 
         //if they are equal, just make both velocities max immediately
