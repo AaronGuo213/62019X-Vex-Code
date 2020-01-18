@@ -7,6 +7,13 @@ void runIntk(double percent) {
 
 }
 
+void runIntkDist(double dist, double velocity) {
+
+	leftIntk.move_relative(dist, velocity); //runs the intake a certain distance
+	rightIntk.move_relative(dist, velocity);
+
+}
+
 void updateIntk() {
 
     if(l1() && !r1()) //l1 pressed runs intake inwards

@@ -2,6 +2,7 @@
 #define INTAKE_H
 
 void runIntk(double percent);
+void runIntkDist(double dist, double velocity);
 void updateIntk();
 void intkSafetyNet();
 

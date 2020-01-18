@@ -5,15 +5,17 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     //postition with minimal forwards and sideways error
 
     double distVal, diffVal, leftVal, rightVal;
+    double leftDist, rightDist;
+    double leftStart = getLeftEnc(), rightStart = getRightEnc();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 200, 0, 0); //kP = 200
 
-    resetBaseEnc();
-
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        dist.error = distance - ((getLeftEnc() + getRightEnc()) / 2); //updates error for distance PID
-        diff.error = (getLeftEnc() - getRightEnc()) / 2; //updates error for straightness/difference PID
+        leftDist = getLeftEnc() - leftStart;
+        rightDist = getRightEnc() - rightStart;
+        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
+        diff.error = (leftDist - rightDist) / 2; //updates error for straightness/difference PID
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -31,7 +33,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         runBase(leftVal, rightVal); //assigns the values to the motors
 
         //debugging
-        std::cout << "setPoint: " << distance << " | currentPos: " << (getLeftEnc() + getRightEnc()) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << distance << " | currentPos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -46,13 +48,15 @@ void turn(double setPoint, bool stopEarly, int time, double maxVal) {
 
     double turnVal;
     double leftVal, rightVal;
+    double leftDist, rightDist;
+    double leftStart = getLeftEnc(), rightStart = getRightEnc();
     PID turn = initPID(1, 0, 1, 35, 0.00004, 200); //kP = 35, kD = 200;
-
-    resetBaseEnc();
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        turn.error = setPoint - ((-getLeftEnc() + getRightEnc()) / 2); //updates error for turn PID
+        leftDist = getLeftEnc() - leftStart;
+        rightDist = getRightEnc() - rightStart;
+        turn.error = setPoint - ((-leftDist + rightDist) / 2); //updates error for turn PID
         turnVal = runPID(&turn); //updates turnVal
 
         //limits the values before sending them to the motors
@@ -65,7 +69,7 @@ void turn(double setPoint, bool stopEarly, int time, double maxVal) {
             break;
 
         //debugging
-        std::cout << "setPoint: " << setPoint << " | leftPos: " << -getLeftEnc() << " | rightPos: " << getRightEnc() << " | currentPos: " << (-getLeftEnc() + getRightEnc()) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << setPoint << " | leftPos: " << -leftDist << " | rightPos: " << rightDist << " | currentPos: " << (-leftDist + rightDist) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -78,10 +82,14 @@ void turn(double setPoint, bool stopEarly, int time, double maxVal) {
 void curveBase(double leftPow, double rightPow, double fastSideDist) {
     //simple curving with constant voltage until a certain distance is achieved
 
-    resetBaseEnc();
+    double leftStart = getLeftEnc(), rightStart = getRightEnc();
+    double leftDist = 0, rightDist = 0;
     runBase(leftPow, rightPow);
-    while(abs(getLeftEnc()) < abs(fastSideDist) && abs(getRightEnc()) < abs(fastSideDist))
+    while(abs(leftDist) < abs(fastSideDist) && abs(rightDist) < abs(fastSideDist)) {
+        leftDist = getLeftEnc() - leftStart;
+        rightDist = getRightEnc() - rightStart;
         delay(10);
+    }
     runBase(0, 0);
 
 }
