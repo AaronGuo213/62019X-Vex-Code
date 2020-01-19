@@ -43,7 +43,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
 
 }
 
-void turn(double setPoint, bool stopEarly, int time, double maxVal) { 
+/*void turn(double setPoint, bool stopEarly, int time, double maxVal) { 
     //PID control loop to turn a desired angle with minimal angle error
 
     double turnVal;
@@ -70,6 +70,47 @@ void turn(double setPoint, bool stopEarly, int time, double maxVal) {
 
         //debugging
         std::cout << "setPoint: " << setPoint << " | leftPos: " << -leftDist << " | rightPos: " << rightDist << " | currentPos: " << (-leftDist + rightDist) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+
+        delay(10);
+
+    }
+
+    runBase(0, 0); //stops the motors at the end
+
+}*/
+
+void turn(double angle, bool stopEarly, int time, double maxVal) { 
+    //PID control loop to turn a desired angle with minimal angle error
+
+    double turnVal, leftVal, rightVal;
+    double lastLeft = getLeftEnc(), lastRight = getRightEnc();
+    double leftDist, rightDist;
+    const double trackerWheelDist = 5.44;
+    double currentAngle = 0;
+    PID turn = initPID(1, 0, 0, 2, 0.00004, 10); //kP = 35, kD = 200;
+
+    for(int i = 0; i < time; i+=10) { //updates every 10 ms
+
+        leftDist = getLeftEnc() - lastLeft;
+        rightDist = getRightEnc() - lastRight;
+        lastLeft = getLeftEnc();
+        lastRight = getRightEnc();
+        currentAngle += ((rightDist - leftDist) / trackerWheelDist) * 180 / PI;
+
+        turn.error = angle - currentAngle; //updates error for turn PID
+        turnVal = runPID(&turn); //updates turnVal
+
+        //limits the values before sending them to the motors
+        leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
+        rightVal = abs(turnVal) > abs(maxVal) ? maxVal * sgn(turnVal) : turnVal;
+        runBase(leftVal, rightVal); //assigns values to the motors
+
+        //if wanted, once the robot reaches a threshhold, it will continue for efficiency
+        if(stopEarly && abs(turn.error) < 0.1)
+            break;
+
+        //debugging
+        std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
 
         delay(10);
 

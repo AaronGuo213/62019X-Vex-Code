@@ -2,6 +2,7 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
+    turn(90, 0, 1500, 100);
     //find the max acceleration
     /*runBaseVel(200, 100);
     for(int i = 0; i < 2000; i++) {
