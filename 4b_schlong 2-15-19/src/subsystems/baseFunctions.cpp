@@ -1,6 +1,6 @@
 #include "main.h"
 
-void moveStraight(double distance, bool stopEarly, int time, double maxVal) { 
+/*void moveStraight(double distance, bool stopEarly, int time, double maxVal) { 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
@@ -16,6 +16,56 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         rightDist = getRightEnc() - rightStart;
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
         diff.error = (leftDist - rightDist) / 2; //updates error for straightness/difference PID
+        distVal = runPID(&dist); //updates distVal
+        diffVal = runPID(&diff); //updates diffVal
+        
+        //limits the influence of the diffVal when near the setpoint
+        diffVal = abs(dist.error) < 100 ? diffVal * 0.1 : diffVal;
+        //limits the values before sending them to the motors
+        distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
+        leftVal = distVal - diffVal;
+        rightVal = distVal + diffVal;
+
+        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        if(stopEarly && abs(dist.error) < 0.2)
+            break;
+
+        runBase(leftVal, rightVal); //assigns the values to the motors
+
+        //debugging
+        std::cout << "setPoint: " << distance << " | currentPos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+
+        delay(10);
+
+    }
+
+    runBase(0, 0); //stops the motors
+
+}*/
+
+void moveStraight(double distance, bool stopEarly, int time, double maxVal) { 
+    //PID control loop to move the base to a certain relative 
+    //postition with minimal forwards and sideways error
+
+    double distVal, diffVal, leftVal, rightVal; //power values for the motors
+    double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
+    double currentLeft, currentRight;
+    double lastLeft = leftStart, lastRight = rightStart;
+    double leftDist, rightDist, angle = 0; //variables for position and angle
+    const double WHEEL_DIST = 5.44;
+    PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 2, 0, 0); //kP = 200
+
+    for(int i = 0; i < time; i+=10) { //updates every 10 ms
+
+        currentLeft, currentRight = getLeftEnc(), getRightEnc(); //updates current encoder values
+        leftDist = currentLeft - leftStart; //updates current position
+        rightDist = currentRight - rightStart;
+        angle += (((currentRight - lastRight) - (currentLeft - lastLeft)) / WHEEL_DIST) * 180 / PI; //updates angle
+        lastLeft, lastRight = currentLeft, currentRight; //sets up the last values for the next iteration
+
+        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
+        diff.error = -angle; //updates error for straightness/difference PID
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -85,17 +135,16 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     double turnVal, leftVal, rightVal;
     double lastLeft = getLeftEnc(), lastRight = getRightEnc();
     double leftDist, rightDist;
-    const double trackerWheelDist = 5.44;
+    const double WHEEL_DIST = 5.44;
     double currentAngle = 0;
     PID turn = initPID(1, 0, 0, 2, 0.00004, 10); //kP = 35, kD = 200;
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        leftDist = getLeftEnc() - lastLeft;
+        leftDist = getLeftEnc() - lastLeft; //calculates the angle traveled so far
         rightDist = getRightEnc() - lastRight;
-        lastLeft = getLeftEnc();
-        lastRight = getRightEnc();
-        currentAngle += ((rightDist - leftDist) / trackerWheelDist) * 180 / PI;
+        lastLeft, lastRight = getLeftEnc(), getRightEnc();
+        currentAngle += ((rightDist - leftDist) / WHEEL_DIST) * 180 / PI;
 
         turn.error = angle - currentAngle; //updates error for turn PID
         turnVal = runPID(&turn); //updates turnVal

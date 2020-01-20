@@ -22,10 +22,11 @@ void redRow8() {
     moveStraight(33, 0, 2500, 70);
 
     curveBase(-80, -80, 20);
-    curveBase(-15, -100, 25);
+    curveBase(-15, -100, 30);
     moveStraight(-2, 0, 500);
     turnToAngle(tracker, -135);
     runIntkDist(-180, 50);
+    moveTray(400);
     moveStraight(30, 1, 2500);
     outtake();
 
