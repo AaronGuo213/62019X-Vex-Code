@@ -16,10 +16,10 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_A))
+		/*if(master.get_digital(E_CONTROLLER_DIGITAL_A))
 			turnToAngle(tracker, 0);
-		
-		std::cout << tracker->getAngle() << std::endl;
+		std::cout << tracker->getAngle() << std::endl;*/
+
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getTrayPos() << std::endl;
 		Task::delay_until(&now, 10);

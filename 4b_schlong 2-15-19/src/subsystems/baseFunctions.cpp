@@ -52,17 +52,19 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     double currentLeft, currentRight;
     double lastLeft = leftStart, lastRight = rightStart;
     double leftDist, rightDist, angle = 0; //variables for position and angle
-    const double WHEEL_DIST = 5.44;
+    const double WHEEL_DIST = 5.2;
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 2, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 1, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        currentLeft, currentRight = getLeftEnc(), getRightEnc(); //updates current encoder values
+        currentLeft = getLeftEnc(); //updates current encoder values
+        currentRight = getRightEnc();
         leftDist = currentLeft - leftStart; //updates current position
         rightDist = currentRight - rightStart;
         angle += (((currentRight - lastRight) - (currentLeft - lastLeft)) / WHEEL_DIST) * 180 / PI; //updates angle
-        lastLeft, lastRight = currentLeft, currentRight; //sets up the last values for the next iteration
+        lastLeft = currentLeft; //sets up the last values for the next iteration
+        lastRight = currentRight;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
         diff.error = -angle; //updates error for straightness/difference PID
@@ -70,7 +72,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         diffVal = runPID(&diff); //updates diffVal
         
         //limits the influence of the diffVal when near the setpoint
-        diffVal = abs(dist.error) < 100 ? diffVal * 0.1 : diffVal;
+        diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
         //limits the values before sending them to the motors
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;
@@ -83,7 +85,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         runBase(leftVal, rightVal); //assigns the values to the motors
 
         //debugging
-        std::cout << "setPoint: " << distance << " | currentPos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -93,57 +95,22 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
 
 }
 
-/*void turn(double setPoint, bool stopEarly, int time, double maxVal) { 
-    //PID control loop to turn a desired angle with minimal angle error
-
-    double turnVal;
-    double leftVal, rightVal;
-    double leftDist, rightDist;
-    double leftStart = getLeftEnc(), rightStart = getRightEnc();
-    PID turn = initPID(1, 0, 1, 35, 0.00004, 200); //kP = 35, kD = 200;
-
-    for(int i = 0; i < time; i+=10) { //updates every 10 ms
-
-        leftDist = getLeftEnc() - leftStart;
-        rightDist = getRightEnc() - rightStart;
-        turn.error = setPoint - ((-leftDist + rightDist) / 2); //updates error for turn PID
-        turnVal = runPID(&turn); //updates turnVal
-
-        //limits the values before sending them to the motors
-        leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
-        rightVal = abs(turnVal) > abs(maxVal) ? maxVal * sgn(turnVal) : turnVal;
-        runBase(leftVal, rightVal); //assigns values to the motors
-
-        //if wanted, once the robot reaches a threshhold, it will continue for efficiency
-        if(stopEarly && abs(turn.error) < 0.1)
-            break;
-
-        //debugging
-        std::cout << "setPoint: " << setPoint << " | leftPos: " << -leftDist << " | rightPos: " << rightDist << " | currentPos: " << (-leftDist + rightDist) / 2 << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
-
-        delay(10);
-
-    }
-
-    runBase(0, 0); //stops the motors at the end
-
-}*/
-
 void turn(double angle, bool stopEarly, int time, double maxVal) { 
     //PID control loop to turn a desired angle with minimal angle error
 
     double turnVal, leftVal, rightVal;
     double lastLeft = getLeftEnc(), lastRight = getRightEnc();
     double leftDist, rightDist;
-    const double WHEEL_DIST = 5.44;
+    const double WHEEL_DIST = 5.2;
     double currentAngle = 0;
-    PID turn = initPID(1, 0, 0, 2, 0.00004, 10); //kP = 35, kD = 200;
+    PID turn = initPID(1, 1, 1, 1.8, 0.00002, 9); //kP = 1.8, kI = 0.00002, kD = 9;
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
         leftDist = getLeftEnc() - lastLeft; //calculates the angle traveled so far
         rightDist = getRightEnc() - lastRight;
-        lastLeft, lastRight = getLeftEnc(), getRightEnc();
+        lastLeft = getLeftEnc();
+        lastRight = getRightEnc();
         currentAngle += ((rightDist - leftDist) / WHEEL_DIST) * 180 / PI;
 
         turn.error = angle - currentAngle; //updates error for turn PID
@@ -151,7 +118,7 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
 
         //limits the values before sending them to the motors
         leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
-        rightVal = abs(turnVal) > abs(maxVal) ? maxVal * sgn(turnVal) : turnVal;
+        rightVal = -leftVal;
         runBase(leftVal, rightVal); //assigns values to the motors
 
         //if wanted, once the robot reaches a threshhold, it will continue for efficiency
@@ -160,6 +127,7 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
 
         //debugging
         std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
 
         delay(10);
 
@@ -237,5 +205,64 @@ void curveBaseVel(double maxLeftRPM, double maxRightRPM, double fastSideDist) {
 
     //stops all base motors
     runBaseVel(0, 0);
+
+}
+
+void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double maxVal) { //10.75
+
+    double diffVal, leftVal, rightVal; //power values for the motors
+    double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
+    double currentLeft, currentRight;
+    double leftDist, rightDist; //variables for position and angle
+    const double WHEEL_DIST = 5.2;
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 200
+
+    for(int i = 0; i < time; i+=10) {
+
+        currentLeft = getLeftEnc(); //updates current encoder values
+        currentRight = getRightEnc();
+        leftDist = currentLeft - leftStart; //updates current position
+        rightDist = currentRight - rightStart;
+
+        if(abs(leftSetPoint) > abs(rightSetPoint)) {
+            dist.error = leftSetPoint - leftDist;
+            diff.error = (rightDist * leftSetPoint / rightSetPoint) - leftDist;
+            leftVal = runPID(&dist);
+            leftVal = abs(leftVal) > maxVal ? maxVal * sgn(leftVal) : leftVal;
+            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            diffVal = runPID(&diff);
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            leftVal += diffVal;
+            rightVal -= diffVal;
+        }
+
+        else {
+            dist.error = rightSetPoint - rightDist;
+            diff.error = (leftDist * rightSetPoint / leftSetPoint) - rightDist;
+            rightVal = runPID(&dist);
+            rightVal = abs(rightVal) > maxVal ? maxVal * sgn(rightVal) : rightVal;
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            diffVal = runPID(&diff);
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            rightVal += diffVal;
+            leftVal -= diffVal;
+        }
+
+        //debugging
+        std::cout << "leftSetPoint: " << leftSetPoint << " | leftPos: " << leftDist << " | leftVal: " << leftVal << std::endl;
+        std::cout << "rightSetPoint: " << rightSetPoint << " | rightPos: " << rightDist << " | rightVal: " << rightVal << std::endl;
+        std::cout << "diff error: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n\n";
+
+        runBase(leftVal, rightVal);
+        delay(10);
+
+    }
+
+    runBase(0);
 
 }

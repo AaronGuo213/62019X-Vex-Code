@@ -2,6 +2,7 @@
 #define BASICS_H
 
 void runBase(double leftPercent, double rightPercent);
+void runBase(double percent);
 void runBaseVel(double leftRPM, double rightRPM);
 void updateBase();
 void baseSafetyNet();

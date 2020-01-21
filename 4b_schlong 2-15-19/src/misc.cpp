@@ -25,6 +25,16 @@ double joyValRemap(double joyVal) {
 
 }
 
+double speedToVolt(double speed) {
+
+    if(speed > 0)
+        return 0.455 * speed + 8.18;
+    if(speed < 0)
+        return 0.455 * speed - 8.18;
+    return 0;
+
+}
+
 PID initPID(bool useP, bool useI, bool useD, double kP, double kI, double kD) { //gives a created PID struct its values
 
     return { 0, 0, 0, 0, kP, kI, kD, useP, useI, useD };

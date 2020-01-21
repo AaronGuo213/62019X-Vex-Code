@@ -4,7 +4,7 @@
 Odometry Class
 ============*/
 
-const double LEFT_DISP = 2.72, RIGHT_DISP = 2.72;
+const double LEFT_DISP = 2.26, RIGHT_DISP = 2.26;
 double x, y, angle;
 double angleChange, xChangeLocal, yChangeLocal, xChange, yChange;
 double chordAngle;
@@ -127,13 +127,13 @@ void turnToPoint(Odometry* odom, double x, double y) {
 void turnToAngle(Odometry* odom, double angle) {
 
     isSettled = false;
-    PID turn = initPID(1, 0, 0, 2, 0, 0);
+    PID turn = initPID(1, 1, 1, 1.8, 0.00002, 9); //kP = 1.8, kI = 0.00002, kD = 9;
     double turnVal;
     while(!isSettled) {
 
         turn.error = angle - odom->getAngle();
         turn.error = fixAngle(turn.error);
-        if(turn.error < 3)
+        if(turn.error < 2)
             isSettled = true;
         turnVal = runPID(&turn);
 

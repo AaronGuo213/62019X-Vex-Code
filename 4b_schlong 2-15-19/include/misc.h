@@ -4,6 +4,7 @@
 extern const double PI;
 int sgn(double x); //inputs a double and outputs its sign (+ or -) as an int
 double joyValRemap(double joyVal); //optimizes the slow and fast motor values during driver control
+double speedToVolt(double speed);
 
 struct PID { //a holder for multiple values used in PID
     double error, integral, derivative, prevError, kP, kI, kD; //PID variables and constants

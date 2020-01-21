@@ -9,6 +9,15 @@ void runBase(double leftPercent, double rightPercent) { //values -100 to 100
 
 }
 
+void runBase(double percent) { //values -100 to 100
+
+    leftBase1.move_voltage(percent * 120); //runs the base motors out of 12000mV
+    leftBase2.move_voltage(percent * 120);
+    rightBase1.move_voltage(percent * 120);
+    rightBase2.move_voltage(percent * 120);
+
+}
+
 void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
     leftBase1.move_velocity(leftRPM); //runs the left and right base motors out of 200 rpm

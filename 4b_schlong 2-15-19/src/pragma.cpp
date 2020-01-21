@@ -28,5 +28,5 @@ Motor tray(5, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES);
 //Legacy Components
 ADIAnalogIn liftPot(5); //potentiometer in port 4
 ADIEncoder yawEnc(7, 8, 0); //wheel encoder in ports 7 and 8
-ADIEncoder leftEnc(1, 2, 0); //wheel encoder in ports 5 and 6
-ADIEncoder rightEnc(3, 4, 1); //wheel encoder in ports 1 and 2
+ADIEncoder leftEnc(3, 4, 1); //wheel encoder in ports 5 and 6
+ADIEncoder rightEnc(1, 2, 1); //wheel encoder in ports 1 and 2
