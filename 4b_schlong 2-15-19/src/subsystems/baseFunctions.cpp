@@ -52,7 +52,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     double currentLeft, currentRight;
     double lastLeft = leftStart, lastRight = rightStart;
     double leftDist, rightDist, angle = 0; //variables for position and angle
-    const double WHEEL_DIST = 5.2;
+    const double WHEEL_DIST = 4.5;
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 1, 0, 0); //kP = 200
 
@@ -101,9 +101,9 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     double turnVal, leftVal, rightVal;
     double lastLeft = getLeftEnc(), lastRight = getRightEnc();
     double leftDist, rightDist;
-    const double WHEEL_DIST = 5.2;
+    const double WHEEL_DIST = 4.5;
     double currentAngle = 0;
-    PID turn = initPID(1, 1, 1, 1.8, 0.00002, 9); //kP = 1.8, kI = 0.00002, kD = 9;
+    PID turn = initPID(1, 1, 1, 1.9, 0.00002, 9); //kP = 1.8, kI = 0.00002, kD = 9;
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
@@ -214,7 +214,7 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double ma
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
     double currentLeft, currentRight;
     double leftDist, rightDist; //variables for position and angle
-    const double WHEEL_DIST = 5.2;
+    const double WHEEL_DIST = 4.5;
     PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 200
 
