@@ -19,6 +19,7 @@ void opcontrol() {
 		/*if(master.get_digital(E_CONTROLLER_DIGITAL_A))
 			turnToAngle(tracker, 0);
 		std::cout << tracker->getAngle() << std::endl;*/
+		//std::cout << tracker->getAngle() << " | " << tracker->getX() << " | " << tracker->getY() << std::endl;
 
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getTrayPos() << std::endl;

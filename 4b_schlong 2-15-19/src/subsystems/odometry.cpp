@@ -16,7 +16,7 @@ Odometry::Odometry(double xStart, double yStart, double angleStart) {
 
     x = xStart;
     y = yStart;
-    angle = angleStart;
+    angle = angleStart * PI / 180;
     resetBaseEnc();
 
 }
@@ -42,7 +42,7 @@ void Odometry::update() {
 
     else {
         //xChangeLocal = 2 * sin(angleChange / 2) * ((yawEncChange / angleChange) - YAW_DISP);
-        yChangeLocal = 2 * sin(angleChange / 2) * ((rightEncChange / angleChange) - RIGHT_DISP);
+        yChangeLocal = 2 * sin(angleChange / 2) * ((rightEncChange / angleChange) + RIGHT_DISP);
     }
     
     //calculates the global position change
@@ -172,10 +172,12 @@ void turnAngle(Odometry* odom, double angleChange) {
 void moveToPointForwards(Odometry* odom, double x, double y) {
 
     isSettled = false;
-    PID turn = initPID(1, 0, 0, 2, 0, 0);
-    PID dist = initPID(1, 0, 0, 2, 0, 0);
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10);
+    PID turn = initPID(1, 1, 1, 1.9, 0.00002, 9);
     double angleSetPoint, distBias;
     double turnVal, distVal;
+    double leftVal, rightVal, maxVal;
+    int count = 0;
     while(!isSettled) {
 
         angleSetPoint = atan2(y - odom->getY(), x - odom->getX()) * 180 / PI; //difference of current and goal angle
@@ -183,16 +185,29 @@ void moveToPointForwards(Odometry* odom, double x, double y) {
         turn.error = fixAngle(turn.error);
         turnVal = runPID(&turn);
 
-        distBias = abs(turn.error) > 45 ? 0 : cos(abs(turn.error) * 2);
+        distBias = abs(turn.error) > 90 ? 0 : cos(abs(turn.error * PI / 180));
         dist.error = sqrt(pow(y - odom->getY(), 2) + pow(x - odom->getX(), 2)); //distance formula
         distVal = runPID(&dist);
         distVal *= distBias;
 
-        if(abs(dist.error) < 2)
+        if(abs(dist.error) < 1)
             isSettled = true;
         else if(abs(dist.error) < 5)
             turnVal = 0;
 
+        if(count % 50 == 0) {
+            std::cout << "currentAngle: " << odom->getAngle() << " | targetAngle: " << angleSetPoint << " | angleError: " << turn.error << " | turnVal: " << turnVal << std::endl;
+            std::cout << "position: (" << odom->getX() << ", " << odom->getY() << ") | goal: (" << x << ", " << y << ") | distError: " << dist.error << " | distVal: " << distVal << "\n\n";
+        }
+        count += 10;
+
+        leftVal = distVal - turnVal;
+        rightVal = distVal + turnVal;
+        if(leftVal > 100 || rightVal > 100) {
+            maxVal = leftVal > rightVal ? leftVal : rightVal;
+            leftVal = leftVal / maxVal * 100;
+            rightVal = rightVal / maxVal * 100;
+        }
         runBase(distVal - turnVal, distVal + turnVal);
         delay(10);
 

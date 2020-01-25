@@ -5,8 +5,8 @@ void redRow8() {
     Odometry *tracker = new Odometry(0, 0, 0);
     Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
 
-    moveLift(400);
-    moveStraight(12, 0, 1000);
+    moveLift(300);
+    moveStraight(12, 1, 1000);
     setLiftIdle();
     runIntk(100);
     moveStraight(23, 0, 2500, 40);
@@ -14,10 +14,10 @@ void redRow8() {
 
     /*curveBasePID(-24, -19, 1300, 80);
     curveBasePID(-19.7, -24.7, 1300, 80);*/
-    curveBasePID(20, 17, 1300, 100);
-    turn(-90, 1, 1500);
+    curveBasePID(-40, -36, 2500, 100);
+    turn(-75, 1, 1000);
 
-    runIntk(100);
+    /*runIntk(100);
     moveStraight(33, 0, 3000, 40);
     runIntk(0);
 
