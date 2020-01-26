@@ -25,12 +25,12 @@ double joyValRemap(double joyVal) {
 
 }
 
-double speedToVolt(double speed) {
+double speedToVolt(double rpm) {
 
-    if(speed > 0)
-        return 0.455 * speed + 8.18;
-    if(speed < 0)
-        return 0.455 * speed - 8.18;
+    if(rpm > 5)
+        return 0.455 * rpm + 8.18;
+    if(rpm < 5)
+        return 0.455 * rpm - 8.18;
     return 0;
 
 }

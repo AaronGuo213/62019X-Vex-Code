@@ -129,6 +129,37 @@ void setLiftIdle() {
 
 }
 
+void moveLift(int setPoint) {
+
+    //sets the setPoint and initiates the PID to move to the setPoint
+    liftSetPoint = setPoint;
+    resetIntegral = true;
+    liftStat = LiftStatus::move;
+
+}
+
+void queueLift(void* param) {
+
+    //liftQueue* theQueue = static_cast<liftQueue*>(param);
+    liftQueue* theQueue = (liftQueue*)param;
+    int time = theQueue->queue, setPoint = theQueue->setPoint;
+    for(int i = 0; i < time; i+=100)
+        delay(100);
+    moveLift(setPoint);
+
+}
+
+void moveLift(int setPoint, int queue) {
+
+    //sets the setPoint and initiates the PID to move to the setPoint
+    liftQueue newQueue = {setPoint, queue};
+    std::cout << &newQueue << std::endl;
+    std::cout << (&newQueue)->queue << " | " << (&newQueue)->setPoint << std::endl;
+    Task delayLift(queueLift, &newQueue, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN, "lift movement task");
+    delay(20);
+
+}
+
 void updateLift() {
 
     //if partner controller L1 or the master controller up, run the lift upwards
@@ -150,14 +181,5 @@ void updateLift() {
     //otherwise hold the lift's position
     else if(liftStat == LiftStatus::manual)
         liftStat = LiftStatus::slow;
-
-}
-
-void moveLift(int setPoint) {
-
-    //sets the setPoint and initiates the PID to move to the setPoint
-    liftSetPoint = setPoint;
-    resetIntegral = true;
-    liftStat = LiftStatus::move;
 
 }

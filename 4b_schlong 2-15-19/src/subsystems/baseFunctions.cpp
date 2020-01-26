@@ -103,7 +103,7 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     double leftDist, rightDist;
     const double WHEEL_DIST = 4.54;
     double currentAngle = 0;
-    PID turn = initPID(1, 1, 1, 1.9, 0.00002, 9); //kP = 1.8, kI = 0.00002, kD = 9;
+    PID turn = initPID(1, 1, 1, 1.8, 0.00001, 9); //kP = 1.8, kI = 0.00002, kD = 9;
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
@@ -267,7 +267,7 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
     double leftVal, rightVal, diffVal = 0, tempMaxVal;
     const double WHEEL_DIST = 4.54;
     PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-
+    
     for(int i = 0; i < time; i+=50) {
 
         leftDiff = getLeftEnc() - lastLeft;
@@ -280,28 +280,38 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
         if(abs(leftSetPoint) > abs(rightSetPoint)) {
             dist.error = leftSetPoint - leftDist;
             leftVal = runPID(&dist);
-            rightVal = leftVal * rightSetPoint / leftSetPoint;
+            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75;
             if(abs(leftVal) > abs(maxVal)) {
                 tempMaxVal = leftVal;
                 leftVal *= abs(maxVal / tempMaxVal);
                 rightVal *= abs(maxVal / tempMaxVal);
             }
-            diffVal += leftDiff - (rightDiff * leftSetPoint / rightSetPoint) / 10;
-            leftVal = speedToVolt(leftVal);
-            rightVal = speedToVolt(rightVal);
+            if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(leftDist / rightDist * rightSetPoint / leftSetPoint) * leftDiff * 200;
+            else
+                diffVal = 0;
+            /*if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(leftDiff / rightDiff * rightSetPoint / leftSetPoint) * leftDiff * 150;
+            else
+                diffVal = 0;*/
+            /*diffVal = (leftDiff - (rightDiff * leftSetPoint / rightSetPoint)) * 100;
+            diffVal = dist.error < 2 ? diffVal * 0.1 : diffVal;*/
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
             runBase(leftVal, rightVal + diffVal);
         }
 
         else {
             dist.error = rightSetPoint - rightDist;
             rightVal = runPID(&dist);
-            leftVal = rightVal * leftSetPoint / rightSetPoint;
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
             if(abs(rightVal) > abs(maxVal)) {
                 tempMaxVal = rightVal;
                 rightVal *= abs(maxVal / tempMaxVal);
                 leftVal *= abs(maxVal / tempMaxVal);
             }
-            diffVal += rightDiff - (leftDiff * rightSetPoint / leftSetPoint) / 10;
+            diffVal = (rightDiff - (leftDiff * rightSetPoint / leftSetPoint)) * 100;
+            diffVal = dist.error < 2 ? diffVal * 0.1 : diffVal;
             rightVal = speedToVolt(rightVal);
             leftVal = speedToVolt(leftVal);
             runBase(leftVal + diffVal, rightVal);
@@ -309,6 +319,7 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
 
         //debugging
         std::cout << "leftSetPoint: " << leftSetPoint << " | leftDist: " << leftDist << " | rightSetPoint: " << rightSetPoint << " | rightDist: " << rightDist << std::endl;
+        std::cout << "leftDiff: " << leftDiff << " | rightDiff: " << rightDiff << " | comparison: " << rightDiff / leftDiff << std::endl;
         std::cout << "dist.error: " << dist.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | diffVal: " << diffVal << " | time: " << i << "\n\n";
 
         delay(50);
