@@ -16,14 +16,20 @@ void runIntkDist(double dist, double velocity) {
 
 void updateIntk() {
 
-    if(l1() && !r1()) //l1 pressed runs intake inwards
+    if(l1() && !r1()) { //l1 pressed runs intake inwards
+		//coastIntk();
 		runIntk(100);
+	}
 
-	else if(r1() && !l1()) //r1 pressed runs intake outwards
+	else if(r1() && !l1()) { //r1 pressed runs intake outwards
+		//coastIntk();
 		runIntk(-100);
+	}
 
-	else //otherwise dont run the intake
+	else { //otherwise dont run the intake
+		//brakeIntk();
 		runIntk(0);
+	}
 
 	//check for overheating of the intake motors
 	intkSafetyNet();
@@ -42,6 +48,20 @@ void intkSafetyNet() {
 		rightIntk.set_voltage_limit(0);
 	else
 		rightIntk.set_voltage_limit(12000);
+
+}
+
+void brakeIntk() {
+
+	leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+
+}
+
+void coastIntk() {
+
+	leftIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
+	rightIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
 }
 

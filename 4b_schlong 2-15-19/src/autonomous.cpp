@@ -2,6 +2,7 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    redRow8();
+    redStack8();
+    //redRow8();
 
 }

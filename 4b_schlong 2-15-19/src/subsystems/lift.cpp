@@ -1,7 +1,7 @@
 #include "main.h"
 
-const int atCube[] = {0, 0, 150, 350, 480, 650}; //array for cube heights
-const int onTower[] = {500, 540, 720}; //array for tower heights
+const int atCube[] = {0, 0, 250, 460, 650, 850}; //array for cube heights
+const int onTower[] = {800, 800, 950}; //array for tower heights
 
 void runLift(double percent) {
 
@@ -43,7 +43,7 @@ void ctrlLift(void* param) {
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
-        liftSetPoint = liftSetPoint > 750 ? 750 : liftSetPoint; //lift cannot be higher than 750
+        liftSetPoint = liftSetPoint > 950 ? 950 : liftSetPoint; //lift cannot be higher than 750
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
         if(resetIntegral) {

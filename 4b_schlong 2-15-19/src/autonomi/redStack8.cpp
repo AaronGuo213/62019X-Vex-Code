@@ -4,12 +4,22 @@ void redStack8() {
 
     //gets the first cube
     runIntk(100);
-    moveStraight(21, 900, 80);
+    moveTray(0);
+    moveStraight(22, 0, 1500, 60);
+    runIntk(0);
+    moveLift(atCube[4]);
+    delay(2000);
+    runIntk(100);
+    moveStraight(4, 0, 2000, 30);
+    liftStat = LiftStatus::manual;
+    lift.move_velocity(-50);
+    while(getLiftHeight() > 0)
+        delay(10);
+    setLiftIdle();
+    setTrayIdle();
 
     //gets the cubes from the 4 stack
-    moveLift(atCube[5]);
-    delay(1200);
-    moveStraight(5.5, 700, 40);
+    /*moveStraight(5.5, 700, 40);
     runIntk(100);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
@@ -32,6 +42,6 @@ void redStack8() {
     runIntkDist(-150, 50);
     curveBase(40, 100, 10);
     moveStraight(2, 0, 500);
-    outtake();
+    outtake();*/
 
 }

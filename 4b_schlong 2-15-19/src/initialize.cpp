@@ -2,8 +2,7 @@
 
 void initialize() {
 
-    leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the intake motors hold their position
-    rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+    brakeIntk();
     tray.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the tray motor hold its position to an extent
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
