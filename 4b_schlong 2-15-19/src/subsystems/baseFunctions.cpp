@@ -1,48 +1,5 @@
 #include "main.h"
 
-/*void moveStraight(double distance, bool stopEarly, int time, double maxVal) { 
-    //PID control loop to move the base to a certain relative 
-    //postition with minimal forwards and sideways error
-
-    double distVal, diffVal, leftVal, rightVal;
-    double leftDist, rightDist;
-    double leftStart = getLeftEnc(), rightStart = getRightEnc();
-    PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 200, 0, 0); //kP = 200
-
-    for(int i = 0; i < time; i+=10) { //updates every 10 ms
-
-        leftDist = getLeftEnc() - leftStart;
-        rightDist = getRightEnc() - rightStart;
-        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = (leftDist - rightDist) / 2; //updates error for straightness/difference PID
-        distVal = runPID(&dist); //updates distVal
-        diffVal = runPID(&diff); //updates diffVal
-        
-        //limits the influence of the diffVal when near the setpoint
-        diffVal = abs(dist.error) < 100 ? diffVal * 0.1 : diffVal;
-        //limits the values before sending them to the motors
-        distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
-        leftVal = distVal - diffVal;
-        rightVal = distVal + diffVal;
-
-        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
-        if(stopEarly && abs(dist.error) < 0.2)
-            break;
-
-        runBase(leftVal, rightVal); //assigns the values to the motors
-
-        //debugging
-        std::cout << "setPoint: " << distance << " | currentPos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
-
-        delay(10);
-
-    }
-
-    runBase(0, 0); //stops the motors
-
-}*/
-
 void moveStraight(double distance, bool stopEarly, int time, double maxVal) { 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
@@ -50,8 +7,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
     double currentLeft, currentRight;
-    double lastLeft = leftStart, lastRight = rightStart;
-    double leftDist, rightDist, angle = 0; //variables for position and angle
+    double leftDist, rightDist; //variables for position
     const double WHEEL_DIST = 4.54;
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
@@ -62,19 +18,66 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         currentRight = getRightEnc();
         leftDist = currentLeft - leftStart; //updates current position
         rightDist = currentRight - rightStart;
-        angle += (((currentRight - lastRight) - (currentLeft - lastLeft)) / WHEEL_DIST) * 180 / PI; //updates angle
-        lastLeft = currentLeft; //sets up the last values for the next iteration
-        lastRight = currentRight;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
         diff.error = leftDist - rightDist;
-        //diff.error = -angle; //updates error for straightness/difference PID
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
         //limits the influence of the diffVal when near the setpoint
         diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
         //limits the values before sending them to the motors
+        distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
+        leftVal = distVal - diffVal;
+        rightVal = distVal + diffVal;
+
+        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        if(stopEarly && abs(dist.error) < 0.5)
+            break;
+
+        runBase(leftVal, rightVal); //assigns the values to the motors
+
+        //debugging
+        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+
+        delay(10);
+
+    }
+
+    runBase(0, 0); //stops the motors
+
+}
+
+void moveStraight(double distance, double switchDist, bool stopEarly, int time, double maxVal1, double maxVal2) { 
+    //PID control loop to move the base to a certain relative 
+    //postition with minimal forwards and sideways error
+
+    double maxVal = maxVal1;
+    double distVal, diffVal, leftVal, rightVal; //power values for the motors
+    double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
+    double currentLeft, currentRight;
+    double leftDist, rightDist; //variables for position
+    const double WHEEL_DIST = 4.54;
+    PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
+
+    for(int i = 0; i < time; i+=10) { //updates every 10 ms
+
+        currentLeft = getLeftEnc(); //updates current encoder values
+        currentRight = getRightEnc();
+        leftDist = currentLeft - leftStart; //updates current position
+        rightDist = currentRight - rightStart;
+
+        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
+        diff.error = leftDist - rightDist;
+        distVal = runPID(&dist); //updates distVal
+        diffVal = runPID(&diff); //updates diffVal
+        
+        //limits the influence of the diffVal when near the setpoint
+        diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+        //limits the values before sending them to the motors
+        if(abs((leftDist + rightDist) / 2) >= abs(switchDist))
+            maxVal = maxVal2;
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;

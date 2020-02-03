@@ -1,16 +1,20 @@
 #include "main.h"
 
-void redRow8() {
+void redRow9() {
 
-    moveLift(150, 100);
-    moveStraight(12, 1, 900, 60);
-    setLiftIdle();
     moveTray(0);
     runIntk(100);
-    moveStraight(23, 0, 2300, 50);
-    runIntk(0);
+    moveLift(150);
+    moveLift(0, 500);
+    moveStraight(24, 12, 0, 2000, 75, 50);
+    moveLift(atCube[2]);
+    moveLift(0, 900);
+    delay(500);
+    moveStraight(11, 0, 1000, 30);
+    setLiftIdle();
 
     curveBasePID(-23.4, -17.25, 1300, 80);
+    runIntk(0);
     curveBasePID(-17.25, -23.4, 1400, 80);
     //curveBasePID(-19.7, -24.7, 1300, 80);
     /*curveBaseVel(-41.5, -36.2, 2500, 100);
@@ -18,11 +22,11 @@ void redRow8() {
 
     setTrayIdle();
     runIntk(100);
-    moveStraight(33, 0, 2500, 60);
-    runIntk(0);
+    moveStraight(33, 0, 2500, 50);
 
     //curveBasePID(-8, -18.5, 2500, 80);
     moveStraight(-15, 1, 1500);
+    runIntk(0);
     runIntkDist(-100, 50);
     turn(-126, 0, 1400, 60);
     runIntk(0);
