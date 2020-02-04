@@ -316,8 +316,31 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
             }
             diffVal = (rightDiff - (leftDiff * rightSetPoint / leftSetPoint)) * 100;
             diffVal = dist.error < 2 ? diffVal * 0.1 : diffVal;
-            rightVal = speedToVolt(rightVal);
-            leftVal = speedToVolt(leftVal);
+            rightVal = speedToVolt(rightVal * 2);
+            leftVal = speedToVolt(leftVal * 2);
+            runBase(leftVal + diffVal, rightVal);
+
+
+            dist.error = rightSetPoint - rightDist;
+            rightVal = runPID(&dist);
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
+            if(abs(rightVal) > abs(maxVal)) {
+                tempMaxVal = rightVal;
+                rightVal *= abs(maxVal / tempMaxVal);
+                leftVal *= abs(maxVal / tempMaxVal);
+            }
+            if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(rightDist / leftDist * leftSetPoint / rightSetPoint) * rightDiff * 200;
+            else
+                diffVal = 0;
+            /*if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(leftDiff / rightDiff * rightSetPoint / leftSetPoint) * leftDiff * 150;
+            else
+                diffVal = 0;*/
+            /*diffVal = (leftDiff - (rightDiff * leftSetPoint / rightSetPoint)) * 100;
+            diffVal = dist.error < 2 ? diffVal * 0.1 : diffVal;*/
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
             runBase(leftVal + diffVal, rightVal);
         }
 
