@@ -52,9 +52,11 @@ void Odometry::update() {
     yChange = yChangeLocal * sin(chordAngle) - xChangeLocal * cos(chordAngle);*/
     
     //updates the absolute position and angle
-    x += xChange;
-    y += yChange;
+    /*x += xChange; //true location calculation
+    y += yChange;*/
     angle += angleChange;
+    x += (leftEncChange + rightEncChange) / 2 * cos(angle); //trying a simpler location calculation
+    y += (leftEncChange + rightEncChange) / 2 * sin(angle);
 
 }
 
