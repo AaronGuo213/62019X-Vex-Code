@@ -16,8 +16,8 @@ double calcTrayPow(bool moveForward) {
 
 	//calculates the power to send to the tray motor for a consistent outtaking process
 	if(moveForward && getTrayPos() < 875)
-		//return (825 - getTrayPos()) / 12 + 15;
-		return (875 - getTrayPos()) / 6 + 10;
+		//return (875 - getTrayPos()) / 6 + 10;
+		return (875 - getTrayPos()) / 4 + 10;
 
 	if(!moveForward && getTrayPos() > 0)
 		return -getTrayPos();
@@ -84,12 +84,12 @@ void ctrlTray(void* param) { //tray control task
 
 void updateTray() {
 
-	if(r2() && !l2()) { //r2 pressed runs the tray outward
+	if(r2Pressed() && !l2Pressed()) { //r2 pressed runs the tray outward
 		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(1));
 	}
 
-	else if(l2() && !r2()) { //l2 pressed runs the tray inward
+	else if(l2Pressed() && !r2Pressed()) { //l2 pressed runs the tray inward
 		trayStat = TrayStatus::manual;
 		runTray(calcTrayPow(0));
 	}

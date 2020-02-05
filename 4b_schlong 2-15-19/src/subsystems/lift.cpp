@@ -1,6 +1,6 @@
 #include "main.h"
 
-const int atCube[] = {0, 0, 250, 460, 650, 850}; //array for cube heights
+const int atCube[] = {0, 0, 250, 460, 600, 850}; //array for cube heights
 const int onTower[] = {800, 800, 950}; //array for tower heights
 
 void runLift(double percent) {
@@ -163,19 +163,32 @@ void moveLift(int setPoint, int queue) {
 void updateLift() {
 
     //if partner controller L1 or the master controller up, run the lift upwards
-    if((partner.get_digital(E_CONTROLLER_DIGITAL_L1) && !partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (master.get_digital(E_CONTROLLER_DIGITAL_UP) && !master.get_digital(E_CONTROLLER_DIGITAL_DOWN))) {
+    if((l1Pressed(partner) && !r1Pressed(partner)) || (upPressed() && !downPressed())) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
 
     //if partner controller R1 or the master controller down, run the lift upwards
-    else if((!partner.get_digital(E_CONTROLLER_DIGITAL_L1) && partner.get_digital(E_CONTROLLER_DIGITAL_R1)) || (!master.get_digital(E_CONTROLLER_DIGITAL_UP) && master.get_digital(E_CONTROLLER_DIGITAL_DOWN))) {
+    else if((!l1Pressed(partner) && r1Pressed(partner)) || (!upPressed() && downPressed())) {
         liftStat = LiftStatus::manual;
         runLift(-100);
     }
 
+    //skills tower heights
+    else if(upPressed(partner)) {
+        moveLift(onTower[2]);
+    }
+
+    else if(downPressed(partner)) {
+        moveLift(onTower[1]);
+    }
+
+    else if(leftPressed(partner)) {
+        moveLift(0);
+    }
+
     //if the lift is low enough, it will drop down naturally so it won't tire out the motor
-    else if(getLiftHeight() < 150)
+    else if(getLiftHeight() < 150 && liftSetPoint < 150)
         liftStat = LiftStatus::idle;
 
     //otherwise hold the lift's position

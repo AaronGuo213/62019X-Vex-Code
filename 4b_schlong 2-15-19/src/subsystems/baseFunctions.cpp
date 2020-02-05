@@ -99,6 +99,52 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
 
 }
 
+void moveStraightCut(double distance, double setPoint, double maxVal) {
+    //PID control loop to move the base to a certain relative 
+    //postition as fast and accurately as possible, leading into another drive function
+
+    double distVal, diffVal, leftVal, rightVal; //power values for the motors
+    double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
+    double currentLeft, currentRight;
+    double leftDist, rightDist; //variables for position
+    const double WHEEL_DIST = 4.54;
+    PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
+
+    while(true) { //updates every 10 ms
+
+        currentLeft = getLeftEnc(); //updates current encoder values
+        currentRight = getRightEnc();
+        leftDist = currentLeft - leftStart; //updates current position
+        rightDist = currentRight - rightStart;
+
+        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
+        diff.error = leftDist - rightDist;
+        distVal = runPID(&dist); //updates distVal
+        diffVal = runPID(&diff); //updates diffVal
+        
+        //limits the influence of the diffVal when near the setpoint
+        diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+        //limits the values before sending them to the motors
+        distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
+        leftVal = distVal - diffVal;
+        rightVal = distVal + diffVal;
+
+        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        if(abs(dist.error) >= abs(distance))
+            break;
+
+        runBase(leftVal, rightVal); //assigns the values to the motors
+
+        //debugging
+        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << "\n";
+
+        delay(10);
+
+    }
+
+}
+
 void turn(double angle, bool stopEarly, int time, double maxVal) { 
     //PID control loop to turn a desired angle with minimal angle error
 
@@ -314,21 +360,6 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
                 rightVal *= abs(maxVal / tempMaxVal);
                 leftVal *= abs(maxVal / tempMaxVal);
             }
-            diffVal = (rightDiff - (leftDiff * rightSetPoint / leftSetPoint)) * 100;
-            diffVal = dist.error < 2 ? diffVal * 0.1 : diffVal;
-            rightVal = speedToVolt(rightVal * 2);
-            leftVal = speedToVolt(leftVal * 2);
-            runBase(leftVal + diffVal, rightVal);
-
-
-            dist.error = rightSetPoint - rightDist;
-            rightVal = runPID(&dist);
-            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
-            if(abs(rightVal) > abs(maxVal)) {
-                tempMaxVal = rightVal;
-                rightVal *= abs(maxVal / tempMaxVal);
-                leftVal *= abs(maxVal / tempMaxVal);
-            }
             if(rightDiff != 0 && leftDiff != 0)
                 diffVal = log(rightDist / leftDist * leftSetPoint / rightSetPoint) * rightDiff * 200;
             else
@@ -353,5 +384,74 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
 
     }
     runBase(0);
+
+}
+
+void curveBaseVelCut(double leftSetPoint, double rightSetPoint, double fastSideDist, double maxVal) {
+
+    double lastLeft = getLeftEnc(), lastRight = getRightEnc();
+    double leftDiff, rightDiff;
+    double leftDist = 0, rightDist = 0;
+    double leftVal, rightVal, diffVal = 0, tempMaxVal;
+    const double WHEEL_DIST = 4.54;
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    
+    while(true) {
+
+        leftDiff = getLeftEnc() - lastLeft;
+        rightDiff = getRightEnc() - lastRight;
+        lastLeft = getLeftEnc();
+        lastRight = getRightEnc();
+        leftDist += leftDiff;
+        rightDist += rightDiff;
+
+        if(abs(leftSetPoint) > abs(rightSetPoint)) {
+            dist.error = leftSetPoint - leftDist;
+            leftVal = runPID(&dist);
+            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75;
+            if(abs(leftVal) > abs(maxVal)) {
+                tempMaxVal = leftVal;
+                leftVal *= abs(maxVal / tempMaxVal);
+                rightVal *= abs(maxVal / tempMaxVal);
+            }
+            if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(leftDist / rightDist * rightSetPoint / leftSetPoint) * leftDiff * 200;
+            else
+                diffVal = 0;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            runBase(leftVal, rightVal + diffVal);
+            if(abs(leftDist) >= abs(fastSideDist))
+                break;
+        }
+
+        else {
+            dist.error = rightSetPoint - rightDist;
+            rightVal = runPID(&dist);
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
+            if(abs(rightVal) > abs(maxVal)) {
+                tempMaxVal = rightVal;
+                rightVal *= abs(maxVal / tempMaxVal);
+                leftVal *= abs(maxVal / tempMaxVal);
+            }
+            if(rightDiff != 0 && leftDiff != 0)
+                diffVal = log(rightDist / leftDist * leftSetPoint / rightSetPoint) * rightDiff * 200;
+            else
+                diffVal = 0;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            runBase(leftVal + diffVal, rightVal);
+            if(abs(rightDist) >= abs(fastSideDist))
+                break;
+        }
+
+        //debugging
+        std::cout << "leftSetPoint: " << leftSetPoint << " | leftDist: " << leftDist << " | rightSetPoint: " << rightSetPoint << " | rightDist: " << rightDist << std::endl;
+        std::cout << "leftDiff: " << leftDiff << " | rightDiff: " << rightDiff << " | comparison: " << rightDiff / leftDiff << std::endl;
+        std::cout << "dist.error: " << dist.error << " | leftVal: " << leftVal << " | rightVal: " << rightVal << " | diffVal: " << diffVal << "\n\n";
+
+        delay(50);
+
+    }
 
 }

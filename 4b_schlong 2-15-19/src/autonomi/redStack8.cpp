@@ -8,18 +8,18 @@ void redStack8() {
     moveStraight(22, 0, 1300, 70);
     runIntk(0);
     moveLift(atCube[4]);
-    delay(1700);
+    delay(1300);
     runIntk(100);
-    moveStraight(4, 0, 1000, 30);
+    moveStraight(4, 0, 1800, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
         delay(10);
     setLiftIdle();
     setTrayIdle();
-    curveBaseVel(20.5, 21, 1500, 60);
+    curveBaseVel(20.5, 21, 1800, 60);
     turn(110, 0, 1400, 60);
-    moveStraight(38, 30, 1, 2000, 100, 50);
+    moveStraight(36, 30, 1, 2000, 80, 40);
     moveTray(400);
     runIntkDist(-130, 50);
     moveStraight(-2, 0, 1000, 60);
