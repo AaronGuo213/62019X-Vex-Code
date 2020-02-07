@@ -1,6 +1,6 @@
 #include "main.h"
 
-void redStack8() {
+void redStack7() {
 
     //gets the first cube
     runIntk(100);
@@ -10,25 +10,23 @@ void redStack8() {
 
     //gets the 4 stack
     moveLift(atCube[4]);
-    delay(1300);
+    delay(1500);
     runIntk(100);
-    moveStraight(4, 0, 1800, 30);
+    moveStraight(4, 0, 2000, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
         delay(10);
     setLiftIdle();
     setTrayIdle();
+    moveStraight(10, 0, 1000, 60);
 
-    //gets the bottom of the 4 stack and the cube at the tower
-    curveBaseVel(20.5, 21, 1800, 60);
-
-    //gets the cube next to the goal and outtakes
+    //gets the last cube next to the goal and outtakes
     turn(110, 0, 1400, 60);
-    moveStraight(36, 30, 1, 2000, 80, 40);
+    moveStraight(15, 0, 1000, 80);
     moveTray(400);
     runIntkDist(-130, 50);
-    moveStraight(-2, 0, 1000, 60);
+    curveBaseVel(17, 18, 1500, 80);
     outtake();
 
 }
