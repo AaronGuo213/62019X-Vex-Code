@@ -261,6 +261,69 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double ma
 
 }
 
+void curveBasePIDCut(double leftSetPoint, double rightSetPoint, double fastSideDist, double maxVal) {
+
+    double diffVal, leftVal, rightVal; //power values for the motors
+    double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
+    double currentLeft, currentRight;
+    double leftDist, rightDist; //variables for position and angle
+    const double WHEEL_DIST = 4.54;
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 200
+
+    while(true) {
+
+        currentLeft = getLeftEnc(); //updates current encoder values
+        currentRight = getRightEnc();
+        leftDist = currentLeft - leftStart; //updates current position
+        rightDist = currentRight - rightStart;
+
+        if(abs(leftSetPoint) > abs(rightSetPoint)) {
+            dist.error = leftSetPoint - leftDist;
+            diff.error = (rightDist * leftSetPoint / rightSetPoint) - leftDist;
+            leftVal = runPID(&dist);
+            leftVal = abs(leftVal) > maxVal ? maxVal * sgn(leftVal) : leftVal;
+            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            diffVal = runPID(&diff);
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            leftVal += diffVal;
+            rightVal -= diffVal;
+            if(abs(leftDist) >= abs(fastSideDist))
+                break;
+        }
+
+        else {
+            dist.error = rightSetPoint - rightDist;
+            diff.error = (leftDist * rightSetPoint / leftSetPoint) - rightDist;
+            rightVal = runPID(&dist);
+            rightVal = abs(rightVal) > maxVal ? maxVal * sgn(rightVal) : rightVal;
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
+            leftVal = speedToVolt(leftVal * 2);
+            rightVal = speedToVolt(rightVal * 2);
+            diffVal = runPID(&diff);
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            rightVal += diffVal;
+            leftVal -= diffVal;
+            if(abs(rightDist) >= abs(fastSideDist))
+                break;
+        }
+
+        //debugging
+        std::cout << "leftSetPoint: " << leftSetPoint << " | leftPos: " << leftDist << " | leftVal: " << leftVal << std::endl;
+        std::cout << "rightSetPoint: " << rightSetPoint << " | rightPos: " << rightDist << " | rightVal: " << rightVal << std::endl;
+        std::cout << "diff error: " << diff.error << " | diffVal: " << diffVal << "\n\n";
+
+        runBase(leftVal, rightVal);
+        delay(10);
+
+    }
+
+    runBase(0);
+
+}
+
 void curveBaseCombo(double distance, double angle, int time, double maxVal) {
 
     double currentAngle = 0;
