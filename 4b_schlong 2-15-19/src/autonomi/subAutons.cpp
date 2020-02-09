@@ -4,7 +4,7 @@ void outtake() {
 
 	trayStat = TrayStatus::manual;
     runIntk(0);
-	while(getTrayPos() < 840) {
+	while(getTrayPos() < 870) {
 		/*if(getTrayPos() < 450)
 			runTray(100);
 		else

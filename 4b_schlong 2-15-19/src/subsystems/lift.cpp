@@ -1,7 +1,7 @@
 #include "main.h"
 
-const int atCube[] = {0, 0, 250, 460, 600, 850}; //array for cube heights
-const int onTower[] = {800, 800, 950}; //array for tower heights
+const int atCube[] = {0, 0, 250, 500, 600, 850}; //array for cube heights
+const int onTower[] = {700, 700, 890}; //array for tower heights
 
 void runLift(double percent) {
 
@@ -43,7 +43,7 @@ void ctrlLift(void* param) {
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
-        liftSetPoint = liftSetPoint > 950 ? 950 : liftSetPoint; //lift cannot be higher than 750
+        liftSetPoint = liftSetPoint > 900 ? 900 : liftSetPoint; //lift cannot be higher than 750
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
         if(resetIntegral) {
@@ -163,13 +163,13 @@ void moveLift(int setPoint, int queue) {
 void updateLift() {
 
     //if partner controller L1 or the master controller up, run the lift upwards
-    if((l1Pressed(partner) && !r1Pressed(partner)) || (upPressed() && !downPressed())) {
+    if(((!l2Pressed(partner) && r2Pressed(partner)) || (upPressed() && !downPressed())) && (getLiftHeight() < 900)) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
 
     //if partner controller R1 or the master controller down, run the lift upwards
-    else if((!l1Pressed(partner) && r1Pressed(partner)) || (!upPressed() && downPressed())) {
+    else if(((l2Pressed(partner) && !r2Pressed(partner)) || (!upPressed() && downPressed())) && (getLiftHeight() > 50)) {
         liftStat = LiftStatus::manual;
         runLift(-100);
     }
@@ -184,7 +184,7 @@ void updateLift() {
     }
 
     else if(leftPressed(partner)) {
-        moveLift(0);
+        moveLift(100);
     }
 
     //if the lift is low enough, it will drop down naturally so it won't tire out the motor

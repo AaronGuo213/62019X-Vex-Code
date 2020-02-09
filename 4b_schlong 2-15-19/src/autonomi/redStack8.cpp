@@ -25,10 +25,11 @@ void redStack8() {
 
     //gets the cube next to the goal and outtakes
     turn(110, 0, 1400, 60);
+    runIntk(100, 1500);
     moveStraight(36, 30, 1, 2000, 80, 40);
     moveTray(400);
-    runIntkDist(-130, 50);
-    moveStraight(-2, 0, 1000, 60);
+    runIntkDist(-150, 50);
+    moveStraight(-1, 0, 1000, 60);
     outtake();
 
 }

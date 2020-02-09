@@ -23,7 +23,7 @@ void opcontrol() {
 
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getTrayPos() << std::endl;
-		std::cout << getLiftHeight() << std::endl;
+		//std::cout << getLiftHeight() << std::endl;
 		Task::delay_until(&now, 10);
 
 	}

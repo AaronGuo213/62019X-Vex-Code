@@ -207,28 +207,29 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double ma
     double diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
     double currentLeft, currentRight;
-    double leftDist, rightDist; //variables for position and angle
+    double leftDist, rightDist; //current position
     const double WHEEL_DIST = 4.54;
-    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 200
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 10, kI = 0.004, kD = 10
+    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 5
 
     for(int i = 0; i < time; i+=10) {
 
-        currentLeft = getLeftEnc(); //updates current encoder values
+        //updates current position
+        currentLeft = getLeftEnc();
         currentRight = getRightEnc();
-        leftDist = currentLeft - leftStart; //updates current position
+        leftDist = currentLeft - leftStart;
         rightDist = currentRight - rightStart;
 
         if(abs(leftSetPoint) > abs(rightSetPoint)) {
             dist.error = leftSetPoint - leftDist;
             diff.error = (rightDist * leftSetPoint / rightSetPoint) - leftDist;
-            leftVal = runPID(&dist);
+            leftVal = runPID(&dist); //uses dist PID to determine speed for left side of the base
             leftVal = abs(leftVal) > maxVal ? maxVal * sgn(leftVal) : leftVal;
-            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75;
-            leftVal = speedToVolt(leftVal * 2);
+            rightVal = leftVal * rightSetPoint / leftSetPoint * WHEEL_DIST / 10.75; //then uses ratios to get the speed for right side of the base
+            leftVal = speedToVolt(leftVal * 2); //conversion to voltage
             rightVal = speedToVolt(rightVal * 2);
             diffVal = runPID(&diff);
-            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal; //limits power of diffVal when close to target
             leftVal += diffVal;
             rightVal -= diffVal;
         }
@@ -236,13 +237,13 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double ma
         else {
             dist.error = rightSetPoint - rightDist;
             diff.error = (leftDist * rightSetPoint / leftSetPoint) - rightDist;
-            rightVal = runPID(&dist);
+            rightVal = runPID(&dist); //uses dist PID to determine speed for right side of the base
             rightVal = abs(rightVal) > maxVal ? maxVal * sgn(rightVal) : rightVal;
-            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75;
-            leftVal = speedToVolt(leftVal * 2);
+            leftVal = rightVal * leftSetPoint / rightSetPoint * WHEEL_DIST / 10.75; //then uses ratios to get the speed for left side of the base
+            leftVal = speedToVolt(leftVal * 2); //conversion to voltage
             rightVal = speedToVolt(rightVal * 2);
             diffVal = runPID(&diff);
-            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+            diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal; //limits power of diffVal when close to target
             rightVal += diffVal;
             leftVal -= diffVal;
         }
@@ -379,7 +380,7 @@ void curveBaseVel(double leftSetPoint, double rightSetPoint, int time, double ma
     double leftDist = 0, rightDist = 0;
     double leftVal, rightVal, diffVal = 0, tempMaxVal;
     const double WHEEL_DIST = 4.54;
-    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
+    PID dist = initPID(1, 1, 1, 10, 0.004, 10); //kP = 10, kI = 0.004, kD = 10
     
     for(int i = 0; i < time; i+=50) {
 
