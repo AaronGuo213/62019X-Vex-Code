@@ -10,7 +10,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     double leftDist, rightDist; //variables for position
     const double WHEEL_DIST = 4.54;
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
@@ -25,7 +25,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         diffVal = runPID(&diff); //updates diffVal
         
         //limits the influence of the diffVal when near the setpoint
-        diffVal = abs(dist.error) < 2 ? diffVal * 0.1 : diffVal;
+        diffVal = abs(dist.error) < 4 ? diffVal * 0.1 : diffVal;
         //limits the values before sending them to the motors
         distVal = abs(distVal) > abs(maxVal) ? maxVal * sgn(distVal) : distVal;
         leftVal = distVal - diffVal;

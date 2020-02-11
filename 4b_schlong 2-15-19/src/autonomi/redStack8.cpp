@@ -10,9 +10,9 @@ void redStack8() {
 
     //gets the 4 stack
     moveLift(atCube[4]);
-    delay(1300);
+    delay(1500);
     runIntk(100);
-    moveStraight(4, 0, 1800, 30);
+    moveStraight(5, 0, 1800, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
@@ -21,15 +21,21 @@ void redStack8() {
     setTrayIdle();
 
     //gets the bottom of the 4 stack and the cube at the tower
-    curveBaseVel(20.5, 21, 1800, 60);
+    curveBaseVel(20.5, 21, 1800, 80);
 
     //gets the cube next to the goal and outtakes
-    turn(110, 0, 1400, 60);
-    runIntk(100, 1500);
-    moveStraight(36, 30, 1, 2000, 80, 40);
-    moveTray(400);
-    runIntkDist(-150, 50);
-    moveStraight(-1, 0, 1000, 60);
+    turn(111, 0, 1400, 60);
+    runIntk(100);
+    moveStraight(36, 30, 1, 1600, 80, 40);
+    //moveTray(400);
+    trayStat = TrayStatus::manual;
+    runIntk(0);
+    delay(100);
+    runIntkDist(-200, 80);
+    delay(200);
+    runTray(100);
+    moveStraight(-2, 0, 1000, 60);
+    //delay(1000);
     outtake();
 
 }
