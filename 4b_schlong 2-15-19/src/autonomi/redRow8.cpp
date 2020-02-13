@@ -3,33 +3,42 @@
 void redRow8() {
 
     //deploys antitip
-    moveLift(150, 100);
-    moveStraight(12, 1, 900, 60);
-    setLiftIdle();
+    moveStraight(12, 1, 700, 60);
+    moveLift(150);
+    delay(500);
+    moveLift(0);
     moveTray(0);
 
-    //gets 3 cubes from the long L
+    //intakes the first 2 cubes, gets the 2 stack in the intake
     runIntk(100);
-    moveStraight(23, 0, 2300, 50);
-    runIntk(0);
-
-    //S path to the row of 4
-    curveBasePID(-23.4, -17.25, 1300, 80);
-    curveBasePID(-17.25, -23.4, 1400, 80);
-
-    //gets the row of 4
+    moveStraight(15, 0, 1500, 60);
+    setLiftIdle();
     setTrayIdle();
-    runIntk(100);
-    moveStraight(33, 0, 2500, 60);
-    runIntk(0);
+    runIntk(100, 500);
+    delay(1000);
+    moveStraight(7, 0, 600, 80);
 
-    //outtakes
-    moveStraight(-15, 1, 1500);
-    runIntkDist(-100, 50);
-    turn(-126, 0, 1400, 60);
+    //knocks the top cube to the side and intakes the bottom cube, goes to row
+    runIntk(100);
+    turn(45, 0, 900, 70);
     runIntk(0);
-    moveTray(200);
-    moveStraight(14, 1, 1200, 60);
+    moveStraight(-31, 0, 1200, 100);
+    turn(-45, 0, 900, 70);
+
+    //intakes 4 cubes from the row
+    runIntk(100);
+    moveStraight(28, 0, 2000, 55);
+    runIntk(100, 500);
+    moveStraight(-15, 0, 800);
+
+    //spits cube to position to outtake and turns
+    runIntkDist(-140, 150);
+    turn(-120, 0, 1500, 70);
+
+    //preemtively puts the tray up for outtaking and moves to the goal
+    trayStat = TrayStatus::manual;
+    runTray(100);
+    moveStraight(12, 1, 1000, 70);
     outtake();
 
 }

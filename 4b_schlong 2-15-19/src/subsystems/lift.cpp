@@ -175,11 +175,11 @@ void updateLift() {
     }
 
     //skills tower heights
-    else if(upPressed(partner)) {
+    else if(leftPressed(master) || upPressed(partner)) {
         moveLift(onTower[2]);
     }
 
-    else if(downPressed(partner)) {
+    else if(rightPressed(master) || downPressed(partner)) {
         moveLift(onTower[1]);
     }
 

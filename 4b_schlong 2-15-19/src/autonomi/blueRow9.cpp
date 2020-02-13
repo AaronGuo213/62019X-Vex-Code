@@ -1,6 +1,6 @@
 #include "main.h"
 
-void redRow9() {
+void blueRow9() {
 
     //gets the first 2 cubes
     moveTray(0);
@@ -17,8 +17,8 @@ void redRow9() {
 
     //S-shaped path to line up with the row of 4
     runIntk(0);
-    curveBasePID(-24, -17.5, 1400, 80);
     curveBasePID(-17.5, -24, 1400, 80);
+    curveBasePID(-24, -17.5, 1400, 80);
 
     //gets the row of 4
     setTrayIdle();
@@ -29,7 +29,7 @@ void redRow9() {
     moveStraight(-13, 0, 800);
     runIntk(0);
     runIntkDist(-100, 30);
-    turn(-120, 0, 1700, 70);
+    turn(120, 0, 1700, 70);
 
     //preemtively puts up tray while moving to the goal
     runIntk(0);

@@ -26,19 +26,19 @@ void autonomous() { //15 second autonomous period at the beginning of the match
             break;
 
         case 4:
-            //blueStack8();
+            blueStack8();
             break;
         
         case 5:
-            //blueRow9();
+            blueRow9();
             break;
 
         case 6:
-            //blueRow8();
+            blueRow8();
             break;
 
         case 7:
-            //blueStack7();
+            blueStack7();
             break;
 
         default:

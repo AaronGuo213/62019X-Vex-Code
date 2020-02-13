@@ -21,10 +21,10 @@ void redStack8() {
     setTrayIdle();
 
     //gets the bottom of the 4 stack and the cube at the tower
-    curveBaseVel(20.5, 21, 1800, 80);
+    curveBaseVel(21, 20.5, 1800, 80);
 
     //gets the cube next to the goal and outtakes
-    turn(110, 0, 1400, 60);
+    turn(-110, 0, 1400, 60);
     runIntk(100);
     moveStraight(36, 30, 1, 1600, 80, 40);
     trayStat = TrayStatus::manual;
