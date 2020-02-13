@@ -1,6 +1,6 @@
 #include "main.h"
 
-void redStack7() {
+void blueStack7() {
 
     //gets the first cube
     runIntk(100);
