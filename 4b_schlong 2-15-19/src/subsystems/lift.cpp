@@ -1,7 +1,7 @@
 #include "main.h"
 
 const int atCube[] = {0, 0, 250, 500, 600, 850}; //array for cube heights
-const int onTower[] = {700, 700, 890}; //array for tower heights
+const int onTower[] = {650, 650, 890}; //array for tower heights
 
 void runLift(double percent) {
 

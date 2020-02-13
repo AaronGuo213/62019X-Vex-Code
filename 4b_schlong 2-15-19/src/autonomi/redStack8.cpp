@@ -33,8 +33,8 @@ void redStack8() {
     runIntkDist(-180, 150);
     delay(200);
     runTray(100);
-    moveStraight(-2, 0, 1000, 60);
-    //delay(1000);
+    //moveStraight(-2, 0, 1000, 60);
+    delay(1000);
     outtake();
 
 }

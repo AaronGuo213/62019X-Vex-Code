@@ -3,11 +3,11 @@
 void autonomous() { //15 second autonomous period at the beginning of the match
 
     //redStack7();
-    redStack8();
+    //redStack8();
     //redRow8();
     //redRow9();
 
-    /*switch(autonCount) {
+    switch(autonCount) {
     
         case 0:
             redStack8();
@@ -44,6 +44,6 @@ void autonomous() { //15 second autonomous period at the beginning of the match
         default:
             break;
 
-    }*/
+    }
 
 }
