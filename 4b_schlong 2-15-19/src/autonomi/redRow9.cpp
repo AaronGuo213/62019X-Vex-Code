@@ -16,6 +16,7 @@ void redRow9() {
     setLiftIdle();
     runIntk(0);
 
+    //transition to row of 4
     turn(42, 0, 900, 70);
     moveStraight(-34, 0, 1200, 100);
     turn(-43, 0, 900, 70);

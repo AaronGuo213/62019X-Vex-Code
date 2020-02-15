@@ -12,7 +12,7 @@ void redStack7() {
     moveLift(atCube[4]);
     delay(1500);
     runIntk(100);
-    moveStraight(4, 0, 2000, 30);
+    moveStraight(4, 0, 2500, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
@@ -24,8 +24,10 @@ void redStack7() {
     //gets the last cube next to the goal and outtakes
     turn(110, 0, 1400, 60);
     moveStraight(15, 0, 1000, 80);
-    moveTray(400);
-    runIntkDist(-130, 50);
+    runIntkDist(-160, 150);
+    delay(300);
+    trayStat = TrayStatus::manual;
+    runTray(80);
     curveBaseVel(17, 18, 1500, 80);
     outtake();
 

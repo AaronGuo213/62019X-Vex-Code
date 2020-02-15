@@ -4,10 +4,12 @@ void autonomous() { //15 second autonomous period at the beginning of the match
 
     //redStack7();
     //redStack8();
+    //redRow7();
     //redRow8();
-    redRow9();
+    //redRow9();
+    //blueRow9();
 
-    /*switch(autonCount) {
+    switch(autonCount) {
     
         case 0:
             redStack8();
@@ -18,7 +20,7 @@ void autonomous() { //15 second autonomous period at the beginning of the match
             break;
 
         case 2:
-            redRow8();
+            redRow7();
             break;
 
         case 3:
@@ -34,7 +36,7 @@ void autonomous() { //15 second autonomous period at the beginning of the match
             break;
 
         case 6:
-            blueRow8();
+            blueRow7();
             break;
 
         case 7:
@@ -44,6 +46,6 @@ void autonomous() { //15 second autonomous period at the beginning of the match
         default:
             break;
 
-    }*/
+    }
 
 }

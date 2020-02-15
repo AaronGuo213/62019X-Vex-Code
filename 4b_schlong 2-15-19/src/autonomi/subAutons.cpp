@@ -5,14 +5,6 @@ void outtake() {
 	trayStat = TrayStatus::manual;
     runIntk(0);
 	while(getTrayPos() < 870) {
-		/*if(getTrayPos() < 450)
-			runTray(100);
-		else
-			runTray(20);
-		if(getTrayPos() > 300) { //once the tray reaches a certain position
-			leftIntk.set_brake_mode(E_MOTOR_BRAKE_COAST); //allows intake motors to be moved
-    		rightIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
-		}*/
 		runTray(calcTrayPow(1) + 5);
 		delay(50);
 	}

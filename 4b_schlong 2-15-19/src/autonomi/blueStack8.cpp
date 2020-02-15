@@ -12,7 +12,7 @@ void blueStack8() {
     moveLift(atCube[4]);
     delay(1500);
     runIntk(100);
-    moveStraight(5, 0, 1800, 30);
+    moveStraight(6, 0, 1800, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
@@ -33,8 +33,8 @@ void blueStack8() {
     runIntkDist(-180, 150);
     delay(200);
     runTray(100);
-    moveStraight(-2, 0, 1000, 60);
-    //delay(1000);
+    //moveStraight(-2, 0, 1000, 60);
+    delay(1000);
     outtake();
 
 }
