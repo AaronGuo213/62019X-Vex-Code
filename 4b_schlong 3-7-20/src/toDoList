@@ -1,0 +1,17 @@
+LIFT:
+-Try the move velocity function
+
+BASE:
+-get the odometry working
+-work with sonars if possible
+-curvy boi
+-changing speed base PID
+
+INTAKE:
+-Nothing special yet
+
+TRAY:
+-Nothing special yet
+
+OTHER:
+-reorganize everything
