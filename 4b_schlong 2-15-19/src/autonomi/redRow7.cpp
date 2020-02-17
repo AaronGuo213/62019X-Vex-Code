@@ -26,11 +26,11 @@ void redRow7() {
     //goes to outtake
     moveStraight(-27, 0, 1300, 100);
     runIntk(0);
-    turn(-117, 0, 1500, 70);
+    turn(-119, 0, 1500, 70);
     runIntkDist(-180, 150);
     trayStat = TrayStatus::manual;
     runTray(80);
-    moveStraight(17, 1, 1500, 80);
+    moveStraight(19, 1, 1500, 80);
     outtake();
 
 }

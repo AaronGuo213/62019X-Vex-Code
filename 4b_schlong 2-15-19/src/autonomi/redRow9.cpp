@@ -40,7 +40,7 @@ void redRow9() {
     runIntkDist(-150, 200);
     trayStat = TrayStatus::manual;
     runTray(100);
-    moveStraight(11, 1, 1000, 80);
+    moveStraight(13, 1, 1000, 80);
     outtake();
 
 }

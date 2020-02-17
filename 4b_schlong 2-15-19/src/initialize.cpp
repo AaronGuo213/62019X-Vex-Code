@@ -3,7 +3,7 @@
 void initialize() {
 
     brakeIntk();
-    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the tray motor hold its position to an extent
+    //tray.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the tray motor hold its position to an extent
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
     delay(200);

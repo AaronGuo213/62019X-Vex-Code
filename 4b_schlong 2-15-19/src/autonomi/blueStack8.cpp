@@ -12,7 +12,7 @@ void blueStack8() {
     moveLift(atCube[4]);
     delay(1500);
     runIntk(100);
-    moveStraight(6, 0, 1800, 30);
+    moveStraight(5, 0, 1800, 30);
     liftStat = LiftStatus::manual;
     lift.move_velocity(-50);
     while(getLiftHeight() > 70)
@@ -26,7 +26,7 @@ void blueStack8() {
     //gets the cube next to the goal and outtakes
     turn(-110, 0, 1400, 60);
     runIntk(100);
-    moveStraight(36, 30, 1, 1600, 80, 40);
+    moveStraight(36, 30, 1, 1800, 80, 40);
     trayStat = TrayStatus::manual;
     runIntk(0);
     delay(100);
