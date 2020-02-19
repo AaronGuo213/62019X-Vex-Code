@@ -17,6 +17,8 @@ extern Motor rightIntk;
 
 extern Motor tray; //tray motor
 
+extern Imu imu; //inertial sensor
+
 //Legacy Components
 extern ADIEncoder yawEnc; //encoder for horizontal movement
 extern ADIEncoder leftEnc; //encoders for forward movement

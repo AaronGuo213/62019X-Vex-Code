@@ -16,10 +16,10 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 
-		/*if(master.get_digital(E_CONTROLLER_DIGITAL_A))
-			turnToAngle(tracker, 0);
-		std::cout << tracker->getAngle() << std::endl;*/
-		//std::cout << tracker->getAngle() << " | " << tracker->getX() << " | " << tracker->getY() << std::endl;
+		c::imu_accel_s_t accel = imu.get_accel();
+		c::imu_gyro_s_t gyro = imu.get_gyro_rate();
+		std::cout << "x: " << accel.x << " |\ty: " << accel.y << " |\tz: " << accel.z << std::endl;
+		std::cout << "x: " << gyro.x << " |\ty: " << gyro.y << " |\tz: " << gyro.z << std::endl;
 
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getTrayPos() << std::endl;
