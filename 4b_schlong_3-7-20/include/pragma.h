@@ -23,5 +23,6 @@ extern Imu imu; //inertial sensor
 extern ADIEncoder yawEnc; //encoder for horizontal movement
 extern ADIEncoder leftEnc; //encoders for forward movement
 extern ADIEncoder rightEnc;
+extern ADIUltrasonic sonar; //sonar sensor for cube and corner detection
 
 #endif

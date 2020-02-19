@@ -21,7 +21,7 @@ void redStack8() {
     setTrayIdle();
 
     //gets the bottom of the 4 stack and the cube at the tower
-    curveBaseVel(20.5, 21, 1800, 80);
+    curveBasePID(20.5, 21, 1800, 80);
 
     //gets the cube next to the goal and outtakes
     turn(110, 0, 1400, 60);

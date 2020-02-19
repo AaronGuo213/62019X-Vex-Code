@@ -10,7 +10,9 @@ extern const double inchPerTickForward;
 extern const double inchPerTickYaw;
 double getLeftEnc();
 double getRightEnc();
-void resetBaseEnc();
 double getYawEnc();
+void resetBaseEnc();
+bool isBaseSettled();
+bool isBaseStopped();
 
 #endif

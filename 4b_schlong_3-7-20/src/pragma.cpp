@@ -31,3 +31,4 @@ Imu imu(10);
 ADIEncoder yawEnc(7, 8, 0); //wheel encoder in ports 7 and 8
 ADIEncoder leftEnc(3, 4, 1); //wheel encoder in ports 5 and 6
 ADIEncoder rightEnc(1, 2, 1); //wheel encoder in ports 1 and 2
+ADIUltrasonic sonar(5, 6); //sonar sensor in ports 5 and 6

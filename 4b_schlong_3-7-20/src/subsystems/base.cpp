@@ -78,6 +78,13 @@ double getRightEnc() {
 
 }
 
+double getYawEnc() {
+
+    //returns the number of inches travelled by the yaw encoder wheel
+    return yawEnc.get_value() * inchPerTickYaw;
+
+}
+
 void resetBaseEnc() {
 
     leftEnc.reset();
@@ -86,9 +93,26 @@ void resetBaseEnc() {
 
 }
 
-double getYawEnc() {
+bool isBaseSettled() {
 
-    //returns the number of inches travelled by the yaw encoder wheel
-    return yawEnc.get_value() * inchPerTickYaw;
+    if(abs(leftBase1.get_actual_velocity()) > 10 || abs(leftBase2.get_actual_velocity()) > 10)
+        return false;
+
+    if(abs(rightBase1.get_actual_velocity()) > 10 || abs(rightBase2.get_actual_velocity()) > 10)
+        return false;
+
+    return true;
+
+}
+
+bool isBaseStopped() {
+
+    if(leftBase1.get_actual_velocity() != 0 || leftBase2.get_actual_velocity() != 0)
+        return false;
+
+    if(rightBase1.get_actual_velocity() != 0 || rightBase2.get_actual_velocity() != 0)
+        return false;
+
+    return true;
 
 }
