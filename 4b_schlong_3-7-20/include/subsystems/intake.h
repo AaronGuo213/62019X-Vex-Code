@@ -8,9 +8,11 @@ void intkSafetyNet();
 void brakeIntk();
 void coastIntk();
 
-extern int intkTimer;
-extern double intkPow;
-void ctrlIntk(void *param);
+struct intkQueue {
+    double percent;
+    int time;
+};
+void queueIntk(void* param);
 void runIntk(double percent, int time);
 
 #endif

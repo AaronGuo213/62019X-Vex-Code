@@ -85,6 +85,13 @@ double getYawEnc() {
 
 }
 
+double getAngle() {
+
+    //returns the global angle of the robot
+    return -imu.get_yaw();
+
+}
+
 void resetBaseEnc() {
 
     leftEnc.reset();
@@ -93,12 +100,20 @@ void resetBaseEnc() {
 
 }
 
+void resetGyro() {
+
+    imu.reset();
+
+}
+
 bool isBaseSettled() {
 
-    if(abs(leftBase1.get_actual_velocity()) > 10 || abs(leftBase2.get_actual_velocity()) > 10)
+    int threshhold = 10;
+
+    if(abs(leftBase1.get_actual_velocity()) > threshhold || abs(leftBase2.get_actual_velocity()) > threshhold)
         return false;
 
-    if(abs(rightBase1.get_actual_velocity()) > 10 || abs(rightBase2.get_actual_velocity()) > 10)
+    if(abs(rightBase1.get_actual_velocity()) > threshhold || abs(rightBase2.get_actual_velocity()) > threshhold)
         return false;
 
     return true;

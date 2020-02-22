@@ -2,15 +2,14 @@
 
 void initialize() {
 
-    brakeIntk();
-    //tray.set_brake_mode(E_MOTOR_BRAKE_HOLD); //makes the tray motor hold its position to an extent
+    brakeIntk(); //makes intake hold their position
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
-    delay(200);
+    resetGyro();
+    delay(2100);
     //initiates the control tasks
     Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
-    Task intkGo(ctrlIntk, (void*)"PROS", TASK_PRIORITY_MIN, TASK_STACK_DEPTH_DEFAULT, "intk contrl task"); //starts the intake task
     liftSetPoint = getLiftHeight();
     traySetPoint = 0;
 
@@ -196,7 +195,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=================================================
     CONSTANTLY UPDATES THE COLORS OF THE AUTON SELECTOR
     =================================================*/
-    while(!confirmed) {
+    /*while(!confirmed) {
         switch(autonType) {
             case 0:
                 lv_label_set_text(confirmLabel, stack8Desc);
@@ -228,7 +227,7 @@ void competition_initialize() { //480 x 240 cortex
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &redOutline);
         }
         delay(100);
-    }
+    }*/
 
     /*=======================
     COVER AFTER AUTON CONFIRM

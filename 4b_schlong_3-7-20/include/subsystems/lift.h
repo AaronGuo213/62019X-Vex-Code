@@ -16,11 +16,12 @@ extern bool resetIntegral;
 void ctrlLift(void* param);
 void setLiftHold(bool updateSetPoint = true);
 void setLiftIdle();
+
 void moveLift(int setPoint);
 struct liftQueue {
     int setPoint, queue;
 };
-void queueLift(void* param, void* setPoint);
+void queueLift(void* param);
 void moveLift(int setPoint, int queue);
 void updateLift();
 

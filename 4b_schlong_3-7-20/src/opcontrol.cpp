@@ -8,6 +8,17 @@ void opcontrol() {
 	Odometry* tracker = new Odometry(0, 0, 0);
 	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
 
+	std::string infoStr;
+	lv_style_t info;
+    lv_style_copy(&info, &lv_style_plain);
+    info.body.main_color = LV_COLOR_BLACK;
+    info.body.grad_color = LV_COLOR_BLACK;
+	info.text.color = LV_COLOR_RED;
+	lv_obj_t *infoBox = lv_ta_create(lv_scr_act(), NULL);
+	lv_obj_set_size(infoBox, 800, 400);
+	lv_obj_set_pos(infoBox, 0, 0);
+	lv_ta_set_style(infoBox, LV_TA_STYLE_BG, &info);
+
 	while(true) {
 
 		//update functions
@@ -16,18 +27,17 @@ void opcontrol() {
 		updateIntk();
 		updateTray();
 
-		if(!imu.is_calibrating()) {
-			c::imu_accel_s_t accel = imu.get_accel();
-			c::imu_gyro_s_t gyro = imu.get_gyro_rate();
-			std::cout << "x: " << accel.x << " |\ty: " << accel.y << " |\tz: " << accel.z << std::endl;
-			std::cout << "x: " << gyro.x << " |\ty: " << gyro.y << " |\tz: " << gyro.z << std::endl;
-			std::cout << "rotation: " << imu.get_rotation() << std::endl;
-			std::cout << "yaw: " << imu.get_yaw() << " |\tpitch: " << imu.get_pitch() << " |\troll: " << imu.get_roll() << std::endl;
-		}
-		else 
-			std::cout << "calibrating\n";
+		infoStr = "";
+		infoStr += "leftEnc: " + std::to_string(getLeftEnc()) + "     |     rightEnc: " + std::to_string(getRightEnc());
+		infoStr += "\nisBaseStopped: " + std::to_string(isBaseStopped()) + "     |     isBaseSettled: " + std::to_string(isBaseSettled());
 
-		//std::cout << sonar.get_value() << std::endl;
+		infoStr += "\ngyro: " + std::to_string(imu.get_yaw());
+		infoStr += "\nsonar: " + std::to_string(sonar.get_value());
+		infoStr += "\nlift: " + std::to_string(getLiftHeight());
+		infoStr += "\ntray: " + std::to_string(getTrayPos());
+		lv_ta_set_text(infoBox, infoStr.c_str());
+
+		//std::cout << sonarStr << std::endl;
 		//std::cout << getLeftEnc() << " | " << getRightEnc() << std::endl;
 		//std::cout << getTrayPos() << std::endl;
 		//std::cout << getLiftHeight() << std::endl;

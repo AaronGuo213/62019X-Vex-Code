@@ -24,7 +24,7 @@ Motor rightIntk(6, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES);
 Motor tray(5, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES);
 //100 rpm motor
 
-Imu imu(10);
+Imu imu(3);
 
 
 //Legacy Components

@@ -11,7 +11,9 @@ extern const double inchPerTickYaw;
 double getLeftEnc();
 double getRightEnc();
 double getYawEnc();
+double getAngle();
 void resetBaseEnc();
+void resetGyro();
 bool isBaseSettled();
 bool isBaseStopped();
 

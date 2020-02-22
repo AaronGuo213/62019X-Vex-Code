@@ -65,40 +65,24 @@ void coastIntk() {
 
 }
 
-int intkTimer = 0;
-double intkPow = 0;
+void queueIntk(void* param) {
 
-void ctrlIntk(void *param) {
-	//intake control task used for running the intake with a timer
-
-	std::uint32_t now = millis();
-	bool stopIntk = false;
-	while(true) {
-		//updates every 50ms
-
-		//updates the timer for the intake
-		if(intkTimer) {
-			runIntk(intkPow);
-			intkTimer -= 50;
-			stopIntk = true;
-		}
-
-		//if the timer runs out, stop the intake
-		else if(stopIntk) {
-			stopIntk = false;
-			runIntk(0);
-		}
-
-		Task::delay_until(&now, 50);
-
+	intkQueue* theQueue = (intkQueue*)param;
+	double power = theQueue->percent;
+	int time = theQueue->time;
+	for(int i = 0; i < time; i+=10) {
+		runIntk(power);
+		delay(10);
 	}
+	runIntk(0);
 
 }
 
 void runIntk(double percent, int time) {
 
-	//updates the intake control task
-	intkPow = percent;
-	intkTimer = time;
+	//runs the intake for a certain time before stopping
+	intkQueue newQueue = {percent, time};
+	Task runIntkTimed(queueIntk, &newQueue, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN, "timed running intk task");
+	delay(20);
 
 }

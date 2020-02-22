@@ -1,27 +1,28 @@
 #include "main.h"
 
+/*======================
+DRIVE STRAIGHT FUNCTIONS
+======================*/
+
 void moveStraight(double distance, double maxVal) { 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
-    double currentLeft, currentRight;
     double leftDist, rightDist; //variables for position
-    const double WHEEL_DIST = 4.54;
+    double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 10
 
-    while(true) {
+    for(int i = 0 ; true; i+=10) {
 
         //updates current distance, PID errors, and motor values
-        currentLeft = getLeftEnc();
-        currentRight = getRightEnc();
-        leftDist = currentLeft - leftStart;
-        rightDist = currentRight - rightStart;
+        leftDist = getLeftEnc() - leftStart;
+        rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2;
-        diff.error = leftDist - rightDist;
+        diff.error = startAngle - getAngle();
         distVal = runPID(&dist);
         diffVal = runPID(&diff);
         
@@ -34,7 +35,7 @@ void moveStraight(double distance, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(dist.error) < 0.5 && isBaseSettled()) || isBaseStopped())
+        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -54,21 +55,18 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
 
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
-    double currentLeft, currentRight;
     double leftDist, rightDist; //variables for position
-    const double WHEEL_DIST = 4.54;
+    double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        currentLeft = getLeftEnc(); //updates current encoder values
-        currentRight = getRightEnc();
-        leftDist = currentLeft - leftStart; //updates current position
-        rightDist = currentRight - rightStart;
+        leftDist = getLeftEnc() - leftStart; //updates current position
+        rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = leftDist - rightDist;
+        diff.error = startAngle - getAngle();
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -103,21 +101,18 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
     double maxVal = maxVal1;
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
-    double currentLeft, currentRight;
+    double startAngle = getAngle();
     double leftDist, rightDist; //variables for position
-    const double WHEEL_DIST = 4.54;
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
-        currentLeft = getLeftEnc(); //updates current encoder values
-        currentRight = getRightEnc();
-        leftDist = currentLeft - leftStart; //updates current position
-        rightDist = currentRight - rightStart;
+        leftDist = getLeftEnc() - leftStart; //updates current position
+        rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = leftDist - rightDist;
+        diff.error = startAngle - getAngle();
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -153,21 +148,18 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
 
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
-    double currentLeft, currentRight;
     double leftDist, rightDist; //variables for position
-    const double WHEEL_DIST = 4.54;
+    double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
 
     while(true) { //updates every 10 ms
 
-        currentLeft = getLeftEnc(); //updates current encoder values
-        currentRight = getRightEnc();
-        leftDist = currentLeft - leftStart; //updates current position
-        rightDist = currentRight - rightStart;
+        leftDist = getLeftEnc() - leftStart; //updates current position
+        rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = leftDist - rightDist;
+        diff.error = startAngle - getAngle();
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -193,7 +185,11 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
 
 }
 
-void turn(double angle, bool stopEarly, int time, double maxVal) { 
+/*============
+TURN FUNCTIONS
+============*/
+
+void turn(double angle, double maxVal) { 
     //PID control loop to turn a desired angle with minimal angle error
 
     double turnVal, leftVal, rightVal;
@@ -201,9 +197,9 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     double leftDist, rightDist;
     const double WHEEL_DIST = 4.54;
     double currentAngle = 0;
-    PID turn = initPID(1, 1, 1, 1.8, 0.00001, 9); //kP = 1.8, kI = 0.00001, kD = 9;
+    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
 
-    for(int i = 0; i < time; i+=10) {
+    for(int i = 0; true; i+=10) {
 
         //updates angle, PID error, and motor values
         leftDist = getLeftEnc() - lastLeft;
@@ -221,7 +217,7 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || isBaseStopped())
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -244,7 +240,7 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     double leftDist, rightDist;
     const double WHEEL_DIST = 4.54;
     double currentAngle = 0;
-    PID turn = initPID(1, 1, 1, 1.8, 0.00001, 9); //kP = 1.8, kI = 0.00002, kD = 9;
+    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
@@ -277,6 +273,99 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
     runBase(0, 0); //stops the motors at the end
 
 }
+
+void turnRelative(double angle, double maxVal) { 
+    //PID control loop to turn a desired angle with minimal angle error
+
+    double turnVal, leftVal, rightVal;
+    double startAngle = getAngle(), currentAngle;
+    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+
+    for(int i = 0; true; i+=10) {
+
+        //updates PID error and motor values
+        currentAngle = getAngle() - startAngle;
+        turn.error = angle - currentAngle;
+        turnVal = runPID(&turn);
+
+        //limits the values before sending them to the motors
+        leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
+        rightVal = -leftVal;
+        runBase(leftVal, rightVal);
+
+        //stops when threshhold is reached and speed is slow enough or robot stops
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+            break;
+
+        //debugging
+        std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
+
+        delay(10); //every 10 ms
+
+    }
+
+    runBase(0, 0); //stops the motors at the end
+
+}
+
+void turnAbsolute(double angle, double maxVal) { 
+    //PID control loop to turn a desired angle with minimal angle error
+
+    double turnVal, leftVal, rightVal;
+    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+
+    for(int i = 0; true; i+=10) {
+
+        //updates PID error and motor values
+        turn.error = angle - getAngle();
+        turnVal = runPID(&turn);
+
+        //limits the values before sending them to the motors
+        leftVal = abs(-turnVal) > abs(maxVal) ? maxVal * sgn(-turnVal) : -turnVal;
+        rightVal = -leftVal;
+        runBase(leftVal, rightVal);
+
+        //stops when threshhold is reached and speed is slow enough or robot stops
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+            break;
+
+        //debugging
+        std::cout << "setPoint: " << angle << " | currentPos: " << getAngle() << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
+        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
+
+        delay(10); //every 10 ms
+
+    }
+
+    runBase(0, 0); //stops the motors at the end
+
+}
+
+void turnToCorner(double initVal) {
+
+    runBase(-initVal, initVal); //turns and finds the corner(least sonar value)
+    double lastDist = sonar.get_value();
+    while(lastDist > sonar.get_value()) {
+        lastDist = sonar.get_value();
+        delay(50);
+    }
+
+    double error = 1, turnVal, leftVal, rightVal; //uses P loop to turn to the corner
+    while(abs(error) > 0.3 && !isBaseStopped()) { //if the robot reaches a threshold or stops moving
+        error = sonar.get_value() - lastDist;
+        turnVal = error * 20;
+        leftVal = turnVal * sgn(initVal);
+        rightVal = -leftVal;
+        runBase(leftVal, rightVal);
+    }
+    runBase(0);
+
+}
+
+/*=============
+CURVE FUNCTIONS
+=============*/
 
 void curveBase(double leftPow, double rightPow, double fastSideDist) {
     //simple curving with constant voltage until a certain distance is achieved
@@ -460,27 +549,6 @@ void curveBaseCombo(double distance, double angle, int time, double maxVal) {
 
     }
 
-    runBase(0);
-
-}
-
-void allignWithCorner(double initVal) {
-
-    runBase(-initVal, initVal); //turns and finds the corner(least sonar value)
-    double lastDist = sonar.get_value();
-    while(lastDist > sonar.get_value()) {
-        lastDist = sonar.get_value();
-        delay(50);
-    }
-
-    double error = 1, turnVal, leftVal, rightVal; //uses P loop to turn to the corner
-    while(abs(error) > 0.3 && !isBaseStopped()) { //if the robot reaches a threshold or stops moving
-        error = sonar.get_value() - lastDist;
-        turnVal = error * 20;
-        leftVal = turnVal * sgn(initVal);
-        rightVal = -leftVal;
-        runBase(leftVal, rightVal);
-    }
     runBase(0);
 
 }
