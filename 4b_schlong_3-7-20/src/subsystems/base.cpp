@@ -29,8 +29,34 @@ void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
 void updateBase() {
 
-    //gets controller joystick values and translate them to the motors
-    runBase(joyValRemap(lY()), joyValRemap(rY()));
+    //gets controller joystick values
+    double leftStickY = lY(), leftStickX = lX();
+    double rightStickY = rY(), rightStickX = rX();
+
+    //makes the base move forward when joysticks are close enough
+    if(abs(leftStickY - rightStickY) < 10)
+        leftStickY = rightStickY = (leftStickY + rightStickY) / 2;
+    //converts joystick values to voltage percent and outputs to motors
+    runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
+
+    /*if(abs(leftStickX) < 50) { //arcade mode can be activated when the left stick is pushed to the side
+        //makes the base move forward when joysticks are close enough
+        if(abs(leftStickY - rightStickY) < 10)
+            leftStickY = rightStickY = (leftStickY + rightStickY) / 2;
+        //converts joystick values to voltage percent and outputs to motors
+        runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
+    }
+
+    else {
+        //arcade drive
+        rightStickX = abs(rightStickX) > 20 ? rightStickX : 0;
+        rightStickX *= rightStickY > 0 ? 1 : -1;
+        leftStickY += rightStickX;
+        rightStickY -= rightStickX;
+        //converts joystick values to voltage percent and outputs to motors
+        runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
+    }*/
+
     //checks for overheating
     baseSafetyNet();
 

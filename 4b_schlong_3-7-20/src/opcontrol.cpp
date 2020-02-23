@@ -5,8 +5,8 @@ void opcontrol() {
 	std::uint_least32_t now = millis();
 	liftSetPoint = getLiftHeight();
 	resetBaseEnc();
-	Odometry* tracker = new Odometry(0, 0, 0);
-	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");
+	/*Odometry* tracker = new Odometry(0, 0, 0);
+	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");*/
 
 	std::string infoStr;
 	lv_style_t info;
@@ -31,7 +31,7 @@ void opcontrol() {
 		infoStr += "leftEnc: " + std::to_string(getLeftEnc()) + "     |     rightEnc: " + std::to_string(getRightEnc());
 		infoStr += "\nisBaseStopped: " + std::to_string(isBaseStopped()) + "     |     isBaseSettled: " + std::to_string(isBaseSettled());
 
-		infoStr += "\ngyro: " + std::to_string(imu.get_yaw());
+		infoStr += imu.is_calibrating() ? "\ncalibrating: " : "\ngyro: " + std::to_string(imu.get_yaw());
 		infoStr += "\nsonar: " + std::to_string(sonar.get_value());
 		infoStr += "\nlift: " + std::to_string(getLiftHeight());
 		infoStr += "\ntray: " + std::to_string(getTrayPos());

@@ -4,6 +4,7 @@
 void runTray(double percent);
 int getTrayPos();
 double calcTrayPow(bool isOuttaking);
+double calcTrayPowAuton(bool isOuttaking);
 void updateTray();
 void traySafetyNet();
 

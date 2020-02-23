@@ -232,6 +232,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=======================
     COVER AFTER AUTON CONFIRM
     =======================*/
+    imu.reset();
     lv_obj_t *cover = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_pos(cover, 0, 0);
     lv_obj_set_size(cover, 480, 240);
