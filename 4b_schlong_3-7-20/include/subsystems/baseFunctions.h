@@ -17,7 +17,7 @@ void turnToCorner(double initVal = 100);
 //curve functions
 void curveBase(double leftPow, double rightPow, double fastSideDist);
 void curveBasePID(double leftSetPoint, double rightSetPoint, double maxVal = 100);
-void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double maxVal = 100);
+void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double maxVal);
 void curveBasePIDCut(double leftSetPoint, double rightSetPoint, double fastSideDist, double maxVal = 100);
 void curveBaseCombo(double dist, double angle, int time, double maxVal = 100);
 

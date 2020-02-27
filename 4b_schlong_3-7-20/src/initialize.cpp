@@ -6,7 +6,11 @@ void initialize() {
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
     resetGyro();
-    delay(2100);
+    while(imu.is_calibrating()) {
+        delay(50);
+        std::cout << "hey" << std::endl;
+    }
+    delay(2000);
     //initiates the control tasks
     Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
@@ -232,7 +236,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=======================
     COVER AFTER AUTON CONFIRM
     =======================*/
-    imu.reset();
+    //imu.reset();
     lv_obj_t *cover = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_pos(cover, 0, 0);
     lv_obj_set_size(cover, 480, 240);

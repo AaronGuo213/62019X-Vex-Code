@@ -17,17 +17,17 @@ void runIntkDist(double dist, double velocity) {
 void updateIntk() {
 
     if((l1Pressed() && !r1Pressed()) || (l1Pressed(partner) && !r1Pressed(partner))) { //l1 pressed runs intake inwards
-		//coastIntk();
+		coastIntk();
 		runIntk(100);
 	}
 
 	else if((!l1Pressed() && r1Pressed()) || (!l1Pressed(partner) && r1Pressed(partner))) { //r1 pressed runs intake outwards
-		//coastIntk();
+		brakeIntk();
 		runIntk(-100);
 	}
 
 	else { //otherwise dont run the intake
-		//brakeIntk();
+		brakeIntk();
 		runIntk(0);
 	}
 

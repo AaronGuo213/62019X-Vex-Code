@@ -17,7 +17,7 @@ Odometry::Odometry(double xStart, double yStart, double angleStart) {
     x = xStart;
     y = yStart;
     angle = angleStart * PI / 180;
-    resetBaseEnc();
+    resetEnc();
 
 }
 

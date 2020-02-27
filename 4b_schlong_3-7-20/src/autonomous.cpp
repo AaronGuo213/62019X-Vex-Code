@@ -2,11 +2,12 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    moveStraight(24, 100);
-
+    //std::cout << getSonarInches(10) << std::endl;
+    //turnRelative(12, 100);
+    //moveStraight(7, 30);
     //redStack7();
     //redStack8();
-    //redRow7();
+    blueRow7();
     //redRow8();
     //redRow9();
     //blueRow9();

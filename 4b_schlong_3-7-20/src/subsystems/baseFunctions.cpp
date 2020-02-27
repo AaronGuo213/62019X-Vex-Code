@@ -8,6 +8,7 @@ void moveStraight(double distance, double maxVal) {
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
+    resetBaseMotorEnc();
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
     double leftDist, rightDist; //variables for position
@@ -15,14 +16,15 @@ void moveStraight(double distance, double maxVal) {
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
     PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 10
 
-    for(int i = 0 ; true; i+=10) {
+    for(int i = 0; true; i+=10) {
 
         //updates current distance, PID errors, and motor values
         leftDist = getLeftEnc() - leftStart;
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2;
-        diff.error = startAngle - getAngle();
+        //diff.error = startAngle - getAngle();
+        diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist);
         diffVal = runPID(&diff);
         
@@ -35,11 +37,12 @@ void moveStraight(double distance, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 400 && isBaseStopped()))
             break;
 
         //debugging
-        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        //std::cout << leftBase1.get_position() << " | " << rightBase1.get_position() << std::endl;
+        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diff error: " << diff.error <<  " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -53,6 +56,7 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
+    resetBaseMotorEnc();
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
     double leftDist, rightDist; //variables for position
@@ -66,7 +70,8 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = startAngle - getAngle();
+        //diff.error = startAngle - getAngle();
+        diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -84,7 +89,8 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         runBase(leftVal, rightVal); //assigns the values to the motors
 
         //debugging
-        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
+        //std::cout << leftBase1.get_position() << " | " << rightBase1.get_position() << std::endl;
+        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diff error: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
 
@@ -104,7 +110,7 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
     double startAngle = getAngle();
     double leftDist, rightDist; //variables for position
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 20, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 
@@ -112,7 +118,8 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        diff.error = startAngle - getAngle();
+        //diff.error = startAngle - getAngle();
+        diff.error = (leftDist - rightDist) / 2;
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -151,7 +158,7 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
     double leftDist, rightDist; //variables for position
     double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 3, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 20, 0, 0); //kP = 200
 
     while(true) { //updates every 10 ms
 
@@ -217,7 +224,7 @@ void turn(double angle, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
             break;
 
         //debugging
@@ -279,7 +286,23 @@ void turnRelative(double angle, double maxVal) {
 
     double turnVal, leftVal, rightVal;
     double startAngle = getAngle(), currentAngle;
-    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+    PID turn;
+    if(abs(angle) >= 25) //good for angles 25 degrees to 135 degrees
+        turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+    else //good for angles 10 degrees to 25 degrees
+        turn = initPID(1, 0, 1, 5, 0, 15);
+
+    //accounts for gyro overlap
+    int overlap = 0;
+    double fakeStartAngle;
+    if(startAngle + angle > 180) {
+        overlap = 1;
+        fakeStartAngle = -360 + startAngle;
+    }
+    else if(startAngle + angle < -180) {
+        overlap = 2;
+        fakeStartAngle = 360 + startAngle;
+    }
 
     for(int i = 0; true; i+=10) {
 
@@ -293,8 +316,14 @@ void turnRelative(double angle, double maxVal) {
         rightVal = -leftVal;
         runBase(leftVal, rightVal);
 
+        //accounts for gyro overlap
+        if(overlap == 1 && currentAngle < -170)
+            startAngle = fakeStartAngle;
+        else if(overlap == 2 && currentAngle > 170)
+            startAngle = fakeStartAngle;
+
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
             break;
 
         //debugging
@@ -313,7 +342,11 @@ void turnAbsolute(double angle, double maxVal) {
     //PID control loop to turn a desired angle with minimal angle error
 
     double turnVal, leftVal, rightVal;
-    PID turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+    PID turn;
+    if(abs(angle) >= 25) //good for angles 25 degrees to 135 degrees
+        turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
+    else //good for angles 10 degrees to 25 degrees
+        turn = initPID(1, 0, 1, 5, 0, 15);
 
     for(int i = 0; true; i+=10) {
 
@@ -327,7 +360,7 @@ void turnAbsolute(double angle, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
             break;
 
         //debugging
@@ -429,7 +462,7 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, double maxVal) { //
         }
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 200 && isBaseStopped()))
+        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 400 && isBaseStopped()))
             break;
 
         //debugging

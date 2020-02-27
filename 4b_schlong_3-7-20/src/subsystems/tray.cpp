@@ -28,8 +28,13 @@ double calcTrayPow(bool isOuttaking) {
 
 double calcTrayPowAuton(bool isOuttaking) {
 
-	if(isOuttaking && getTrayPos() < 900)
-		return (900 - getTrayPos()) / 3 + 10;
+	if(isOuttaking && getTrayPos() < 900) {
+		if(getTrayPos() < 600)
+			return 80;
+		else
+			return 50;
+	}
+		//return (900 - getTrayPos()) / 5 + 3;
 
 	if(!isOuttaking && getTrayPos() < 0)
 		return -getTrayPos();

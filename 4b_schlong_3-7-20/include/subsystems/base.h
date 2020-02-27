@@ -10,10 +10,14 @@ extern const double inchPerTickForward;
 extern const double inchPerTickYaw;
 double getLeftEnc();
 double getRightEnc();
+double getLeftEncMotors();
+double getRightEncMotors();
 double getYawEnc();
 double getAngle();
-void resetBaseEnc();
+void resetEnc();
+void resetBaseMotorEnc();
 void resetGyro();
+double getSonarInches(int numTimes = 1);
 bool isBaseSettled();
 bool isBaseStopped();
 

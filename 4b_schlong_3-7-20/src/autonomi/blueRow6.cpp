@@ -1,6 +1,6 @@
 #include "main.h"
 
-void blueRow7() {
+void blueRow6() {
 
     //deploys antitip
     runIntk(100);
@@ -17,19 +17,16 @@ void blueRow7() {
 
     //gets the row of 4
     moveStraight(10.5, 50);
-    delay(1000);
+    delay(1500);
     moveStraight(16, 50);
     setLiftIdle();
 
-    //gets the 2 cubes under tower
-    turnRelative(-14, 50);
-    moveStraight(12, 60);
-    delay(300);
-    turnRelative(20, 50);
-    moveStraight(8, 60);
+    //gets the cube under tower
+    turnRelative(-12, 100);
+    moveStraight(14, 60);
 
     //goes to outtake
-    moveStraight(-28, 100);
+    moveStraight(-32, 100);
     runIntk(0);
     runIntkDist(-140, 150);
     delay(100);
@@ -37,10 +34,9 @@ void blueRow7() {
     delay(1000);
     runIntk(0);
     turnAbsolute(135, 70);
-    runBase(90);
-    delay(800);
+    runBase(60);
+    delay(600);
     runBase(0);
-    delay(300);
     outtake();
 
 }

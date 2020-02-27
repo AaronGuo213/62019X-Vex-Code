@@ -4,7 +4,7 @@ void outtake() {
 
 	trayStat = TrayStatus::manual;
     runIntk(0);
-	while(getTrayPos() < 870) {
+	while(getTrayPos() < 850) {
 		runTray(calcTrayPowAuton(1));
 		delay(50);
 	}

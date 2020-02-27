@@ -4,7 +4,7 @@ void opcontrol() {
 
 	std::uint_least32_t now = millis();
 	liftSetPoint = getLiftHeight();
-	resetBaseEnc();
+	resetEnc();
 	/*Odometry* tracker = new Odometry(0, 0, 0);
 	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");*/
 

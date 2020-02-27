@@ -29,33 +29,8 @@ void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
 void updateBase() {
 
-    //gets controller joystick values
-    double leftStickY = lY(), leftStickX = lX();
-    double rightStickY = rY(), rightStickX = rX();
-
-    //makes the base move forward when joysticks are close enough
-    if(abs(leftStickY - rightStickY) < 10)
-        leftStickY = rightStickY = (leftStickY + rightStickY) / 2;
-    //converts joystick values to voltage percent and outputs to motors
-    runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
-
-    /*if(abs(leftStickX) < 50) { //arcade mode can be activated when the left stick is pushed to the side
-        //makes the base move forward when joysticks are close enough
-        if(abs(leftStickY - rightStickY) < 10)
-            leftStickY = rightStickY = (leftStickY + rightStickY) / 2;
-        //converts joystick values to voltage percent and outputs to motors
-        runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
-    }
-
-    else {
-        //arcade drive
-        rightStickX = abs(rightStickX) > 20 ? rightStickX : 0;
-        rightStickX *= rightStickY > 0 ? 1 : -1;
-        leftStickY += rightStickX;
-        rightStickY -= rightStickX;
-        //converts joystick values to voltage percent and outputs to motors
-        runBase(joyValRemap(leftStickY), joyValRemap(rightStickY));
-    }*/
+    //uses joystick values to run the base
+    runBase(joyValRemap(lY()), joyValRemap(rY()));
 
     //checks for overheating
     baseSafetyNet();
@@ -104,6 +79,18 @@ double getRightEnc() {
 
 }
 
+double getLeftEncMotors() {
+
+    return (leftBase1.get_position() + leftBase2.get_position()) / 2;
+
+}
+
+double getRightEncMotors() {
+
+    return (rightBase1.get_position() + rightBase2.get_position()) / 2;
+
+}
+
 double getYawEnc() {
 
     //returns the number of inches travelled by the yaw encoder wheel
@@ -118,7 +105,7 @@ double getAngle() {
 
 }
 
-void resetBaseEnc() {
+void resetEnc() {
 
     leftEnc.reset();
     rightEnc.reset();
@@ -126,9 +113,29 @@ void resetBaseEnc() {
 
 }
 
+void resetBaseMotorEnc() {
+
+    leftBase1.tare_position();
+    leftBase2.tare_position();
+    rightBase1.tare_position();
+    rightBase2.tare_position();
+
+}
+
 void resetGyro() {
 
     imu.reset();
+
+}
+
+double getSonarInches(int numTimes) {
+
+    double rtn = 0;
+    for(int i = 0; i < numTimes; i++) {
+        rtn += sonar.get_value() * 0.0393701;
+        delay(10);
+    }
+    return rtn / numTimes;
 
 }
 
