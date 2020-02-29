@@ -6,6 +6,41 @@ void redRow7() {
     runIntk(100);
     moveTray(0);
     double distToCube = getSonarInches(10);
+    if(distToCube > 26 || distToCube < 18)
+        distToCube = 22;
+    moveLift(150);
+    moveLift(0, 500);
+    moveStraight(distToCube - 8);
+
+    //gets the first 2 cubes of the long L
+    moveStraight(10.5, 60);
+    delay(1500); //deploying tray
+    runIntk(0);
+
+    //moves to and gets the row of 4
+    turnRelative(60, 70);
+    moveStraight(-27);
+    turnAbsolute(0, 70);
+    runIntk(100);
+    moveStraight(27, 50);
+
+    //outtakes
+    moveStraight(-15);
+    runIntkDist(-120, 150);
+    moveTray(400);
+    delay(900);
+    runIntk(0);
+    turnAbsolute(-135);
+    runBase(100);
+    delay(400);
+    runBase(0);
+    delay(200);
+    outtake();
+
+    /*//deploys antitip
+    runIntk(100);
+    moveTray(0);
+    double distToCube = getSonarInches(10);
     if(distToCube > 19 || distToCube < 14)
         distToCube = 16;
     moveStraight(distToCube - 6.5, 40);
@@ -41,37 +76,6 @@ void redRow7() {
     delay(800);
     runBase(0);
     delay(300);
-    outtake();
-
-    /*//deploys antitip
-    runIntk(100);
-    moveTray(0);
-    moveStraight(7, 0, 700, 70);
-    moveLift(150);
-    delay(500);
-    moveLift(0);
-
-    //gets the first 2 cubes and deploys tray
-    runIntk(100);
-    moveStraight(13, 0, 2000, 50);
-
-    //gets the last 2 cubes from the row
-    moveStraight(10, 0, 1000, 50);
-    setLiftIdle();
-
-    //gets the 2 cubes under tower
-    curveBasePID(17, 18, 1400, 80);
-    turn(-32, 0, 700);
-    moveStraight(8, 0, 800);
-
-    //goes to outtake
-    moveStraight(-27, 0, 1300, 100);
-    runIntk(0);
-    turn(-119, 0, 1500, 70);
-    runIntkDist(-180, 150);
-    trayStat = TrayStatus::manual;
-    runTray(80);
-    moveStraight(19, 1, 1500, 80);
     outtake();*/
 
 }

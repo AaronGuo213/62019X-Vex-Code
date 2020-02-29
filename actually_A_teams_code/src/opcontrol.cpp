@@ -21,15 +21,19 @@ void opcontrol() {
 		else
 			runIntk(0);
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_L1))
+		if(master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			runTray(getTrayPow());
-		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2))
+			armSetPoint = 0;
+		}
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
 			runTray(-100);
+			armSetPoint = 0;
+		}
 		else
 			runTray(0);
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_UP))
-			armSetPoint = 750;
+			armSetPoint = 850;
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_LEFT))
 			armSetPoint = 650;
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN))
@@ -37,7 +41,18 @@ void opcontrol() {
 
 		arm.error = armSetPoint - arms.get_position();
 		armVal = runPID(&arm);
-		arms.move_voltage(armVal * 120);
+		if(armSetPoint != 0) {
+			if(tray.get_position() < 500) {
+				runTray(100);
+				arms.move_voltage(0);
+			}
+			else {
+				runTray(0);
+				arms.move_voltage(armVal * 120);
+			}
+		}
+		else
+			arms.move_voltage(armVal * 120);
 
 		std::cout << "trayPos: " << tray.get_position() << " | armPos: " << arms.get_position() << std::endl;
 

@@ -29,6 +29,7 @@ enum class LiftStatus; //states for the current lift status
 LiftStatus liftStat = LiftStatus::idle;
 
 int liftSetPoint; //determines where the lift actively tries to move to
+double liftVel = 0; //how fast the lift motor runs in rpm
 bool resetIntegral = false; //determines when to reset the integral buildup
 
 void ctrlLift(void* param) {
@@ -100,7 +101,22 @@ void ctrlLift(void* param) {
         }
 
         else { //reset the slow timer
+
+            if(liftVel != 0) {
+                
+                if(getLiftHeight() > 50) {
+                    lift.move_velocity(-abs(liftVel)); //lift moves down at certain speed
+                }
+
+                else { //once it reaches the threshhold the lift stops
+                    runLift(0);
+                    liftVel = 0;
+                }
+
+            }
+
             slowTimer = 300;
+
         }
 
         //prevents the lift motor from overheating
@@ -154,6 +170,13 @@ void moveLift(int setPoint, int queue) {
     liftQueue newQueue = {setPoint, queue};
     Task delayLift(queueLift, &newQueue, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN, "lift movement task");
     delay(20);
+
+}
+
+void liftToGnd(double percentSpeed) {
+
+    liftStat = LiftStatus::manual;
+    liftVel = percentSpeed * 2; //100 percent goes to 200 rpm
 
 }
 

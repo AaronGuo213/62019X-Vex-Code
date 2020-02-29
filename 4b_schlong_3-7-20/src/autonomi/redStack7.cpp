@@ -5,33 +5,44 @@ void redStack7() {
     //gets the first cube
     runIntk(100);
     moveTray(0);
-    moveStraight(22, 0, 1300, 70);
+    moveStraight(22, 100);
     runIntk(0);
 
     //gets the 4 stack
     moveLift(atCube[4]);
-    delay(1500);
+    while(getLiftHeight() < atCube[4] - 50)
+        delay(50);
     runIntk(100);
-    moveStraight(5, 0, 2500, 30);
+    double distToCube = getSonarInches(10);
+    if(distToCube > 12 || distToCube < 4)
+        distToCube = 8;
+    moveStraight(distToCube - 3, 30);
+    delay(1500);
+    //moveStraight(5, 0, 2500, 30);
     liftStat = LiftStatus::manual;
-    lift.move_velocity(-50);
-    while(getLiftHeight() > 70)
+    liftToGnd(-30);
+    while(getLiftHeight() > atCube[2] - 50)
         delay(10);
-    setLiftIdle();
+    moveStraight(8, 80);
     setTrayIdle();
-    moveStraight(10, 0, 1000, 60);
 
-    //gets the last cube next to the goal and outtakes
-    turn(110, 0, 1400, 60);
-    moveStraight(17, 0, 1000, 80);
-    delay(800);
+    //gets the cube next to the goal
+    turnRelative(110, 70);
+    setLiftIdle();
+    moveStraight(25, 80);
+    delay(500);
+
+    //outtakes
     runIntk(0);
-    delay(200);
-    runIntkDist(-160, 150);
-    delay(300);
-    trayStat = TrayStatus::manual;
-    runTray(80);
-    curveBasePID(16, 17, 1500, 80);
+    delay(100);
+    runIntkDist(-120, 150);
+    delay(100);
+    moveTray(400);
+    delay(1000);
+    turnAbsolute(135);
+    runBase(50);
+    delay(600);
+    runBase(0);
     outtake();
 
 }

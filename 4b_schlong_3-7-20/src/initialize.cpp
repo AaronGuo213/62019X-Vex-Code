@@ -3,14 +3,18 @@
 void initialize() {
 
     brakeIntk(); //makes intake hold their position
+    tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
     resetGyro();
+    delay(500);
     while(imu.is_calibrating()) {
         delay(50);
         std::cout << "hey" << std::endl;
     }
     delay(2000);
+    startingZero = -imu.get_yaw();
+    std::cout << startingZero << std::endl;
     //initiates the control tasks
     Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
     Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
@@ -93,9 +97,9 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
     //Determines which auton is desired
     if(txt == "stack-8")
         autonType = 0;
-    else if(txt == "row-9")
-        autonType = 1;
     else if(txt == "row-7")
+        autonType = 1;
+    else if(txt == "row-6")
         autonType = 2;
     else if(txt == "stack-7")
         autonType = 3;
@@ -172,7 +176,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=================================
     AUTON TYPE SELECTOR (BUTTON MATRIX)
     =================================*/
-    static const char *autons[] = {"stack-8", "row-9", "none", "\n", "stack-7", "row-7", "none", ""};
+    static const char *autons[] = {"stack-8", "row-7", "none", "\n", "stack-7", "row-6", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
     lv_obj_set_size(auton, 230, 125);
@@ -191,24 +195,24 @@ void competition_initialize() { //480 x 240 cortex
     lv_btn_set_action(confirm, LV_BTN_ACTION_CLICK, confirmAuton);
     lv_label_set_align(confirmLabel, LV_LABEL_ALIGN_CENTER);
     const char *stack8Desc = "8 cubes in the outer stack of the big goal.\nGets the preload, the cube in front, the 4 stack,\nthe cube next to the tower, and the stray cube.\nCLICK TO CONFIRM";
-    const char *row9Desc = "9 cubes in the small goal.\nGets the preload, the long L,\n and the row of 4.\nCLICK TO CONFIRM";
-    const char *row7Desc = "7 cubes in the small goal.\nGets the preload, the row of 4,\n and 2 cubes under the tower.\nCLICK TO CONFIRM";
+    const char *row7Desc = "7 cubes in the small goal.\nGets the preload, 2 cubes from \nthe long L, and the row of 4.\nCLICK TO CONFIRM";
+    const char *row6Desc = "6 cubes in the small goal.\nGets the preload, the row of 4,\n and the cube under the tower.\nCLICK TO CONFIRM";
     const char *stack7Desc = "7 cubes in the outer stack of the big goal.\nGets the preload, the cube in front,\nthe 4 stack, and the stray cube.\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
 
     /*=================================================
     CONSTANTLY UPDATES THE COLORS OF THE AUTON SELECTOR
     =================================================*/
-    /*while(!confirmed) {
+    while(!confirmed) {
         switch(autonType) {
             case 0:
                 lv_label_set_text(confirmLabel, stack8Desc);
                 break;
             case 1:
-                lv_label_set_text(confirmLabel, row9Desc);
+                lv_label_set_text(confirmLabel, row7Desc);
                 break;
             case 2:
-                lv_label_set_text(confirmLabel, row7Desc);
+                lv_label_set_text(confirmLabel, row6Desc);
                 break;
             case 3:
                 lv_label_set_text(confirmLabel, stack7Desc);
@@ -231,7 +235,7 @@ void competition_initialize() { //480 x 240 cortex
             lv_btnm_set_style(auton, LV_BTNM_STYLE_BTN_TGL_REL, &redOutline);
         }
         delay(100);
-    }*/
+    }
 
     /*=======================
     COVER AFTER AUTON CONFIRM

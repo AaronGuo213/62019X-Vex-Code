@@ -101,9 +101,11 @@ double getYawEnc() {
 double getAngle() {
 
     //returns the global angle of the robot
-    return -imu.get_yaw();
+    return -imu.get_yaw() - startingZero;
 
 }
+
+double startingZero;
 
 void resetEnc() {
 
@@ -155,10 +157,20 @@ bool isBaseSettled() {
 
 bool isBaseStopped() {
 
-    if(leftBase1.get_actual_velocity() != 0 || leftBase2.get_actual_velocity() != 0)
+    /*if(leftBase1.get_actual_velocity() != 0 || leftBase2.get_actual_velocity() != 0)
         return false;
 
     if(rightBase1.get_actual_velocity() != 0 || rightBase2.get_actual_velocity() != 0)
+        return false;
+
+    return true;*/
+
+    int threshhold = 5;
+
+    if(abs(leftBase1.get_actual_velocity()) > threshhold || abs(leftBase2.get_actual_velocity()) > threshhold)
+        return false;
+
+    if(abs(rightBase1.get_actual_velocity()) > threshhold || abs(rightBase2.get_actual_velocity()) > threshhold)
         return false;
 
     return true;

@@ -37,7 +37,7 @@ void moveStraight(double distance, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 400 && isBaseStopped()))
+        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -224,7 +224,7 @@ void turn(double angle, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -323,7 +323,7 @@ void turnRelative(double angle, double maxVal) {
             startAngle = fakeStartAngle;
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -343,7 +343,7 @@ void turnAbsolute(double angle, double maxVal) {
 
     double turnVal, leftVal, rightVal;
     PID turn;
-    if(abs(angle) >= 25) //good for angles 25 degrees to 135 degrees
+    if(abs(angle - getAngle()) >= 25) //good for angles 25 degrees to 135 degrees
         turn = initPID(1, 1, 1, 2.5, 0.00001, 10); //kP = 2.5, kI = 0.00001, kD = 10;
     else //good for angles 10 degrees to 25 degrees
         turn = initPID(1, 0, 1, 5, 0, 15);
@@ -360,7 +360,7 @@ void turnAbsolute(double angle, double maxVal) {
         runBase(leftVal, rightVal);
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 400 && isBaseStopped()))
+        if((abs(turn.error) < 1 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging
@@ -462,7 +462,7 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, double maxVal) { //
         }
 
         //stops when threshhold is reached and speed is slow enough or robot stops
-        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 400 && isBaseStopped()))
+        if((abs(dist.error) < 0.5 && isBaseSettled()) || (i > 200 && isBaseStopped()))
             break;
 
         //debugging

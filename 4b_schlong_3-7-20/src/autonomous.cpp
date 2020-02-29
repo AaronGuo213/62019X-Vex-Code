@@ -2,28 +2,28 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
+    tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
     //std::cout << getSonarInches(10) << std::endl;
-    //turnRelative(12, 100);
     //moveStraight(7, 30);
-    //redStack7();
+    //blueStack7();
     //redStack8();
-    blueRow7();
+    //redRow7();
     //redRow8();
     //redRow9();
     //blueRow9();
 
-    /*switch(autonCount) {
+    switch(autonCount) {
     
         case 0:
             redStack8();
             break;
         
         case 1:
-            redRow9();
+            redRow7();
             break;
 
         case 2:
-            redRow7();
+            redRow6();
             break;
 
         case 3:
@@ -35,11 +35,11 @@ void autonomous() { //15 second autonomous period at the beginning of the match
             break;
         
         case 5:
-            blueRow9();
+            blueRow7();
             break;
 
         case 6:
-            blueRow7();
+            blueRow6();
             break;
 
         case 7:
@@ -49,6 +49,6 @@ void autonomous() { //15 second autonomous period at the beginning of the match
         default:
             break;
 
-    }*/
+    }
 
 }

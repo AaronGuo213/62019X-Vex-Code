@@ -14,6 +14,7 @@ double getLeftEncMotors();
 double getRightEncMotors();
 double getYawEnc();
 double getAngle();
+extern double startingZero;
 void resetEnc();
 void resetBaseMotorEnc();
 void resetGyro();

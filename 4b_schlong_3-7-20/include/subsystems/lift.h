@@ -11,6 +11,7 @@ double getLiftHeight();
 enum class LiftStatus {idle, hold, slow, move, manual};
 extern LiftStatus liftStat;
 extern int liftSetPoint;
+extern double liftVel;
 extern bool resetIntegral;
 
 void ctrlLift(void* param);
@@ -23,6 +24,7 @@ struct liftQueue {
 };
 void queueLift(void* param);
 void moveLift(int setPoint, int queue);
+void liftToGnd(double percentSpeed);
 void updateLift();
 
 #endif
