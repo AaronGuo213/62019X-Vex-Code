@@ -21,4 +21,7 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, int time, double ma
 void curveBasePIDCut(double leftSetPoint, double rightSetPoint, double fastSideDist, double maxVal = 100);
 void curveBaseCombo(double dist, double angle, int time, double maxVal = 100);
 
+//other
+double getDeployOffset(int time);
+
 #endif

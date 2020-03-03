@@ -5,7 +5,8 @@ void blueStack7() {
     //gets the first cube
     runIntk(100);
     moveTray(0);
-    moveStraight(22, 100);
+    //moveStraight(22, 100);
+    moveStraight(17, 100);
     runIntk(0);
 
     //gets the 4 stack

@@ -6,6 +6,7 @@ void opcontrol() {
 	liftSetPoint = getLiftHeight();
 	tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	resetEnc();
+	bool mode = false;
 	/*Odometry* tracker = new Odometry(0, 0, 0);
 	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");*/
 
@@ -24,16 +25,20 @@ void opcontrol() {
 
 		//update functions
 		updateBase();
-		updateLift();
 		updateIntk();
-		updateTray();
+		if(mode)
+			updateLift();
+		else
+			updateTray();
+		if(aPressed(master, true))
+			mode = !mode;
 
 		infoStr = "";
 		infoStr += "leftEnc: " + std::to_string(getLeftEnc()) + "     |     rightEnc: " + std::to_string(getRightEnc());
 		infoStr += "\nisBaseStopped: " + std::to_string(isBaseStopped()) + "     |     isBaseSettled: " + std::to_string(isBaseSettled());
 
 		infoStr += imu.is_calibrating() ? "\ncalibrating: " : "\ngyro: " + std::to_string(imu.get_yaw());
-		infoStr += "\nsonar: " + std::to_string(sonar.get_value());
+		infoStr += "\nsonar: " + std::to_string(getSonarInches());
 		infoStr += "\nlift: " + std::to_string(getLiftHeight());
 		infoStr += "\ntray: " + std::to_string(getTrayPos());
 		lv_ta_set_text(infoBox, infoStr.c_str());

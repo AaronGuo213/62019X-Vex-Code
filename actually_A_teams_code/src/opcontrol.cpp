@@ -5,9 +5,10 @@ void opcontrol() {
 	tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     intk1.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     intk2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
-	PID arm = initPID(1, 0, 0, 0.7, 0, 0);
+	arms.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	/*PID arm = initPID(1, 0, 0, 0.7, 0, 0);
 	int armSetPoint = 0;
-	double armVal = 0;
+	double armVal = 0;*/
 
 	while(true) {
 
@@ -23,16 +24,16 @@ void opcontrol() {
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
 			runTray(getTrayPow());
-			armSetPoint = 0;
+			//armSetPoint = 0;
 		}
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
 			runTray(-100);
-			armSetPoint = 0;
+			//armSetPoint = 0;
 		}
 		else
 			runTray(0);
 
-		if(master.get_digital(E_CONTROLLER_DIGITAL_UP))
+		/*if(master.get_digital(E_CONTROLLER_DIGITAL_UP))
 			armSetPoint = 850;
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_LEFT))
 			armSetPoint = 650;
@@ -52,7 +53,23 @@ void opcontrol() {
 			}
 		}
 		else
-			arms.move_voltage(armVal * 120);
+			arms.move_voltage(armVal * 120);*/
+
+		if(master.get_digital(E_CONTROLLER_DIGITAL_UP)) {
+			if(tray.get_position() < 500)
+				runTray(100);
+			else {
+				arms.move_voltage(12000);
+				runTray(0);
+			}
+		}
+
+		else if(master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
+			arms.move_voltage(-12000);
+		}
+
+		else 
+			arms.move_voltage(0);
 
 		std::cout << "trayPos: " << tray.get_position() << " | armPos: " << arms.get_position() << std::endl;
 

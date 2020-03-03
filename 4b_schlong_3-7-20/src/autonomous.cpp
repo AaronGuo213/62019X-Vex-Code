@@ -11,6 +11,11 @@ void autonomous() { //15 second autonomous period at the beginning of the match
     //redRow8();
     //redRow9();
     //blueRow9();
+    /*runIntkDist(-160, 150);
+    delay(300);
+    moveTray(400);
+    delay(1500);
+    outtake();*/
 
     switch(autonCount) {
     

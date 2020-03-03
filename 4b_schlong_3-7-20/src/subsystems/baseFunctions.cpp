@@ -23,7 +23,6 @@ void moveStraight(double distance, double maxVal) {
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2;
-        //diff.error = startAngle - getAngle();
         diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist);
         diffVal = runPID(&diff);
@@ -70,7 +69,6 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        //diff.error = startAngle - getAngle();
         diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
@@ -104,6 +102,7 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
+    resetBaseMotorEnc();
     double maxVal = maxVal1;
     double distVal, diffVal, leftVal, rightVal; //power values for the motors
     double leftStart = getLeftEnc(), rightStart = getRightEnc(); //marks the staring spot
@@ -118,8 +117,7 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
-        //diff.error = startAngle - getAngle();
-        diff.error = (leftDist - rightDist) / 2;
+        diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
         
@@ -647,5 +645,19 @@ void curveBaseCombo(double distance, double angle, int time, double maxVal) {
     }
 
     runBase(0);
+
+}
+
+/*===
+OTHER
+===*/
+
+double getDeployOffset(int time) {
+
+    double start = (getLeftEnc() + getRightEnc()) / 2;
+    for(int i = 0; i < time; i+=10)
+        delay(10);
+    double end = (getLeftEnc() + getRightEnc()) / 2;
+    return end - start;
 
 }

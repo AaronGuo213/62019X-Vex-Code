@@ -15,6 +15,6 @@ void runTray(double percent) {
 
 double getTrayPow() {
 
-    return (1800 - tray.get_position()) / 10;
+    return (2000 - tray.get_position()) / 8;
 
 }

@@ -183,13 +183,24 @@ void liftToGnd(double percentSpeed) {
 void updateLift() {
 
     //if partner controller L1 or the master controller up, run the lift upwards
-    if(((!l2Pressed(partner) && r2Pressed(partner)) || (upPressed() && !downPressed())) && (getLiftHeight() < 900)) {
+    /*if(((!l2Pressed(partner) && r2Pressed(partner)) || (upPressed() && !downPressed())) && (getLiftHeight() < 900)) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
 
     //if partner controller R1 or the master controller down, run the lift upwards
     else if(((l2Pressed(partner) && !r2Pressed(partner)) || (!upPressed() && downPressed())) && (getLiftHeight() > 50)) {
+        liftStat = LiftStatus::manual;
+        runLift(-100);
+    }*/
+
+    if(((!l2Pressed(partner) && r2Pressed(partner)) || (l2Pressed() && !r2Pressed())) && (getLiftHeight() < 900)) {
+        liftStat = LiftStatus::manual;
+        runLift(100);
+    }
+
+    //if partner controller R1 or the master controller down, run the lift upwards
+    else if(((l2Pressed(partner) && !r2Pressed(partner)) || (!l2Pressed() && r2Pressed())) && (getLiftHeight() > 50)) {
         liftStat = LiftStatus::manual;
         runLift(-100);
     }

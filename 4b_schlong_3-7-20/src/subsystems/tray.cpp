@@ -29,10 +29,11 @@ double calcTrayPow(bool isOuttaking) {
 double calcTrayPowAuton(bool isOuttaking) {
 
 	if(isOuttaking && getTrayPos() < 900) {
-		if(getTrayPos() < 600)
+		/*if(getTrayPos() < 600)
 			return 60;
 		else
-			return 40;
+			return 40;*/
+		return (900 - getTrayPos()) / 20 + 40;
 	}
 		//return (900 - getTrayPos()) / 7;
 
@@ -113,15 +114,6 @@ void updateTray() {
 
 	else //otherwise let the tray rest
 		trayStat = TrayStatus::idle;
-
-	/*(else if(getTrayPos() < 200) { //if the tray is not near the lowest point, hold its position
-		trayStat = TrayStatus::idle;
-	}
-
-	else if(trayStat == TrayStatus::manual) { //otherwise dont run the tray motor
-		traySetPoint = getTrayPos();
-		trayStat = TrayStatus::hold;
-	}*/
 
 }
 

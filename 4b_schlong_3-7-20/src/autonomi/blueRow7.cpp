@@ -6,10 +6,10 @@ void blueRow7() {
     runIntk(100);
     moveTray(0);
     double distToCube = getSonarInches(10);
-    if(distToCube > 26 || distToCube < 18)
+    if(distToCube > 26 || distToCube < 14)
         distToCube = 22;
-    moveLift(150);
-    moveLift(0, 500);
+    //moveLift(150);
+    //moveLift(0, 500);
     moveStraight(distToCube - 8);
 
     //gets the first 2 cubes of the long L
