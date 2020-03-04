@@ -1,7 +1,7 @@
 #include "main.h"
 
 const int atCube[] = {0, 0, 250, 500, 600, 850}; //array for cube heights
-const int onTower[] = {650, 650, 890}; //array for tower heights
+const int onTower[] = {620, 600, 840}; //array for tower heights
 
 void runLift(double percent) {
 
@@ -44,7 +44,7 @@ void ctrlLift(void* param) {
     while(true) {
 
         //std::cout << cubeSensor.get_value() << std::endl;
-        liftSetPoint = liftSetPoint > 900 ? 900 : liftSetPoint; //lift cannot be higher than 750
+        liftSetPoint = liftSetPoint > 840 ? 840 : liftSetPoint; //lift cannot be higher than 750
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
         if(resetIntegral) {
@@ -206,7 +206,7 @@ void updateLift() {
     }
 
     //skills tower heights
-    else if(leftPressed(master) || upPressed(partner)) {
+    /*else if(leftPressed(master) || upPressed(partner)) {
         moveLift(onTower[2]);
     }
 
@@ -216,7 +216,7 @@ void updateLift() {
 
     else if(leftPressed(partner)) {
         moveLift(100);
-    }
+    }*/
 
     //if the lift is low enough, it will drop down naturally so it won't tire out the motor
     else if(getLiftHeight() < 150 && liftSetPoint < 150)

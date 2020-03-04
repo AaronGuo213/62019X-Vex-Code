@@ -5,8 +5,7 @@ void redStack7() {
     //gets the first cube
     runIntk(100);
     moveTray(0);
-    //moveStraight(22, 100);
-    moveStraight(17, 100);
+    moveStraight(19, 100);
     runIntk(0);
 
     //gets the 4 stack
@@ -18,30 +17,31 @@ void redStack7() {
     if(distToCube > 12 || distToCube < 4)
         distToCube = 8;
     moveStraight(distToCube - 3, 30);
-    delay(1500);
+    double minusThis = getDeployOffset(1500);
     liftStat = LiftStatus::manual;
     liftToGnd(-30);
     while(getLiftHeight() > atCube[2] - 50)
         delay(10);
-    moveStraight(8, 80);
+    moveStraight(8 - minusThis, 80);
+    delay(300);
     setTrayIdle();
 
     //gets the cube next to the goal
     turnRelative(110, 70);
     setLiftIdle();
-    moveStraight(25, 80);
+    moveStraight(23, 80);
     delay(500);
 
     //outtakes
     runIntk(0);
     delay(100);
-    runIntkDist(-120, 150);
-    delay(100);
-    moveTray(400);
+    runIntkDist(-150, 150);
+    turnAbsolute(130);
+    runIntk(0);
+    trayStat = TrayStatus::manual;
+    runTray(100);
+    runBase(30);
     delay(1000);
-    turnAbsolute(135);
-    runBase(50);
-    delay(600);
     runBase(0);
     outtake();
 

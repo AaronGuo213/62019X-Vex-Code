@@ -30,6 +30,11 @@ void opcontrol() {
 			updateLift();
 		else
 			updateTray();
+			
+		if(upPressed(master, 1)) {
+        	moveLift(150);
+        	moveLift(0, 500);
+    	}
 		if(aPressed(master, true))
 			mode = !mode;
 

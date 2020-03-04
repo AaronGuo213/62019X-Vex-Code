@@ -14,7 +14,7 @@ void moveStraight(double distance, double maxVal) {
     double leftDist, rightDist; //variables for position
     double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 10
+    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 10
 
     for(int i = 0; true; i+=10) {
 
@@ -109,7 +109,7 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
     double startAngle = getAngle();
     double leftDist, rightDist; //variables for position
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 20, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 200
 
     for(int i = 0; i < time; i+=10) { //updates every 10 ms
 

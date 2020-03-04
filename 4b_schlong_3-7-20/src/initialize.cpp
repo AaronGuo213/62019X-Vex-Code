@@ -27,7 +27,7 @@ void initialize() {
 AUTON SELECTOR
 ============*/
 
-int autonCount = 9, autonType = 9;
+int autonCount = 10, autonType = 10;
 bool autonColor = false, confirmed = false;
 
 /*======================
@@ -73,7 +73,7 @@ ACTIONS FUNCTIONS FOR BUTTONS
 
 void calcAuton() {
 
-    autonCount = autonColor * 4 + autonType;
+    autonCount = autonColor * 5 + autonType;
 
 }
 
@@ -103,8 +103,10 @@ lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
         autonType = 2;
     else if(txt == "stack-7")
         autonType = 3;
+    else if(txt == "skills")
+        autonType = 4;
     else if(txt == "none")
-        autonType = 8;
+        autonType = 10;
 
     calcAuton();
     return LV_RES_OK;
@@ -176,7 +178,7 @@ void competition_initialize() { //480 x 240 cortex
     /*=================================
     AUTON TYPE SELECTOR (BUTTON MATRIX)
     =================================*/
-    static const char *autons[] = {"stack-8", "row-7", "none", "\n", "stack-7", "row-6", "none", ""};
+    static const char *autons[] = {"stack-8", "row-7", "skills", "\n", "stack-7", "row-6", "none", ""};
     lv_obj_t *auton = lv_btnm_create(lv_scr_act(), NULL);
     lv_btnm_set_map(auton, autons);
     lv_obj_set_size(auton, 230, 125);
@@ -198,6 +200,7 @@ void competition_initialize() { //480 x 240 cortex
     const char *row7Desc = "7 cubes in the small goal.\nGets the preload, 2 cubes from \nthe long L, and the row of 4.\nCLICK TO CONFIRM";
     const char *row6Desc = "6 cubes in the small goal.\nGets the preload, the row of 4,\n and the cube under the tower.\nCLICK TO CONFIRM";
     const char *stack7Desc = "7 cubes in the outer stack of the big goal.\nGets the preload, the cube in front,\nthe 4 stack, and the stray cube.\nCLICK TO CONFIRM";
+    const char *skillsDesc = "8 cubes in the small goal and 3 towers.\n8 cube auton from the L and row,\n then gets the three nearest towers.\nCLICK TO CONFIRM";
     const char *noneDesc = "\nNo auton. Loser.\n\nCLICK TO CONFIRM";
 
     /*=================================================
@@ -217,11 +220,11 @@ void competition_initialize() { //480 x 240 cortex
             case 3:
                 lv_label_set_text(confirmLabel, stack7Desc);
                 break;
-            case 8:
+            case 10:
                 lv_label_set_text(confirmLabel, noneDesc);
                 break;
-            case 9:
-                lv_label_set_text(confirmLabel, noneDesc);
+            case 4:
+                lv_label_set_text(confirmLabel, skillsDesc);
                 break;
         }
         if(autonColor) {

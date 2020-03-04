@@ -7,6 +7,7 @@ void opcontrol() {
     intk2.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	arms.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	bool mode = false;
+	double intkVal;
 
 	while(true) {
 
@@ -14,11 +15,11 @@ void opcontrol() {
 		runRightBase(master.get_analog(E_CONTROLLER_ANALOG_RIGHT_Y));
 
 		if(master.get_digital(E_CONTROLLER_DIGITAL_L1))
-			runIntk(100);
+			intkVal = 100;
 		else if(master.get_digital(E_CONTROLLER_DIGITAL_R1))
-			runIntk(-100);
+			intkVal = -100;
 		else
-			runIntk(0);
+			intkVal = 0;
 
 		if(!mode) {
 			if(master.get_digital(E_CONTROLLER_DIGITAL_R2))
@@ -31,33 +32,19 @@ void opcontrol() {
 
 		else {
 			if(master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-				if(tray.get_position() < 800) {
-					runTray(100);
-					runArms(0);
-				}
-				else {
-					runArms(100);
-					runTray(0);
-				}
+				if(arms.get_position() < 250)
+					intkVal = -100;
+				runArms(100);
 			}
 			else if(master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-				if(arms.get_position() > 50) {
-					runArms(-100);
-					runTray(0);
-				}
-				else if(tray.get_position() > 0) {
-					runArms(0);
-					runTray(-100);
-				}
-				else {
-					runTray(0);
-				}
+				runArms(-100);
 			}
 			else {
 				runArms(0);
-				runTray(0);
 			}
 		}
+
+		runIntk(intkVal);
 
 		if(master.get_digital_new_press(E_CONTROLLER_DIGITAL_A)) {
 			mode = !mode;
