@@ -4,6 +4,7 @@ void redStack7() {
 
     //gets the first cube
     runIntk(100);
+    delay(200);
     moveTray(0);
     moveStraight(19, 100);
     runIntk(0);
@@ -36,12 +37,14 @@ void redStack7() {
     runIntk(0);
     delay(100);
     runIntkDist(-150, 150);
-    turnAbsolute(130);
+    turnAbsolute(132);
     runIntk(0);
     trayStat = TrayStatus::manual;
     runTray(100);
     runBase(30);
-    delay(1000);
+    delay(850);
+    runBase(-20);
+    delay(180);
     runBase(0);
     outtake();
 

@@ -34,6 +34,7 @@ void opcontrol() {
 		if(upPressed(master, 1)) {
         	moveLift(150);
         	moveLift(0, 500);
+			runIntk(100, 500);
     	}
 		if(aPressed(master, true))
 			mode = !mode;

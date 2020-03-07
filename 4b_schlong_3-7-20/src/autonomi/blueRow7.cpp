@@ -8,7 +8,7 @@ void blueRow7() {
     double distToCube = getSonarInches(10);
     if(distToCube > 26 || distToCube < 14)
         distToCube = 22;
-    moveStraight(distToCube + 2.5, 65);
+    moveStraight(distToCube, 65);
 
     //gets the first 2 cubes of the long L
     double minusThis = getDeployOffset(1500); //deploying tray

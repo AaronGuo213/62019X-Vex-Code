@@ -156,14 +156,14 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
     double leftDist, rightDist; //variables for position
     double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 20, 0, 0); //kP = 200
+    PID diff = initPID(1, 0, 0, 10, 0, 0); //kP = 200
 
     while(true) { //updates every 10 ms
 
         leftDist = getLeftEnc() - leftStart; //updates current position
         rightDist = getRightEnc() - rightStart;
 
-        dist.error = distance - (leftDist + rightDist) / 2; //updates error for distance PID
+        dist.error = setPoint - (leftDist + rightDist) / 2; //updates error for distance PID
         diff.error = startAngle - getAngle();
         distVal = runPID(&dist); //updates distVal
         diffVal = runPID(&diff); //updates diffVal
@@ -176,13 +176,13 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
         rightVal = distVal + diffVal;
 
         //if wanted, once the robot reaches a threshhold, it will move on for efficiency
-        if(abs(dist.error) >= abs(distance))
+        if(abs((leftDist + rightDist) / 2) >= abs(distance))
             break;
 
         runBase(leftVal, rightVal); //assigns the values to the motors
 
         //debugging
-        std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << "\n";
+        std::cout << "setPoint: " << setPoint << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diffError: " << diff.error << " | diffVal: " << diffVal << "\n";
 
         delay(10); //every 10 ms
 

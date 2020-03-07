@@ -10,7 +10,7 @@ void outtake() {
 	}
 	runTray(0); //stops the tray
 
-	moveStraight(-10, 60); //moves back
+	moveStraight(-40, 60); //moves back
 	runIntk(0);
 	trayStat = TrayStatus::idle;
 

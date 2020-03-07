@@ -2,6 +2,7 @@
 #define MISC_H
 
 extern const double PI;
+extern const bool isSkills;
 int sgn(double x); //inputs a double and outputs its sign (+ or -) as an int
 double joyValRemap(double joyVal); //optimizes the slow and fast motor values during driver control
 double speedToVolt(double speed);

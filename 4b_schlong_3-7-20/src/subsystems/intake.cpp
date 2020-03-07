@@ -23,7 +23,10 @@ void updateIntk() {
 
 	else if((!l1Pressed() && r1Pressed()) || (!l1Pressed(partner) && r1Pressed(partner))) { //r1 pressed runs intake outwards
 		brakeIntk();
-		runIntk(-100);
+		if(!isSkills)
+			runIntk(-100);
+		else
+			runIntk(-60); //skills
 	}
 
 	else { //otherwise dont run the intake

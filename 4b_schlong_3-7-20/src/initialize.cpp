@@ -6,13 +6,13 @@ void initialize() {
     tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
-    resetGyro();
-    delay(500);
-    while(imu.is_calibrating()) {
-        delay(50);
-        std::cout << "hey" << std::endl;
+    if(!isSkills) {
+        resetGyro();
+        delay(500);
+        while(imu.is_calibrating())
+            delay(50);
+        delay(2000);
     }
-    delay(2000);
     startingZero = -imu.get_yaw();
     std::cout << startingZero << std::endl;
     //initiates the control tasks
