@@ -56,6 +56,7 @@ void intkSafetyNet() {
 
 void brakeIntk() {
 
+	//intake holds its position
 	leftIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	rightIntk.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 
@@ -63,6 +64,7 @@ void brakeIntk() {
 
 void coastIntk() {
 
+	//intake lets cubes fall out
 	leftIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	rightIntk.set_brake_mode(E_MOTOR_BRAKE_COAST);
 
@@ -70,6 +72,7 @@ void coastIntk() {
 
 void queueIntk(void* param) {
 
+	//runs intake for a certain amount of time
 	intkQueue* theQueue = (intkQueue*)param;
 	double power = theQueue->percent;
 	int time = theQueue->time;
@@ -83,7 +86,7 @@ void queueIntk(void* param) {
 
 void runIntk(double percent, int time) {
 
-	//runs the intake for a certain time before stopping
+	//sets up the task for running the intake in the background
 	intkQueue newQueue = {percent, time};
 	Task runIntkTimed(queueIntk, &newQueue, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN, "timed running intk task");
 	delay(20);

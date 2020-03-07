@@ -20,7 +20,7 @@ void runBase(double percent) { //values -100 to 100
 
 void runBaseVel(double leftRPM, double rightRPM) { //values -200 to 200
 
-    leftBase1.move_velocity(leftRPM); //runs the left and right base motors out of 200 rpm
+    leftBase1.move_velocity(leftRPM); //runs the base motors out of 200 rpm
     leftBase2.move_velocity(leftRPM);
     rightBase1.move_velocity(rightRPM);
     rightBase2.move_velocity(rightRPM);
@@ -67,26 +67,28 @@ const double inchPerTickYaw = 0.02440678;
 
 double getLeftEnc() {
 
-    //returns the number of inches travelled by the left encoder wheel
+    //returns the number of inches traveled by the left encoder wheel
     return leftEnc.get_value() * inchPerTickForward; 
 
 }
 
 double getRightEnc() {
 
-    //returns the number of inches travelled by the right encoder wheel
+    //returns the number of inches traveled by the right encoder wheel
     return rightEnc.get_value() * inchPerTickForward; 
 
 }
 
 double getLeftEncMotors() {
 
+    //motor encoder values
     return (leftBase1.get_position() + leftBase2.get_position()) / 2;
 
 }
 
 double getRightEncMotors() {
 
+    //motor encoder values
     return (rightBase1.get_position() + rightBase2.get_position()) / 2;
 
 }
@@ -105,7 +107,7 @@ double getAngle() {
 
 }
 
-double startingZero;
+double startingZero; //offset of the gyro
 
 void resetEnc() {
 
@@ -133,15 +135,15 @@ void resetGyro() {
 double getSonarInches(int numTimes) {
 
     double rtn = 0;
-    for(int i = 0; i < numTimes; i++) {
-        rtn += sonar.get_value() * 0.0393701;
+    for(int i = 0; i < numTimes; i++) { //averages a bunch of recordings in case of outliers
+        rtn += sonar.get_value() * 0.0393701; //converts from mm to inches
         delay(10);
     }
     return rtn / numTimes;
 
 }
 
-bool isBaseSettled() {
+bool isBaseSettled() { //determines if the base is slowed/stopped
 
     int threshhold = 10;
 
@@ -155,15 +157,7 @@ bool isBaseSettled() {
 
 }
 
-bool isBaseStopped() {
-
-    /*if(leftBase1.get_actual_velocity() != 0 || leftBase2.get_actual_velocity() != 0)
-        return false;
-
-    if(rightBase1.get_actual_velocity() != 0 || rightBase2.get_actual_velocity() != 0)
-        return false;
-
-    return true;*/
+bool isBaseStopped() { //determines if the base motors are stopped
 
     int threshhold = 5;
 

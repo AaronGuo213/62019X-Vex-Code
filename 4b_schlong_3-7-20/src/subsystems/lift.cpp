@@ -39,15 +39,14 @@ void ctrlLift(void* param) {
     PID slow = initPID(0, 0, 1, 0, 0, 0.6); //kD = 0.6
     PID move = initPID(1, 1, 1, 1.8, 0.00048, 6); //kP = 1.8, kI = 0.00048, kD = 6
     double holdVal = 0, slowVal = 0, moveVal = 0;
-    int slowTimer = 300;
+    int slowTimer = 300; //slows for 300ms
 
     while(true) {
 
-        //std::cout << cubeSensor.get_value() << std::endl;
-        liftSetPoint = liftSetPoint > 840 ? 840 : liftSetPoint; //lift cannot be higher than 750
+        liftSetPoint = liftSetPoint > 840 ? 840 : liftSetPoint; //lift cannot be higher than 840
         liftSetPoint = liftSetPoint < 0 ? 0 : liftSetPoint; //lift cannot be lower than 0
 
-        if(resetIntegral) {
+        if(resetIntegral) { //prevents integral windup
             hold.integral = 0;
             move.integral = 0;
             resetIntegral = false;
@@ -67,8 +66,8 @@ void ctrlLift(void* param) {
                 else
                     slowTimer -= 10;
 
-                slow.error = -getLiftHeight(); //updates error for slowPID
-                slowVal = runPID(&slow); //updates slowVal, refernce misc.cpp
+                slow.error = -getLiftHeight(); //updates error and motor value for slowPID
+                slowVal = runPID(&slow);
                 runLift(slowVal);
 
                 //debugging
@@ -78,8 +77,8 @@ void ctrlLift(void* param) {
 
             else if(liftStat == LiftStatus::hold) {
 
-                hold.error = (liftSetPoint - getLiftHeight()); //updates error for holdPID
-                holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
+                hold.error = (liftSetPoint - getLiftHeight()); //updates error and motor value for holdPID
+                holdVal = runPID(&hold);
                 runLift(holdVal);
 
                 //debugging
@@ -89,8 +88,8 @@ void ctrlLift(void* param) {
 
             else if(liftStat == LiftStatus::move) {
 
-                move.error = (liftSetPoint - getLiftHeight()); //updates error for movePID
-                moveVal = runPID(&move); //updates the moveVal, reference misc.cpp
+                move.error = (liftSetPoint - getLiftHeight()); //updates error and motor value for movePID
+                moveVal = runPID(&move);
                 runLift(moveVal);
 
                 //debugging
@@ -100,7 +99,7 @@ void ctrlLift(void* param) {
 
         }
 
-        else { //reset the slow timer
+        else { //other options in the manual mode
 
             if(liftVel != 0) {
                 
@@ -115,7 +114,7 @@ void ctrlLift(void* param) {
 
             }
 
-            slowTimer = 300;
+            slowTimer = 300; //resets slow timer
 
         }
 
@@ -156,6 +155,7 @@ void moveLift(int setPoint) {
 
 void queueLift(void* param) {
 
+    //waits for a given time before moving the lift to a certain height
     liftQueue* theQueue = (liftQueue*)param;
     int time = theQueue->queue, setPoint = theQueue->setPoint;
     for(int i = 0; i < time; i+=10)
@@ -166,7 +166,7 @@ void queueLift(void* param) {
 
 void moveLift(int setPoint, int queue) {
 
-    //sets the setPoint and initiates the PID to move to the setPoint
+    //sets up for the task for moving the lift after a certain time
     liftQueue newQueue = {setPoint, queue};
     Task delayLift(queueLift, &newQueue, TASK_PRIORITY_MIN, TASK_STACK_DEPTH_MIN, "lift movement task");
     delay(20);
@@ -175,6 +175,7 @@ void moveLift(int setPoint, int queue) {
 
 void liftToGnd(double percentSpeed) {
 
+    //sets up the lift task to move the lift down to the ground
     liftStat = LiftStatus::manual;
     liftVel = percentSpeed * 2; //100 percent goes to 200 rpm
 
@@ -194,29 +195,17 @@ void updateLift() {
         runLift(-100);
     }*/
 
-    if(((!l2Pressed(partner) && r2Pressed(partner)) || (l2Pressed() && !r2Pressed())) && (getLiftHeight() < 900)) {
+    //L2 moves the lift up if the lift is lower than max height
+    if(l2Pressed() && !r2Pressed() && getLiftHeight() < 900) {
         liftStat = LiftStatus::manual;
         runLift(100);
     }
 
-    //if partner controller R1 or the master controller down, run the lift upwards
-    else if(((l2Pressed(partner) && !r2Pressed(partner)) || (!l2Pressed() && r2Pressed())) && (getLiftHeight() > 50)) {
+    //R2 moves the lift down if the lift is higher than minimum height
+    else if(!l2Pressed() && r2Pressed() && getLiftHeight() > 50) {
         liftStat = LiftStatus::manual;
         runLift(-100);
     }
-
-    //skills tower heights
-    /*else if(leftPressed(master) || upPressed(partner)) {
-        moveLift(onTower[2]);
-    }
-
-    else if(rightPressed(master) || downPressed(partner)) {
-        moveLift(onTower[1]);
-    }
-
-    else if(leftPressed(partner)) {
-        moveLift(100);
-    }*/
 
     //if the lift is low enough, it will drop down naturally so it won't tire out the motor
     else if(getLiftHeight() < 150 && liftSetPoint < 150)

@@ -51,5 +51,7 @@ void blueStack8() {
     runBase(0);
     delay(400);
     outtake();
+    moveTray(0);
+    moveStraight(-40, 60);
 
 }

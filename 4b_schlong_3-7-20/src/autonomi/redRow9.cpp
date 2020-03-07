@@ -42,5 +42,7 @@ void redRow9() {
     runTray(100);
     moveStraight(13, 1, 1000, 80);
     outtake();
+    moveTray(0);
+    moveStraight(-40, 60);
 
 }

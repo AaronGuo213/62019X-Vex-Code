@@ -38,5 +38,7 @@ void blueRow6() {
     delay(600);
     runBase(0);
     outtake();
+    moveTray(0);
+    moveStraight(-40, 60);
 
 }

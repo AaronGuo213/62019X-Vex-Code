@@ -2,7 +2,7 @@
 
 void runTray(double percent) {
 
-    tray.move_voltage(percent * 120);
+    tray.move_voltage(percent * 120); //runs tray motor out of 12000mV
 	
 }
 
@@ -23,7 +23,7 @@ double calcTrayPow(bool isOuttaking) {
 	}
 
 	if(!isOuttaking && getTrayPos() > 0)
-		return -getTrayPos();
+		return -getTrayPos(); //tray gets slower as it gets closer to horizontal
 
 	return 0;
 
@@ -31,17 +31,11 @@ double calcTrayPow(bool isOuttaking) {
 
 double calcTrayPowAuton(bool isOuttaking) {
 
-	if(isOuttaking && getTrayPos() < 900) {
-		/*if(getTrayPos() < 600)
-			return 60;
-		else
-			return 40;*/
-		return (900 - getTrayPos()) / 20 + 40;
-	}
-		//return (900 - getTrayPos()) / 7;
+	if(isOuttaking && getTrayPos() < 900)
+		return (900 - getTrayPos()) / 20 + 40; //tray is slower closer to the top
 
 	if(!isOuttaking && getTrayPos() < 0)
-		return -getTrayPos();
+		return -getTrayPos(); //for moving back to horizontal
 
 	return 0;
 
@@ -70,8 +64,8 @@ void ctrlTray(void* param) { //tray control task
 
 	while(true) {
 
-		traySetPoint = traySetPoint > 950 ? 950 : traySetPoint; //lift cannot be higher than 950
-        traySetPoint = traySetPoint < 0 ? 0 : traySetPoint; //lift cannot be lower than 0
+		traySetPoint = traySetPoint > 900 ? 900 : traySetPoint; //tray cannot be higher than 900
+        traySetPoint = traySetPoint < 0 ? 0 : traySetPoint; //tray cannot be lower than 0
 
 		if(resetTrayIntegral) {
 			//prevents integral windup
@@ -81,13 +75,13 @@ void ctrlTray(void* param) { //tray control task
 
 		if(trayStat != TrayStatus::manual) {
 
-			if(trayStat == TrayStatus::idle) { //doesnt make the tray hold the position, lets the motor rest
+			if(trayStat == TrayStatus::idle) { //lets the motor rest
 				runTray(0);
 			}
 
 			else if(trayStat == TrayStatus::hold) { //holds the tray in place
-				hold.error = (traySetPoint - getTrayPos()); //updates error for holdPID
-                holdVal = runPID(&hold); //updates the holdVal, reference misc.cpp
+				hold.error = (traySetPoint - getTrayPos()); //updates error and motor value for holdPID
+                holdVal = runPID(&hold);
                 runTray(holdVal);
 				//debugging
 				//std::cout << "traySetPoint: " << traySetPoint << " | trayPos: " << getTrayPos() << " | hold.error: " << hold.error << " | holdVal: " << holdVal << std::endl;

@@ -3,32 +3,36 @@
 Controller master (CONTROLLER_MASTER); //main controller
 Controller partner (CONTROLLER_PARTNER);
 
-//V5 Components
+/*===========
+V5 COMPONENTS
+===========*/
+//base motors
 Motor leftBase1(2, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
-//200 rpm motor
 Motor leftBase2(16, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
-//200 rpm motor
 Motor rightBase1(1, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
-//200 rom motor
 Motor rightBase2(17, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
-//200 rpm motor
 
-Motor lift(21, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
-//100 rpm motor
-
+//intake motors
 Motor leftIntk(9, MOTOR_GEARSET_18, 0, E_MOTOR_ENCODER_DEGREES); 
-//200 rpm motor
-Motor rightIntk(6, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES); 
-//200 rpm motor
+Motor rightIntk(6, MOTOR_GEARSET_18, 1, E_MOTOR_ENCODER_DEGREES);
 
+//tray motor
 Motor tray(4, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES);
-//100 rpm motor
 
+//lift motor
+Motor lift(21, MOTOR_GEARSET_36, 1, E_MOTOR_ENCODER_DEGREES); 
+
+//inertial sensor
 Imu imu(3);
 
 
-//Legacy Components
-ADIEncoder yawEnc(7, 8, 0); //wheel encoder in ports 7 and 8
-ADIEncoder leftEnc(3, 4, 1); //wheel encoder in ports 5 and 6
-ADIEncoder rightEnc(1, 2, 1); //wheel encoder in ports 1 and 2
-ADIUltrasonic sonar(5, 6); //sonar sensor in ports 5 and 6
+/*===============
+Legacy Components
+===============*/
+//encoders
+ADIEncoder yawEnc(7, 8, 0);
+ADIEncoder leftEnc(3, 4, 1);
+ADIEncoder rightEnc(1, 2, 1);
+
+//sonar
+ADIUltrasonic sonar(5, 6);

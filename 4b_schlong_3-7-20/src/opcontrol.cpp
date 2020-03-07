@@ -6,10 +6,11 @@ void opcontrol() {
 	liftSetPoint = getLiftHeight();
 	tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
 	resetEnc();
-	bool mode = false;
+	bool mode = false; //bool for tray mode vs lift mode
 	/*Odometry* tracker = new Odometry(0, 0, 0);
 	Task trackingGo(trackPos, tracker, TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "position tracking task");*/
 
+	//debugging screen stuff
 	std::string infoStr;
 	lv_style_t info;
     lv_style_copy(&info, &lv_style_plain);
@@ -39,6 +40,7 @@ void opcontrol() {
 		if(aPressed(master, true))
 			mode = !mode;
 
+		//debugging window stuff
 		infoStr = "";
 		infoStr += "leftEnc: " + std::to_string(getLeftEnc()) + "     |     rightEnc: " + std::to_string(getRightEnc());
 		infoStr += "\nisBaseStopped: " + std::to_string(isBaseStopped()) + "     |     isBaseSettled: " + std::to_string(isBaseSettled());

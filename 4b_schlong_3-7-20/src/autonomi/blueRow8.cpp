@@ -40,5 +40,7 @@ void blueRow8() {
     runTray(100);
     moveStraight(12, 1, 1000, 70);
     outtake();
+    moveTray(0);
+    moveStraight(-40, 60);
 
 }

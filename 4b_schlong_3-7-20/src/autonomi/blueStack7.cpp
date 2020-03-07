@@ -47,5 +47,7 @@ void blueStack7() {
     delay(180);
     runBase(0);
     outtake();
+    moveTray(0);
+    moveStraight(-40, 60);
 
 }

@@ -2,7 +2,7 @@
 
 void autonomous() { //15 second autonomous period at the beginning of the match
 
-    tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
+    //random auton stuff to test
     //std::cout << getSonarInches(10) << std::endl;
     //moveStraight(7, 30);
     //blueStack7();
@@ -17,6 +17,8 @@ void autonomous() { //15 second autonomous period at the beginning of the match
     delay(1500);
     outtake();*/
 
+    tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
+    //decides which auton to run based on auton selector
     switch(autonCount) {
     
         case 0:

@@ -1,9 +1,9 @@
 #include "main.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078;
-const bool isSkills = false;
+const bool isSkills = false; //switch this to true to upload a skills version of code
 
-int sgn(double x) { //inputs a double and outputs its sign (+, -, or 0) as an int
+int sgn(double x) { //returns -1, 1, or 0 for sign
 
     return (x > 0) - (x < 0);
 
@@ -28,7 +28,7 @@ double joyValRemap(double joyVal) {
 
 double speedToVolt(double rpm) {
 
-    if(rpm > 5)
+    if(rpm > 5) //converts desired rpm to voltage
         return 0.455 * rpm + 8.18;
     if(rpm < 5)
         return 0.455 * rpm - 8.18;
@@ -44,7 +44,7 @@ PID initPID(bool useP, bool useI, bool useD, double kP, double kI, double kD) { 
 
 double runPID(PID *pid) {
 
-    pid->integral += pid->error;//pid->integrate ? pid->error : 0; //increment integral by current error
+    pid->integral += pid->error; //increment integral by current error
     pid->derivative = pid->error - pid->prevError; //set derivative to the delta error
     pid->prevError = pid->error; //set prevError to current error to be used for next iteration
     double output = (pid->error * pid->kP * (double)pid->useP) + (pid->integral * pid->kI * (double)pid->useI) + (pid->derivative * pid->kD * (double)pid->useD); //calculate final value
@@ -52,7 +52,7 @@ double runPID(PID *pid) {
 
 }
 
-//buttons and joysticks
+//buttons and joystick values
 
 double lY(Controller cont) {
     return cont.get_analog(E_CONTROLLER_ANALOG_LEFT_Y);

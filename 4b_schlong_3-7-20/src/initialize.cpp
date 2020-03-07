@@ -6,18 +6,18 @@ void initialize() {
     tray.set_brake_mode(E_MOTOR_BRAKE_HOLD);
     tray.tare_position(); //resets the motor position values
     lift.tare_position();
-    if(!isSkills) {
+    if(!isSkills) { //waits for gyro to calibrate
         resetGyro();
         delay(500);
         while(imu.is_calibrating())
             delay(50);
         delay(2000);
     }
-    startingZero = -imu.get_yaw();
+    startingZero = -imu.get_yaw(); //gets gyro offset
     std::cout << startingZero << std::endl;
     //initiates the control tasks
-    Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task"); //starts lift slow and hold task
-    Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task"); //starts tray outtaking and retracting task
+    Task liftGo(ctrlLift, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "lift control task");
+    Task trayGo(ctrlTray, (void*)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "tray control task");
     liftSetPoint = getLiftHeight();
     traySetPoint = 0;
 
@@ -35,7 +35,8 @@ STYLE CREATION FUNCTIONS
 ======================*/
 
 lv_style_t lvMakeStyle(lv_style_t copy, lv_color_t mainColor, lv_color_t gradColor, int radius = -1) {
-
+    
+    //simpler for making styles
     lv_style_t style;
     lv_style_copy(&style, &copy);
     style.body.main_color = mainColor;
@@ -48,6 +49,7 @@ lv_style_t lvMakeStyle(lv_style_t copy, lv_color_t mainColor, lv_color_t gradCol
 
 lv_style_t lvSetBorder(lv_style_t style, lv_color_t color, int thickness = -1) {
 
+    //simpler for editing styles
     style.body.border.color = color;
     if(thickness != -1)
         style.body.border.width = thickness;
@@ -57,6 +59,7 @@ lv_style_t lvSetBorder(lv_style_t style, lv_color_t color, int thickness = -1) {
 
 lv_style_t lvSetText(lv_style_t style, lv_color_t txtColor, lv_font_t *font, int spaceSize = -1, int lineSize = -1) {
 
+    //simpler for editing style text
     style.text.color = txtColor;
     style.text.font = font;
     if(spaceSize != -1)
@@ -79,7 +82,7 @@ void calcAuton() {
 
 lv_res_t switchColor(lv_obj_t *btn) {
 
-    //Determines which side the robot is on
+    //determines which side the robot is on
     static lv_style_t red, blue;
     red = lvMakeStyle(lv_style_plain, LV_COLOR_RED, LV_COLOR_RED, 10);
     red = lvSetBorder(red, LV_COLOR_WHITE, 2);
@@ -94,7 +97,7 @@ lv_res_t switchColor(lv_obj_t *btn) {
 
 lv_res_t selectAuton(lv_obj_t *btnm, const char *txt) {
 
-    //Determines which auton is desired
+    //determines which auton is desired
     if(txt == "stack-8")
         autonType = 0;
     else if(txt == "row-7")
@@ -243,7 +246,6 @@ void competition_initialize() { //480 x 240 cortex
     /*=======================
     COVER AFTER AUTON CONFIRM
     =======================*/
-    //imu.reset();
     lv_obj_t *cover = lv_obj_create(lv_scr_act(), NULL);
     lv_obj_set_pos(cover, 0, 0);
     lv_obj_set_size(cover, 480, 240);

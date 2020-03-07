@@ -14,7 +14,7 @@ void moveStraight(double distance, double maxVal) {
     double leftDist, rightDist; //variables for position
     double startAngle = getAngle();
     PID dist = initPID(1, 1, 1, 9, 0.004, 10); //kP = 9, kI = 0.004, kD = 10
-    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 10
+    PID diff = initPID(1, 0, 0, 5, 0, 0); //kP = 5
 
     for(int i = 0; true; i+=10) {
 
@@ -40,7 +40,6 @@ void moveStraight(double distance, double maxVal) {
             break;
 
         //debugging
-        //std::cout << leftBase1.get_position() << " | " << rightBase1.get_position() << std::endl;
         std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diff error: " << diff.error <<  " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
@@ -80,14 +79,13 @@ void moveStraight(double distance, bool stopEarly, int time, double maxVal) {
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
 
-        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        //if wanted, once the robot reaches a threshhold, it will stop early
         if(stopEarly && abs(dist.error) < 0.5)
             break;
 
         runBase(leftVal, rightVal); //assigns the values to the motors
 
         //debugging
-        //std::cout << leftBase1.get_position() << " | " << rightBase1.get_position() << std::endl;
         std::cout << "setPoint: " << distance << " | pos: " << (leftDist + rightDist) / 2 << " | error: " << dist.error << " | distVal: " << distVal << " | diff error: " << diff.error << " | diffVal: " << diffVal << " | time: " << i << "\n";
 
         delay(10);
@@ -130,7 +128,7 @@ void moveStraight(double distance, double switchDist, bool stopEarly, int time, 
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
 
-        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        //if wanted, once the robot reaches a threshhold, it will stop early
         if(stopEarly && abs(dist.error) < 0.5)
             break;
 
@@ -175,7 +173,7 @@ void moveStraightCut(double distance, double setPoint, double maxVal) {
         leftVal = distVal - diffVal;
         rightVal = distVal + diffVal;
 
-        //if wanted, once the robot reaches a threshhold, it will move on for efficiency
+        //robot moves on once the distance is reached
         if(abs((leftDist + rightDist) / 2) >= abs(distance))
             break;
 
@@ -227,7 +225,6 @@ void turn(double angle, double maxVal) {
 
         //debugging
         std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
-        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
 
         delay(10); //every 10 ms
 
@@ -263,13 +260,12 @@ void turn(double angle, bool stopEarly, int time, double maxVal) {
         rightVal = -leftVal;
         runBase(leftVal, rightVal); //assigns values to the motors
 
-        //if wanted, once the robot reaches a threshhold, it will continue for efficiency
+        //if wanted, once the robot reaches a threshhold, it will stop early
         if(stopEarly && abs(turn.error) < 1)
             break;
 
         //debugging
         std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
-        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
 
         delay(10);
 
@@ -326,7 +322,6 @@ void turnRelative(double angle, double maxVal) {
 
         //debugging
         std::cout << "setPoint: " << angle << " | currentPos: " << currentAngle << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
-        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
 
         delay(10); //every 10 ms
 
@@ -363,34 +358,12 @@ void turnAbsolute(double angle, double maxVal) {
 
         //debugging
         std::cout << "setPoint: " << angle << " | currentPos: " << getAngle() << " | error: " << turn.error << " | turnVal: " << turnVal << " | time: " << i << "\n";
-        //std::cout << "leftDist: " << leftDist << " | rightDist: " << rightDist << std::endl;
 
         delay(10); //every 10 ms
 
     }
 
     runBase(0, 0); //stops the motors at the end
-
-}
-
-void turnToCorner(double initVal) {
-
-    runBase(-initVal, initVal); //turns and finds the corner(least sonar value)
-    double lastDist = sonar.get_value();
-    while(lastDist > sonar.get_value()) {
-        lastDist = sonar.get_value();
-        delay(50);
-    }
-
-    double error = 1, turnVal, leftVal, rightVal; //uses P loop to turn to the corner
-    while(abs(error) > 0.3 && !isBaseStopped()) { //if the robot reaches a threshold or stops moving
-        error = sonar.get_value() - lastDist;
-        turnVal = error * 20;
-        leftVal = turnVal * sgn(initVal);
-        rightVal = -leftVal;
-        runBase(leftVal, rightVal);
-    }
-    runBase(0);
 
 }
 
@@ -653,6 +626,7 @@ OTHER
 ===*/
 
 double getDeployOffset(int time) {
+    //uses encoders to get the distance the robot moves back on deploy
 
     double start = (getLeftEnc() + getRightEnc()) / 2;
     for(int i = 0; i < time; i+=10)

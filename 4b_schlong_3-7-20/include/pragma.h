@@ -12,7 +12,7 @@ extern Motor rightBase2;
 
 extern Motor lift; //lift motor
 
-extern Motor leftIntk; //left and right intake motors
+extern Motor leftIntk; //2 intake motors
 extern Motor rightIntk;
 
 extern Motor tray; //tray motor
