@@ -15,28 +15,28 @@ void redRow7() {
     runIntk(0);
 
     //moves to and gets the row of 4
-    /*turnRelative(60, 70);
-    moveStraight(-27);
-    turnAbsolute(0, 70);*/
     turnRelative(55, 70);
-    moveStraight(-29);
+    //moveStraight(-29);
+    moveStraight(-27);
     turnAbsolute(0);
     runIntk(100);
-    moveStraight(27 - minusThis, 50);
+    //moveStraight(27 - minusThis, 50);
+    moveStraight(23 - minusThis, 50);
     delay(500);
 
     //outtakes
     runIntkDist(-150, 150);
     delay(300);
     moveTray(400);
-    moveStraight(-14);
+    moveStraight(-15);
     runIntk(0);
-    delay(500);
+    delay(100);
     turnAbsolute(-135, 80);
+    delay(100);
     runBase(100);
     delay(400);
     runBase(0);
-    delay(200);
+    //delay(200);
     outtake();
     moveTray(0);
     moveStraight(-40, 60);

@@ -17,6 +17,12 @@ void autonomous() { //15 second autonomous period at the beginning of the match
     delay(1500);
     outtake();*/
 
+    runBase(-60);
+    delay(1000);
+    runBase(60);
+    delay(1000);
+    runBase(0);
+
     tray.set_brake_mode(E_MOTOR_BRAKE_COAST);
     //decides which auton to run based on auton selector
     switch(autonCount) {

@@ -15,7 +15,7 @@ void skills() {
     runIntk(0);
 
     //goes to the row of 4
-    turnAbsolute(50, 70);
+    turnAbsolute(42, 60);
     setLiftIdle();
     setTrayIdle();
     delay(300);

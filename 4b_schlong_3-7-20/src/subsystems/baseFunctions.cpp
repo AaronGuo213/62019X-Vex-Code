@@ -23,6 +23,7 @@ void moveStraight(double distance, double maxVal) {
         rightDist = getRightEnc() - rightStart;
 
         dist.error = distance - (leftDist + rightDist) / 2;
+        //dist.error = distance - rightDist;
         diff.error = (getLeftEncMotors() - getRightEncMotors()) / 2;
         distVal = runPID(&dist);
         diffVal = runPID(&diff);

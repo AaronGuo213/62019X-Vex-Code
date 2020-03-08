@@ -30,7 +30,7 @@ void blueStack7() {
     //gets the cube next to the goal
     turnRelative(-110, 70);
     setLiftIdle();
-    moveStraight(23, 80);
+    moveStraight(20, 80);
     delay(500);
 
     //outtakes
@@ -48,6 +48,6 @@ void blueStack7() {
     runBase(0);
     outtake();
     moveTray(0);
-    moveStraight(-40, 60);
+    moveStraight(-30, 60);
 
 }
