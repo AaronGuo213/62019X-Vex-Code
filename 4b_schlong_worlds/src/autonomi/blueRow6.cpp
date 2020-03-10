@@ -5,9 +5,7 @@ void blueRow6() {
     //deploys antitip
     runIntk(100);
     moveTray(0);
-    double distToCube = getSonarInches(10);
-    if(distToCube > 19 || distToCube < 14)
-        distToCube = 16;
+    double distToCube = getSonarInches(10, 16, 14, 19);
     moveDist(distToCube - 6.5, 40);
     //moveDist(10, 40);
     moveLift(150);

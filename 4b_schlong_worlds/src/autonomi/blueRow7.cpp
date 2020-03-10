@@ -5,9 +5,7 @@ void blueRow7() {
     //deploys antitip
     runIntk(100);
     moveTray(0);
-    double distToCube = getSonarInches(10);
-    if(distToCube > 26 || distToCube < 14)
-        distToCube = 22;
+    double distToCube = getSonarInches(10, 14, 22, 26);
     moveDist(distToCube, 65);
 
     //gets the first 2 cubes of the long L

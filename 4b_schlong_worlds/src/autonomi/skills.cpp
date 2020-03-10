@@ -5,9 +5,7 @@ void skills() {
     //gets 3 cubes from the long L
     runIntk(100);
     moveTray(0);
-    double distToCube = getSonarInches(10);
-    if(distToCube > 26 || distToCube < 14)
-        distToCube = 22;
+    double distToCube = getSonarInches(10, 22, 14, 26);
     moveDist(distToCube + 1, 55);
     double minusThis = getDeployOffset(1500); //deploying tray
     moveDist(7 - minusThis, 50);
@@ -48,14 +46,12 @@ void skills() {
     turnRelative(-270 - getAngle(), 60);
     moveTray(0);
     runIntk(100);
-    moveDist(getSonarInches(10) - 2, 80);
+    moveDist(getSonarInchesRaw(10) - 2, 80);
     moveLift(onTower[2]);
     moveDist(-4);
     while(getLiftHeight() < onTower[2] - 100)
         delay(10);
-    distToCube = getSonarInches(10);
-    if(distToCube > 15 || distToCube < 0)
-        distToCube = 10;
+    distToCube = getSonarInches(10, 10, 0, 15);
     moveDist(distToCube, 30);
     runIntk(-100);
     delay(300);
@@ -71,14 +67,12 @@ void skills() {
     moveTray(0);
     delay(1000);
     runIntk(100);
-    moveDist(getSonarInches(10), 80);
+    moveDist(getSonarInchesRaw(10), 80);
     moveLift(onTower[1]);
     moveDist(-8);
     while(getLiftHeight() < onTower[1] - 100)
         delay(10);
-    distToCube = getSonarInches(10);
-    if(distToCube > 15 || distToCube < 0)
-        distToCube = 10;
+    distToCube = getSonarInches(10, 10, 0, 15);
     moveDist(distToCube, 60);
     runIntk(-100);
     delay(300);

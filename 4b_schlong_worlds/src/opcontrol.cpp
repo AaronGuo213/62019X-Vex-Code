@@ -46,7 +46,7 @@ void opcontrol() {
 		infoStr += "\nisBaseSettled: " + std::to_string(isBaseSettled(5));
 
 		infoStr += imu.is_calibrating() ? "\ncalibrating: " : "\ngyro: " + std::to_string(imu.get_yaw());
-		infoStr += "\nsonar: " + std::to_string(getSonarInches());
+		infoStr += "\nsonar: " + std::to_string(getSonarInchesRaw());
 		infoStr += "\nlift: " + std::to_string(getLiftHeight());
 		infoStr += "\ntray: " + std::to_string(getTrayPos());
 		lv_ta_set_text(infoBox, infoStr.c_str());

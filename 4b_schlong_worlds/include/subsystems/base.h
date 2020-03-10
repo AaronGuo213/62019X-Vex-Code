@@ -18,7 +18,7 @@ extern double startingZero;
 void resetEnc();
 void resetBaseMotorEnc();
 void resetGyro();
-double getSonarInches(int numTimes = 1);
+double getSonarInchesRaw(int numTimes = 1);
 bool isBaseSettled(int rpmThreshhold = 5);
 
 #endif

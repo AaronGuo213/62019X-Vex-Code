@@ -132,7 +132,7 @@ void resetGyro() {
 
 }
 
-double getSonarInches(int numTimes) {
+double getSonarInchesRaw(int numTimes) {
 
     double rtn = 0;
     for(int i = 0; i < numTimes; i++) { //averages a bunch of recordings in case of outliers

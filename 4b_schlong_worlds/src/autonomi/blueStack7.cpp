@@ -14,9 +14,7 @@ void blueStack7() {
     while(getLiftHeight() < atCube[4] - 50)
         delay(50);
     runIntk(100);
-    double distToCube = getSonarInches(10);
-    if(distToCube > 12 || distToCube < 4)
-        distToCube = 8;
+    double distToCube = getSonarInches(10, 8, 4, 12);
     moveDist(distToCube - 3, 30);
     double minusThis = getDeployOffset(1500);
     liftStat = LiftStatus::manual;

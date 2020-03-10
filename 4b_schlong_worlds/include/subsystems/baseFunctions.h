@@ -16,5 +16,6 @@ void curveBasePID(double leftSetPoint, double rightSetPoint, double maxVal = 100
 
 //other
 double getDeployOffset(int time);
+double getSonarInches(int numTimes, double dfault, double low, double high);
 
 #endif

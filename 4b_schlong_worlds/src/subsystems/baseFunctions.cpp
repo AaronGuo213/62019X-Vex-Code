@@ -333,3 +333,12 @@ double getDeployOffset(int time) {
     return end - start;
 
 }
+
+double getSonarInches(int numTimes, double dfault, double low, double high) {
+
+    double rtn = getSonarInchesRaw(numTimes);
+    if(rtn < low || rtn > high)
+        rtn = dfault;
+    return rtn;
+
+}
