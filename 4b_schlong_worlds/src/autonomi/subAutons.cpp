@@ -23,7 +23,7 @@ void outtakeSkills() {
 	runTray(0); //stops the tray
 
 	delay(1000);
-	moveStraight(-12, 30); //moves back
+	moveDist(-12, 30); //moves back
 	runIntk(0);
 
 }

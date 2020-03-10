@@ -6,7 +6,7 @@ void redStack7() {
     runIntk(100);
     delay(200);
     moveTray(0);
-    moveStraight(19, 100);
+    moveDist(19, 100);
     runIntk(0);
 
     //gets the 4 stack
@@ -17,20 +17,20 @@ void redStack7() {
     double distToCube = getSonarInches(10);
     if(distToCube > 12 || distToCube <= 0)
         distToCube = 4;
-    moveStraight(distToCube - 3, 30);
+    moveDist(distToCube - 3, 30);
     double minusThis = getDeployOffset(1500);
     liftStat = LiftStatus::manual;
     liftToGnd(-30);
     while(getLiftHeight() > atCube[2] - 50)
         delay(10);
-    moveStraight(8 - minusThis, 80);
+    moveDist(8 - minusThis, 80);
     delay(300);
     setTrayIdle();
 
     //gets the cube next to the goal
     turnRelative(110, 70);
     setLiftIdle();
-    moveStraight(20, 80);
+    moveDist(20, 80);
     delay(500);
 
     //outtakes
@@ -49,6 +49,6 @@ void redStack7() {
     runBase(0);
     outtake();
     moveTray(0);
-    moveStraight(-30, 60);
+    moveDist(-30, 60);
 
 }

@@ -4,7 +4,7 @@ void autonomous() { //15 second autonomous period at the beginning of the match
 
     //random auton stuff to test
     //std::cout << getSonarInches(10) << std::endl;
-    //moveStraight(7, 30);
+    //moveDist(7, 30);
     //blueStack7();
     //redStack8();
     //redRow7();

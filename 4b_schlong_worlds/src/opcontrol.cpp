@@ -43,7 +43,7 @@ void opcontrol() {
 		//debugging window stuff
 		infoStr = "";
 		infoStr += "leftEnc: " + std::to_string(getLeftEnc()) + "     |     rightEnc: " + std::to_string(getRightEnc());
-		infoStr += "\nisBaseStopped: " + std::to_string(isBaseStopped()) + "     |     isBaseSettled: " + std::to_string(isBaseSettled());
+		infoStr += "\nisBaseSettled: " + std::to_string(isBaseSettled(5));
 
 		infoStr += imu.is_calibrating() ? "\ncalibrating: " : "\ngyro: " + std::to_string(imu.get_yaw());
 		infoStr += "\nsonar: " + std::to_string(getSonarInches());

@@ -6,7 +6,7 @@ void blueStack8() {
     runIntk(100);
     delay(200);
     moveTray(0);
-    moveStraight(19, 100);
+    moveDist(19, 100);
     runIntk(0);
 
     //gets the 4 stack
@@ -17,28 +17,28 @@ void blueStack8() {
     double distToCube = getSonarInches(10);
     if(distToCube > 12 || distToCube < 4)
         distToCube = 8;
-    moveStraight(distToCube - 3, 30);
+    moveDist(distToCube - 3, 30);
     delay(700);
     double minusThis = 0;
     liftStat = LiftStatus::manual;
     liftToGnd(-30);
     while(getLiftHeight() > atCube[2] - 50)
         delay(10);
-    moveStraight(8 - minusThis, 100);
+    moveDist(8 - minusThis, 100);
     //delay(300);
 
     //gets the bottom of the 4 stack and the cube at the tower
     turnAbsolute(-15);
-    moveStraight(14, 80);
+    moveDist(14, 80);
     delay(300);
 
     //gets the cube next to the goal and outtakes
     turnAbsolute(-135, 70);
     runIntk(100);
-    moveStraightCut(18, 50, 100);
+    moveStraight(18, 100);
     trayStat = TrayStatus::manual;
     runTray(100);
-    moveStraightCut(7, 50, 100);
+    moveStraight(7, 100);
     runTray(40);
     runBase(70);
     delay(300);
@@ -52,6 +52,6 @@ void blueStack8() {
     delay(400);
     outtake();
     moveTray(0);
-    moveStraight(-40, 60);
+    moveDist(-40, 60);
 
 }

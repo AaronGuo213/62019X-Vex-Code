@@ -2,9 +2,9 @@
 #define BASE_H
 
 //drive straight functions
-void moveStraight(double distance, double maxVal = 100, int time = 0); //classic move straight
-void moveStraight(double distance, double switchDist, double maxVal1, double maxVal2, int time = 0); //2 different speed caps
-void moveStraightVel(double distance, double percVel); //moves at a constant velocity
+void moveDist(double distance, double maxVal = 100, int time = 0); //classic move straight
+void moveDist(double distance, double switchDist, double maxVal1, double maxVal2, int time = 0); //2 different speed caps
+void moveStraight(double distance, double percent); //moves at a constant velocity
 
 //turn functions
 void turnRelative(double angle, double maxVal = 100, int time = 0); //turns a relative angle using gyro

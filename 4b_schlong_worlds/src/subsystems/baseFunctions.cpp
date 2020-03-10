@@ -4,7 +4,7 @@
 DRIVE STRAIGHT FUNCTIONS
 ======================*/
 
-void moveStraight(double distance, double maxVal, int time) { 
+void moveDist(double distance, double maxVal, int time) { 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
@@ -53,7 +53,7 @@ void moveStraight(double distance, double maxVal, int time) {
 
 }
 
-void moveStraight(double distance, double switchDist, double maxVal1, double maxVal2, int time) { 
+void moveDist(double distance, double switchDist, double maxVal1, double maxVal2, int time) { 
     //PID control loop to move the base to a certain relative 
     //postition with minimal forwards and sideways error
 
@@ -104,7 +104,7 @@ void moveStraight(double distance, double switchDist, double maxVal1, double max
 
 }
 
-void moveStraightVel(double distance, double percVel) {
+void moveStraight(double distance, double percent) {
     //PID control loop to move the base to a certain relative 
     //postition as fast and accurately as possible, leading into another drive function
 
@@ -123,8 +123,8 @@ void moveStraightVel(double distance, double percVel) {
         diff.error = getLeftEncMotors() - getRightEncMotors(); //updates straightness PID
         //diff.error = startAngle - getAngle(); //updates straightness PID
         diffVal = runPID(&diff);
-        leftVal = percVel - diffVal;
-        rightVal = percVel + diffVal;
+        leftVal = percent - diffVal;
+        rightVal = percent + diffVal;
 
         //robot transitions when distance is reached
         if(currentDist >= distance)
