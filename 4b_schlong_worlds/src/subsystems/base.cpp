@@ -143,28 +143,12 @@ double getSonarInches(int numTimes) {
 
 }
 
-bool isBaseSettled() { //determines if the base is slowed/stopped
+bool isBaseSettled(int rpmThreshhold) { //determines if the base is slowed/stopped
 
-    int threshhold = 10;
-
-    if(abs(leftBase1.get_actual_velocity()) > threshhold || abs(leftBase2.get_actual_velocity()) > threshhold)
+    if(abs(leftBase1.get_actual_velocity()) > rpmThreshhold || abs(leftBase2.get_actual_velocity()) > rpmThreshhold)
         return false;
 
-    if(abs(rightBase1.get_actual_velocity()) > threshhold || abs(rightBase2.get_actual_velocity()) > threshhold)
-        return false;
-
-    return true;
-
-}
-
-bool isBaseStopped() { //determines if the base motors are stopped
-
-    int threshhold = 5;
-
-    if(abs(leftBase1.get_actual_velocity()) > threshhold || abs(leftBase2.get_actual_velocity()) > threshhold)
-        return false;
-
-    if(abs(rightBase1.get_actual_velocity()) > threshhold || abs(rightBase2.get_actual_velocity()) > threshhold)
+    if(abs(rightBase1.get_actual_velocity()) > rpmThreshhold || abs(rightBase2.get_actual_velocity()) > rpmThreshhold)
         return false;
 
     return true;

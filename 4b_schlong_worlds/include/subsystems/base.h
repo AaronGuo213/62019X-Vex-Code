@@ -19,7 +19,6 @@ void resetEnc();
 void resetBaseMotorEnc();
 void resetGyro();
 double getSonarInches(int numTimes = 1);
-bool isBaseSettled();
-bool isBaseStopped();
+bool isBaseSettled(int rpmThreshhold = 5);
 
 #endif
